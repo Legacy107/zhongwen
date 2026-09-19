@@ -11,4 +11,7 @@ export const { dynamic, dynamicParams, revalidate, generateStaticParams, GET } =
     additionalPrecacheEntries: [{ url: "/~offline", revision }],
     swSrc: "app/sw.ts",
     useNativeEsbuild: true,
+    // words.json is ~2.4MB and is the deck itself. Without raising this it is
+    // silently skipped and offline review has no cards.
+    maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
   });
