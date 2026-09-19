@@ -232,6 +232,14 @@ export function HomeDashboard() {
         <Stat value={stats?.fresh} label="left to learn" />
       </section>
 
+      <Link
+        href="/progress"
+        className="flex items-center justify-between rounded-2xl border border-neutral-800 bg-neutral-900/60 px-5 py-4 active:bg-neutral-800"
+      >
+        <span className="font-medium">Progress</span>
+        <span className="text-xs text-neutral-500">vs HSK targets</span>
+      </Link>
+
       <section className="flex flex-col gap-2 rounded-2xl bg-neutral-900/60 p-4">
         <h2 className="text-sm font-medium text-neutral-300">Backup</h2>
         <p className="text-xs text-neutral-500">
