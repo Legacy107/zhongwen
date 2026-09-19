@@ -45,3 +45,6 @@ next-env.d.ts
 
 # data pipeline cache
 /scripts/.cache/
+
+# generated from data/ by scripts/sync-public-data.ts
+public/data/
