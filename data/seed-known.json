@@ -1,0 +1,77 @@
+{
+  "stabilityDays": 2.5,
+  "words": [
+    {
+      "id": "L1-0036",
+      "simplified": "茶",
+      "pinyin": "chá"
+    },
+    {
+      "id": "L3-0405",
+      "simplified": "咖啡",
+      "pinyin": "kāfēi"
+    },
+    {
+      "id": "L1-0242",
+      "simplified": "米饭",
+      "pinyin": "mǐfàn"
+    },
+    {
+      "id": "L6-0686",
+      "simplified": "热水",
+      "pinyin": "rèshuǐ"
+    },
+    {
+      "id": "L4-0197",
+      "simplified": "豆腐",
+      "pinyin": "dòufu"
+    },
+    {
+      "id": "L6-1091",
+      "simplified": "粥",
+      "pinyin": "zhōu",
+      "note": "read as congee, matching unit 1's food theme"
+    },
+    {
+      "id": "L1-0464",
+      "simplified": "这",
+      "pinyin": "zhè"
+    },
+    {
+      "id": "L1-0337",
+      "simplified": "是",
+      "pinyin": "shì"
+    },
+    {
+      "id": "L1-0132",
+      "simplified": "还",
+      "pinyin": "hái",
+      "note": "hái (still/also), not huán (to return)"
+    },
+    {
+      "id": "L1-0380",
+      "simplified": "我",
+      "pinyin": "wǒ"
+    },
+    {
+      "id": "L1-0477",
+      "simplified": "中国",
+      "pinyin": "Zhōngguó"
+    },
+    {
+      "id": "L1-0305",
+      "simplified": "人",
+      "pinyin": "rén"
+    },
+    {
+      "id": "L1-0271",
+      "simplified": "你",
+      "pinyin": "nǐ"
+    },
+    {
+      "id": "L1-0269",
+      "simplified": "呢",
+      "pinyin": "ne"
+    }
+  ]
+}

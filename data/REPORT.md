@@ -1,6 +1,6 @@
 # Data pipeline report
 
-Generated 2026-09-19T08:04:32.874Z by `yarn build:data`.
+Generated 2026-09-19T08:19:39.579Z by `yarn build:data`.
 
 All numbers below are computed from the emitted dataset, not estimated.
 
@@ -24,20 +24,20 @@ are applied, strongest first, and the rule that fired is recorded per word in
 
 | `cognateMatch` | Meaning | Count |
 | --- | --- | --- |
-| `exact` | The reading **is** a gloss. Safe to claim identity. | 749 |
+| `exact` | The reading **is** a gloss. Safe to claim identity. | 748 |
 | `toneVariant` | Same letters, different tone marks (tri/trí, trường/trưởng). | 63 |
-| `contained` | The reading is a whole word inside a longer gloss (bắc ⊂ phía bắc). | 383 |
-| `none` | Vietnamese uses an unrelated native word. | 4261 |
+| `contained` | The reading is a whole word inside a longer gloss (bắc ⊂ phía bắc). | 382 |
+| `none` | Vietnamese uses an unrelated native word. | 4263 |
 
 | Level | Words | Exact | All cognates | Rate |
 | --- | --- | --- | --- | --- |
-| HSK 1 | 500 | 43 (8.6%) | 102 | **20.4%** |
+| HSK 1 | 500 | 41 (8.2%) | 99 | **19.8%** |
 | HSK 2 | 772 | 116 (15%) | 185 | **24%** |
-| HSK 3 | 973 | 200 (20.6%) | 288 | **29.6%** |
+| HSK 3 | 973 | 201 (20.7%) | 292 | **30%** |
 | HSK 4 | 1000 | 138 (13.8%) | 213 | **21.3%** |
-| HSK 5 | 1071 | 134 (12.5%) | 213 | **19.9%** |
-| HSK 6 | 1140 | 118 (10.4%) | 194 | **17%** |
-| **All** | **5456** | **749** | **1195** | **21.9%** |
+| HSK 5 | 1071 | 134 (12.5%) | 212 | **19.8%** |
+| HSK 6 | 1140 | 118 (10.4%) | 192 | **16.8%** |
+| **All** | **5456** | **748** | **1193** | **21.9%** |
 
 ### On the ~45% figure
 
@@ -76,17 +76,17 @@ Mandarin neutral-tone syllables (which no Hán-Việt reading could predict).
 
 | Cohort | Syllables | Correct | Accuracy |
 | --- | --- | --- | --- |
-| Non-entering tone | 8252 | 6672 | **80.9%** |
-| Entering tone (-p -t -c -ch) | 1524 | 626 | **41.1%** |
+| Non-entering tone | 8241 | 6651 | **80.7%** |
+| Entering tone (-p -t -c -ch) | 1523 | 625 | **41%** |
 
 Breakdown of the non-entering cohort by Vietnamese tone:
 
 | Vietnamese tone | Syllables | Correct | Accuracy |
 | --- | --- | --- | --- |
-| sắc/nặng | 3006 | 2655 | **88.3%** |
-| ngang | 2573 | 1714 | **66.6%** |
-| hỏi/ngã | 1607 | 1406 | **87.5%** |
-| huyền | 1066 | 897 | **84.1%** |
+| sắc/nặng | 3001 | 2647 | **88.2%** |
+| ngang | 2569 | 1705 | **66.4%** |
+| hỏi/ngã | 1608 | 1405 | **87.4%** |
+| huyền | 1063 | 894 | **84.1%** |
 
 ### What this means for the confidence badges
 
@@ -120,7 +120,7 @@ so a word can currently be marked `"high"` on the strength of a prediction
 that is right only about two-thirds of the time. That is the single weakest
 point in the confidence badges and the one most likely to erode trust.
 
-Confidence distribution across the corpus: high 2787, medium 1233, low 1436.
+Confidence distribution across the corpus: high 2771, medium 1243, low 1442.
 
 ## Coverage gaps
 

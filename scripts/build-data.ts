@@ -27,6 +27,8 @@ import {
   getToneConfidence,
   isEnteringTone,
   predictMandarinTones,
+  bareMandarinPinyin,
+  toneNumbersFromDiacriticPinyin,
   toneNumbersFromNumericPinyin,
   type Char,
   type FalseFriend,
@@ -273,13 +275,53 @@ function isProperNounEntry(e: DictEntry): boolean {
  * Genuine proper nouns (中国 Zhōngguó) have no lowercase alternative, so the
  * pool falls back to the full list and they still resolve.
  */
+/**
+ * Splits unspaced diacritic pinyin into syllables ("dìfang" -> "dì fang").
+ *
+ * The HSK column stores multi-syllable readings without separators, so tones
+ * cannot be read per syllable until they are split.
+ */
+function splitSyllables(diacritic: string): string {
+  if (/\s/.test(diacritic.trim())) return diacritic.trim();
+  return diacritic
+    .trim()
+    .replace(/([aeiouüv][a-zü]*?)(?=[bcdfghjklmnpqrstwxyz][a-zü])/gi, "$1 ")
+    .trim();
+}
+
 function pickEntry(
   entries: DictEntry[] | undefined,
   wantTones: number[],
+  /** Diacritic reading from the HSK row, e.g. "huán". Disambiguates polyphones. */
+  wantReading?: string,
 ): DictEntry | null {
   if (!entries || entries.length === 0) return null;
   const usable = entries.filter((e) => !isProperNounEntry(e));
   const pool = usable.length > 0 ? usable : entries;
+
+  // Exact reading first. Tones alone cannot separate homotonal polyphones —
+  // 还 is hái and huán, both tone 2 — so matching the syllables themselves is
+  // the only way to keep those rows apart.
+  if (wantReading) {
+    // The HSK reading is diacritic ("huán"); CC-CEDICT's is numeric ("huan2").
+    // Both sides are reduced to bare letters plus a tone list so they compare.
+    const want = bareMandarinPinyin(wantReading).replace(/[\s'’]/g, "");
+    const wantT = toneNumbersFromDiacriticPinyin(splitSyllables(wantReading));
+    const sameLetters = pool.filter(
+      (e) =>
+        e.pinyinNumeric.replace(/[0-5\s'’]/g, "").toLowerCase().replace(/u:/g, "v") === want,
+    );
+    // Among same-letter candidates, tone decides: 看 is both kàn and kān, and
+    // 过 is guò and neutral guo. Treating neutral as a wildcard here would
+    // merge them, so an exact tone match is required first.
+    const exact = sameLetters.find((e) => {
+      const t = toneNumbersFromNumericPinyin(e.pinyinNumeric);
+      return t.length === wantT.length && t.every((v, i) => v === wantT[i]);
+    });
+    if (exact) return exact;
+    if (sameLetters.length === 1) return sameLetters[0];
+  }
+
   if (wantTones.length > 0) {
     const match = pool.find((e) => {
       const t = toneNumbersFromNumericPinyin(e.pinyinNumeric);
@@ -495,10 +537,16 @@ async function main() {
       type: "array",
       nonZh: "removed",
     });
+    // The HSK row carries the reading intended for *this* entry, which is the
+    // only thing that distinguishes polyphone rows: 还 appears twice, once as
+    // hái and once as huán. pinyin-pro sees the character in isolation and
+    // returns its default reading for both, so relying on it here collapses
+    // the two rows onto one dictionary entry and both inherit a single gloss.
+    const rowReading = row.Pinyin?.trim() || "";
     const provisionalTones = toneNumbersFromNumericPinyin(provisional.join(" "));
 
-    const ce = pickEntry(cedict.get(simplified), provisionalTones);
-    const cv = pickEntry(cvdict.get(simplified), provisionalTones);
+    const ce = pickEntry(cedict.get(simplified), provisionalTones, rowReading);
+    const cv = pickEntry(cvdict.get(simplified), provisionalTones, rowReading);
 
     const pinyinNumeric = (ce?.pinyinNumeric ?? provisional.join(" "))
       .toLowerCase()

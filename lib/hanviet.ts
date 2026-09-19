@@ -368,6 +368,51 @@ export function isCognateMatch(
 }
 
 /** Convert numeric pinyin ("an1 quan2") into per-syllable tone numbers. */
+/**
+ * Tone numbers from *diacritic* pinyin ("hái" -> [2], "dìfang" -> [4, 5]).
+ *
+ * The HSK wordlist stores readings this way, and it is the only field that
+ * distinguishes polyphone rows from each other: 还 appears once as hái and
+ * once as huán. Deriving the reading from the character instead collapses the
+ * two onto one dictionary entry.
+ */
+/**
+ * Bare letters from Mandarin diacritic pinyin ("kān" -> "kan", "lǜ" -> "lv").
+ *
+ * Distinct from stripTones(), which is tuned for Vietnamese and deliberately
+ * preserves letters like đ/ă/ơ. Applied to pinyin it leaves the tone mark in
+ * place, so Mandarin needs its own reduction.
+ */
+export function bareMandarinPinyin(diacritic: string): string {
+  return diacritic
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ü/g, "v")
+    .toLowerCase()
+    .trim();
+}
+
+export function toneNumbersFromDiacriticPinyin(diacritic: string): number[] {
+  // Combining marks, in Unicode tone order: macron, acute, caron, grave.
+  const MARKS: Record<string, number> = {
+    "\u0304": 1,
+    "\u0301": 2,
+    "\u030c": 3,
+    "\u0300": 4,
+  };
+  return diacritic
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((syl) => {
+      for (const ch of syl.normalize("NFD")) {
+        const tone = MARKS[ch];
+        if (tone) return tone;
+      }
+      return 5; // no mark: neutral tone
+    });
+}
+
 export function toneNumbersFromNumericPinyin(numeric: string): number[] {
   return numeric
     .trim()
