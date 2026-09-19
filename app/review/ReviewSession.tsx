@@ -6,7 +6,8 @@ import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId } from "@/lib/device";
 import type { FalseFriend, Word } from "@/lib/hanviet";
-import { buildQueue, CARD_TYPES, cardId, grade, newCard, type CardType } from "@/lib/srs";
+import { buildQueue, CARD_TYPES, cardId, grade, newCard, Rating, type CardType } from "@/lib/srs";
+import { playCorrect, playFanfare, playWrong, unlockAudio } from "@/lib/sfx";
 import { speak } from "@/lib/speak";
 
 type Grade = Parameters<typeof grade>[1];
@@ -96,8 +97,16 @@ export function ReviewSession() {
           deviceId,
         },
       );
+      // Again means the card comes back; anything else is a pass worth a cue.
+      if (rating === Rating.Again) playWrong();
+      else playCorrect();
+
       setDone((n) => n + 1);
-      setQueue((q) => q.slice(1));
+      setQueue((q) => {
+        const rest = q.slice(1);
+        if (rest.length === 0) playFanfare();
+        return rest;
+      });
     },
     [current],
   );
@@ -128,6 +137,7 @@ export function ReviewSession() {
         cardType={current.cardType as CardType}
         falseFriend={deck.falseFriends.get(word.simplified)}
         onGrade={onGrade}
+        onFirstInteraction={unlockAudio}
         onPlayAudio={() => speak(word.simplified)}
       />
     </div>

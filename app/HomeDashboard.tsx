@@ -1,9 +1,12 @@
 "use client";
 
+import confetti from "canvas-confetti";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { db, exportBackup, importBackup } from "@/lib/db/local";
 import { buildQueue, State } from "@/lib/srs";
+import { playFanfare, unlockAudio } from "@/lib/sfx";
+import { computeStreak, type StreakInfo } from "@/lib/streak";
 
 interface Stats {
   /** Cards this session will actually contain, not every unstarted card. */
@@ -13,6 +16,7 @@ interface Stats {
   learning: number;
   known: number;
   reviewedToday: number;
+  streak: StreakInfo;
 }
 
 const DAILY_GOAL = 30;
@@ -22,10 +26,14 @@ async function readStats(): Promise<Stats> {
   const midnight = new Date(now);
   midnight.setHours(0, 0, 0, 0);
 
-  const [cards, reviewedToday] = await Promise.all([
+  // Streaks need the full review history, not just today's slice.
+  const [cards, reviewTimes] = await Promise.all([
     db.cards.toArray(),
-    db.reviews.where("reviewedAt").aboveOrEqual(midnight).count(),
+    db.reviews.orderBy("reviewedAt").keys() as Promise<unknown[]>,
   ]);
+  const timestamps = reviewTimes.map((k) => new Date(k as string | number | Date));
+  const reviewedToday = timestamps.filter((t) => t >= midnight).length;
+  const streak = computeStreak(timestamps, DAILY_GOAL, now);
 
   let fresh = 0;
   let learning = 0;
@@ -37,7 +45,7 @@ async function readStats(): Promise<Stats> {
     else if (c.state === State.Review) known++;
     else learning++;
   }
-  return { session: buildQueue(cards).length, fresh, learning, known, reviewedToday };
+  return { session: buildQueue(cards).length, fresh, learning, known, reviewedToday, streak };
 }
 
 function Stat({ value, label }: { value: number | undefined; label: string }) {
@@ -122,6 +130,22 @@ export function HomeDashboard() {
 
   const goalPct = stats ? Math.min(100, Math.round((stats.reviewedToday / DAILY_GOAL) * 100)) : 0;
 
+  // Fire once when the goal flips to met, and only once per calendar day -
+  // otherwise every focus event would re-celebrate.
+  const metToday = stats?.streak.metToday ?? false;
+  useEffect(() => {
+    if (!metToday) return;
+    const key = `goalCelebrated:${new Date().toDateString()}`;
+    try {
+      if (localStorage.getItem(key)) return;
+      localStorage.setItem(key, "1");
+    } catch {
+      return; // Private mode: skip rather than celebrate on every render.
+    }
+    void confetti({ particleCount: 90, spread: 70, origin: { y: 0.3 }, disableForReducedMotion: true });
+    playFanfare();
+  }, [metToday]);
+
   return (
     <div className="flex w-full max-w-md flex-col gap-5">
       <header className="flex flex-col gap-1">
@@ -144,10 +168,23 @@ export function HomeDashboard() {
             style={{ width: `${goalPct}%` }}
           />
         </div>
+        {stats && (stats.streak.current > 0 || stats.streak.longest > 0) && (
+          <div className="flex items-baseline justify-between pt-1 text-xs text-neutral-500">
+            <span>
+              {stats.streak.current > 0
+                ? `${stats.streak.current}-day streak`
+                : "Streak broken - start again today"}
+            </span>
+            {stats.streak.longest > stats.streak.current && (
+              <span>best {stats.streak.longest}</span>
+            )}
+          </div>
+        )}
       </section>
 
       <Link
         href="/review"
+        onClick={unlockAudio}
         className="flex items-center justify-between rounded-2xl bg-emerald-600 px-5 py-4 font-medium text-white active:bg-emerald-700"
       >
         <span>{stats && stats.session > 0 ? "Start reviewing" : "Review"}</span>

@@ -23,10 +23,20 @@ export interface ReviewCardProps {
   cardType: CardType;
   falseFriend?: FalseFriend;
   onGrade: (rating: Grade) => void;
+  /** Fired on the first tap of a card. iOS only permits starting an
+   *  AudioContext inside a user gesture, so sound is unlocked from here. */
+  onFirstInteraction?: () => void;
   onPlayAudio?: () => void;
 }
 
-export function ReviewCard({ word, cardType, falseFriend, onGrade, onPlayAudio }: ReviewCardProps) {
+export function ReviewCard({
+  word,
+  cardType,
+  falseFriend,
+  onGrade,
+  onPlayAudio,
+  onFirstInteraction,
+}: ReviewCardProps) {
   const [revealed, setRevealed] = useState(false);
   const [answer, setAnswer] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +50,7 @@ export function ReviewCard({ word, cardType, falseFriend, onGrade, onPlayAudio }
   const correct = normalisePinyin(answer) === normalisePinyin(word.pinyin);
 
   function reveal() {
+    onFirstInteraction?.();
     if (!revealed) setRevealed(true);
   }
 
