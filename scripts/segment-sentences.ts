@@ -36,6 +36,39 @@ export function segmentIntoTiles(
   const chars = [...bare];
   const tiles: SentenceTile[] = [];
 
+  // Romanise the whole sentence once and slice per tile, rather than
+  // romanising each tile alone. pinyin-pro needs the surrounding context to
+  // resolve polyphones: 了 is "le" as a particle but "liǎo" in isolation, and
+  // every 了 tile in the corpus was wrong before this. One syllable per hanzi,
+  // so the offsets line up with `chars`.
+  const syllables = pinyin(bare, { type: "array", toneType: "symbol" });
+  const perChar = Array.isArray(syllables) ? syllables : [];
+  const slicePinyin = (start: number, len: number): string => {
+    if (perChar.length !== chars.length) {
+      return tilePinyin(chars.slice(start, start + len).join(""));
+    }
+    const out: string[] = [];
+    for (let k = start; k < start + len; k++) {
+      // Erhua: 儿 merges into the preceding syllable, so 一点儿 is "yì diǎnr",
+      // not "yì diǎn ér". The per-character split gives every 儿 its own
+      // syllable, so re-merge here. A word-initial 儿 (儿子) and a genuine
+      // break (女儿, nǚ'ér) keep theirs.
+      const forward = chars[k] + (chars[k + 1] ?? "");
+      const backward = (chars[k - 1] ?? "") + chars[k];
+      const isErhua =
+        chars[k] === "儿" &&
+        k > start &&
+        !NON_ERHUA_WORDS.has(forward) &&
+        !NON_ERHUA_WORDS.has(backward);
+      if (isErhua && out.length > 0) {
+        out[out.length - 1] = out[out.length - 1].replace(/\s*$/, "") + "r";
+        continue;
+      }
+      out.push(perChar[k]);
+    }
+    return out.join(" ");
+  };
+
   let i = 0;
   while (i < chars.length) {
     let matched: { text: string; word: Word } | null = null;
@@ -49,19 +82,20 @@ export function segmentIntoTiles(
       }
     }
     if (matched) {
+      const len = [...matched.text].length;
       tiles.push({
         text: matched.text,
-        pinyin: tilePinyin(matched.text),
+        pinyin: slicePinyin(i, len),
         wordId: matched.word.id,
       });
-      i += [...matched.text].length;
+      i += len;
       continue;
     }
     const ch = chars[i];
     const single = wordsBySurface.get(ch);
     tiles.push({
       text: ch,
-      pinyin: tilePinyin(ch),
+      pinyin: slicePinyin(i, 1),
       wordId: single ? single.id : null,
     });
     i++;
@@ -80,6 +114,14 @@ export function tilePinyin(text: string): string {
 export function sentencePinyin(hanzi: string): string {
   return tilePinyin(stripPunctuation(hanzi));
 }
+
+/**
+ * Words whose 儿 is a full syllable rather than an erhua coda.
+ *
+ * 儿子 ("érzi") starts with it, and 女儿 ("nǚ'ér") has a genuine break. Kept
+ * small and explicit: erhua is otherwise entirely positional.
+ */
+const NON_ERHUA_WORDS = new Set(["儿子", "儿童", "儿女", "女儿"]);
 
 /**
  * Nationality / language morphemes that form head-last compounds in Chinese

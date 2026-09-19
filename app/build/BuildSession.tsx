@@ -33,9 +33,6 @@ export function BuildSession() {
   const [error, setError] = useState<string | null>(null);
   const [i, setI] = useState(0);
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
-  // Alternate prompt languages: Vietnamese prompts are the more valuable half,
-  // but English keeps the meaning unambiguous when the gloss is thin.
-  const [promptLang, setPromptLang] = useState<"en" | "vi">("vi");
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +62,6 @@ export function BuildSession() {
       correct: s.correct + (result === "correct" ? 1 : 0),
       wrong: s.wrong + (result === "wrong" ? 1 : 0),
     }));
-    setPromptLang((l) => (l === "vi" ? "en" : "vi"));
     setI((n) => {
       const next = n + 1;
       if (sentences && next >= sentences.length) playFanfare();
@@ -108,7 +104,6 @@ export function BuildSession() {
       <TileBuilder
         key={current.id}
         sentence={current}
-        promptLang={promptLang}
         onDone={onDone}
       />
     </div>

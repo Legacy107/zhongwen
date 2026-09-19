@@ -25,12 +25,17 @@ export type TileResult = "correct" | "wrong";
 
 interface TileBuilderProps {
   sentence: Sentence;
-  /** Prompt language. Vietnamese prompts are the more valuable half. */
-  promptLang: "en" | "vi";
+  /**
+   * Language of the prompt being translated *from*. English by default.
+   *
+   * The Vietnamese gloss is still carried on every sentence and drives the
+   * word-order correction on a wrong answer; this only controls the prompt.
+   */
+  promptLang?: "en" | "vi";
   onDone: (result: TileResult) => void;
 }
 
-export function TileBuilder({ sentence, promptLang, onDone }: TileBuilderProps) {
+export function TileBuilder({ sentence, promptLang = "en", onDone }: TileBuilderProps) {
   // Slots are built once per sentence and are the single source of identity for
   // both lists. Deriving keys in two places lets the same tile text collide -
   // a sentence may legitimately repeat a word - and React then duplicates or

@@ -18,6 +18,7 @@ import { countHanzi, stripPunctuation } from "../lib/sentences";
 import { detectViContrast, segmentIntoTiles, sentencePinyin } from "./segment-sentences";
 import {
   buildAllowedChars,
+  buildAllowedWords,
   buildNonErhuaWords,
   countErhua,
   levelsUpTo,
@@ -271,4 +272,30 @@ test("a genuinely truncated pinyin is still rejected", () => {
   s.modelPinyin = "wǒ huì shuō"; // dropped the tail
   const r = validateSentences([s], baseOpts);
   assert.equal(r.rejected.filter((x) => x.code === "pinyin-length").length, 1);
+});
+
+test("tile pinyin uses sentence context, not the isolated character", () => {
+  // 了 is "le" as a sentence-final particle but "liǎo" on its own. Romanising
+  // each tile in isolation got all 42 了 tiles in the corpus wrong; tiles must
+  // be sliced from the sentence-level reading instead.
+  const allowed = buildAllowedWords(words, "1");
+  const maxLen = Math.max(...[...allowed.keys()].map((k) => [...k].length));
+  const tiles = segmentIntoTiles("今天太冷了", allowed, maxLen);
+  assert.equal(
+    tiles.find((t) => t.text === "了")?.pinyin,
+    "le",
+    "sentence-final 了 must be le, not liǎo",
+  );
+});
+
+test("erhua tiles merge 儿 into the preceding syllable", () => {
+  const allowed = buildAllowedWords(words, "1");
+  const maxLen = Math.max(...[...allowed.keys()].map((k) => [...k].length));
+  const seg = (s: string) => segmentIntoTiles(s, allowed, maxLen);
+
+  assert.equal(seg("说一点儿").find((t) => t.text === "一点儿")?.pinyin, "yì diǎnr");
+  assert.equal(seg("你去哪儿").find((t) => t.text === "哪儿")?.pinyin, "nǎr");
+  // 儿子 and 女儿 keep 儿 as a full syllable.
+  assert.equal(seg("我儿子很高").find((t) => t.text === "儿子")?.pinyin, "ér zi");
+  assert.equal(seg("我女儿很高").find((t) => t.text === "女儿")?.pinyin, "nǚ ér");
 });

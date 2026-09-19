@@ -1,6 +1,6 @@
 # Sentence pipeline report
 
-Generated 2026-09-19T10:45:43.215Z by `yarn sentences:generate --level=1`.
+Generated 2026-09-19T13:32:26.668Z by `yarn sentences:generate --level=1`.
 
 All numbers below are computed from the emitted dataset, not estimated.
 
