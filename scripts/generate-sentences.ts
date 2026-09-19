@@ -194,9 +194,13 @@ async function main() {
   // Segmentation and tagging are done here rather than asked of the model:
   // tile boundaries must agree with pinyin-pro and the deck, which is a
   // deterministic question with a right answer.
+  // Built from the level's words, not the whole deck. Segmenting against all
+  // 5,497 words lets a longer out-of-level compound win the longest-match pass
+  // - 再说 is HSK 6, so 请你再说一下儿 segmented as 再说 and was then rejected as
+  // out-of-level, even though 再 and 说 are both HSK 1 words the learner has.
   const wordsBySurface = new Map<string, Word>();
-  for (const w of words) if (!wordsBySurface.has(w.simplified)) wordsBySurface.set(w.simplified, w);
-  const maxWordLength = Math.max(...words.map((w) => [...w.simplified].length));
+  for (const w of levelWords) if (!wordsBySurface.has(w.simplified)) wordsBySurface.set(w.simplified, w);
+  const maxWordLength = Math.max(...levelWords.map((w) => [...w.simplified].length));
 
   const sentences: Sentence[] = [];
   for (const [pointNo, list] of raw) {

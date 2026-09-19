@@ -128,21 +128,56 @@ export function countSyllables(p: string): number {
 /**
  * Number of 儿 characters that merge into the preceding syllable (erhua).
  *
- * 一点儿 is three characters but two syllables — "yì diǎnr". Only a 儿 that
- * follows another hanzi counts: a leading 儿 (as in 儿子) is its own syllable,
- * and so is 儿 after punctuation or at the start of the string.
+ * 一点儿 is three characters but two syllables — "yì diǎnr". But 儿 is not
+ * always erhua: in 女儿 ("nǚ'ér") and 儿子 ("érzi") it carries its own syllable.
+ *
+ * Rather than guess from the surrounding characters, this consults the deck:
+ * a word whose own pinyin has as many syllables as it has characters is not
+ * erhua, whatever the 儿 looks like. `nonErhuaWords` is built from words.json,
+ * so new cases are picked up from the data instead of a hand-maintained list.
  */
-export function countErhua(hanzi: string): number {
+export function countErhua(hanzi: string, nonErhuaWords?: Set<string>): number {
   const chars = [...hanzi];
   let n = 0;
   for (let i = 1; i < chars.length; i++) {
     if (chars[i] !== "儿") continue;
-    // 儿子 keeps its own syllable; erhua only ever attaches backwards.
-    if (chars[i + 1] === "子") continue;
     if (!/[\u4e00-\u9fff]/.test(chars[i - 1])) continue;
+    // A word that *starts* at this 儿 means the 儿 is that word's own initial
+    // syllable, not a coda on what precedes it - 我儿子 is wǒ ér zi.
+    const forward = chars[i] + (chars[i + 1] ?? "");
+    if (nonErhuaWords?.has(forward)) continue;
+    // A word ending at this 儿 whose pinyin has a genuine break - 女儿, nǚ'ér.
+    const pair = chars[i - 1] + chars[i];
+    const triple = i >= 2 ? chars[i - 2] + pair : "";
+    if (nonErhuaWords?.has(pair) || (triple && nonErhuaWords?.has(triple))) continue;
     n++;
   }
   return n;
+}
+
+/**
+ * Words where a non-initial 儿 keeps its own syllable — 女儿 ("nǚ'ér").
+ *
+ * pinyin-pro marks a genuine break with an apostrophe and writes erhua as a
+ * merged coda ("diǎnr"), so the apostrophe is the signal. A word-initial 儿
+ * (儿子, "érzi") carries no apostrophe but needs no entry either: countErhua
+ * only ever counts a 儿 that follows another hanzi.
+ */
+export function buildNonErhuaWords(words: Word[]): Set<string> {
+  const out = new Set<string>();
+  for (const w of words) {
+    if (!w.simplified.includes("儿")) continue;
+    // Only an apostrophe or a space marks a syllable boundary in these
+    // readings, so split on those directly rather than stripping letters -
+    // a character class misses the accented vowels (ǚ, é, ǎ) entirely.
+    const syllables = w.pinyin.split(/['\u2019\s]+/).filter(Boolean).length;
+    // A genuine break shows up as more than one piece - 女儿, "nǚ'ér".
+    if (syllables > 1) out.add(w.simplified);
+    // A word-initial 儿 is always its own syllable (儿子, "érzi"), even though
+    // pinyin-pro writes it without a separator.
+    else if (w.simplified.startsWith("儿")) out.add(w.simplified);
+  }
+  return out;
 }
 
 function validateSentence(
@@ -151,6 +186,7 @@ function validateSentence(
   allowedChars: Set<string>,
   allowedWords: Map<string, Word>,
   seen: Map<string, Sentence>,
+  nonErhua?: Set<string>,
 ): Rejection | null {
   const min = opts.minChars ?? 4;
   const max = opts.maxChars ?? 12;
@@ -225,7 +261,7 @@ function validateSentence(
   //    transcription is therefore legitimately shorter than the character
   //    count, and a naive comparison rejects it.
   const got = countSyllables(s.modelPinyin);
-  const expected = nChars - countErhua(s.hanzi);
+  const expected = nChars - countErhua(s.hanzi, nonErhua);
   if (got !== expected) {
     return {
       code: "pinyin-length",
@@ -256,6 +292,7 @@ export function validateSentences(
 ): ValidationResult {
   const allowedChars = buildAllowedChars(opts.words, opts.level, opts.grammarWords);
   const allowedWords = buildAllowedWords(opts.words, opts.level);
+  const nonErhua = buildNonErhuaWords(opts.words);
   const ffBySurface = new Map(opts.falseFriends.map((f) => [f.simplified, f]));
 
   const valid: Sentence[] = [];
@@ -264,7 +301,7 @@ export function validateSentences(
   const seen = new Map<string, Sentence>();
 
   for (const s of sentences) {
-    const rejection = validateSentence(s, opts, allowedChars, allowedWords, seen);
+    const rejection = validateSentence(s, opts, allowedChars, allowedWords, seen, nonErhua);
     if (rejection) {
       rejected.push(rejection);
       continue;

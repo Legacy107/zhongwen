@@ -15,6 +15,19 @@ import { playFanfare, unlockAudio } from "@/lib/sfx";
  */
 const SOURCES = ["/data/sentences.json", "/data/sentences-fixture.json"];
 
+/** Sentences per session. The corpus is 279 long; a session is not. */
+const SESSION_SIZE = 12;
+
+/** Fisher-Yates over a copy, so each session draws a different set. */
+function sample<T>(items: T[], n: number): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out.slice(0, n);
+}
+
 export function BuildSession() {
   const [sentences, setSentences] = useState<Sentence[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +46,7 @@ export function BuildSession() {
           if (!r.ok) continue;
           const data = (await r.json()) as Sentence[];
           if (!cancelled && data.length) {
-            setSentences(data);
+            setSentences(sample(data, SESSION_SIZE));
             return;
           }
         } catch {

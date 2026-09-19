@@ -18,6 +18,7 @@ import { countHanzi, stripPunctuation } from "../lib/sentences";
 import { detectViContrast, segmentIntoTiles, sentencePinyin } from "./segment-sentences";
 import {
   buildAllowedChars,
+  buildNonErhuaWords,
   countErhua,
   levelsUpTo,
   validateSentences,
@@ -234,15 +235,23 @@ test("viContrast does not tag 男人 / 女人 as a nationality compound", () => 
 });
 
 test("countErhua counts only backward-merging 儿", () => {
-  assert.equal(countErhua("一点儿"), 1);
-  assert.equal(countErhua("这儿有水果吗"), 1);
-  assert.equal(countErhua("哪儿"), 1);
-  // 儿子 is two full syllables (ér zi), not erhua.
-  assert.equal(countErhua("我儿子"), 0);
-  // A sentence with no 儿 at all.
-  assert.equal(countErhua("我是越南人"), 0);
-  // Two separate erhua in one sentence.
-  assert.equal(countErhua("这儿那儿"), 2);
+  const nonErhua = buildNonErhuaWords(words);
+  assert.equal(countErhua("一点儿", nonErhua), 1);
+  assert.equal(countErhua("这儿有水果吗", nonErhua), 1);
+  assert.equal(countErhua("哪儿", nonErhua), 1);
+  assert.equal(countErhua("我是越南人", nonErhua), 0);
+  assert.equal(countErhua("这儿那儿", nonErhua), 2);
+  // 儿子 (érzi) and 女儿 (nǚ'ér) keep 儿 as its own syllable - detected from
+  // the deck's own pinyin, not a hand-maintained exception list.
+  assert.equal(countErhua("我儿子", nonErhua), 0);
+  assert.equal(countErhua("我女儿今年六岁", nonErhua), 0);
+});
+
+test("buildNonErhuaWords finds the genuine syllable breaks", () => {
+  const s = buildNonErhuaWords(words);
+  assert.ok(s.has("女儿"), "女儿 is nǚ'ér - two syllables");
+  assert.ok(s.has("儿子"), "儿子 is érzi - 儿 is its own initial syllable");
+  assert.ok(!s.has("一点儿"), "一点儿 is erhua");
 });
 
 test("a correct erhua transcription is not rejected as truncated", () => {
