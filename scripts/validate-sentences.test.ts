@@ -18,6 +18,7 @@ import { countHanzi, stripPunctuation } from "../lib/sentences";
 import { detectViContrast, segmentIntoTiles, sentencePinyin } from "./segment-sentences";
 import {
   buildAllowedChars,
+  countErhua,
   levelsUpTo,
   validateSentences,
   type ValidationOptions,
@@ -230,4 +231,35 @@ test("viContrast does not tag 男人 / 女人 as a nationality compound", () => 
   // lesson; tagging them would teach a rule that does not exist.
   assert.equal(detectViContrast("那个男人很高。"), null);
   assert.equal(detectViContrast("这个女人是老师。"), null);
+});
+
+test("countErhua counts only backward-merging 儿", () => {
+  assert.equal(countErhua("一点儿"), 1);
+  assert.equal(countErhua("这儿有水果吗"), 1);
+  assert.equal(countErhua("哪儿"), 1);
+  // 儿子 is two full syllables (ér zi), not erhua.
+  assert.equal(countErhua("我儿子"), 0);
+  // A sentence with no 儿 at all.
+  assert.equal(countErhua("我是越南人"), 0);
+  // Two separate erhua in one sentence.
+  assert.equal(countErhua("这儿那儿"), 2);
+});
+
+test("a correct erhua transcription is not rejected as truncated", () => {
+  // 我会说一点儿汉语 - 8 hanzi, but "yì diǎnr" merges 儿, so 7 syllables.
+  const s = make("我会说一点儿汉语。");
+  s.modelPinyin = "wǒ huì shuō yì diǎnr hàn yǔ";
+  const r = validateSentences([s], baseOpts);
+  assert.equal(
+    r.rejected.filter((x) => x.code === "pinyin-length").length,
+    0,
+    "erhua must not count as a truncation",
+  );
+});
+
+test("a genuinely truncated pinyin is still rejected", () => {
+  const s = make("我会说一点儿汉语。");
+  s.modelPinyin = "wǒ huì shuō"; // dropped the tail
+  const r = validateSentences([s], baseOpts);
+  assert.equal(r.rejected.filter((x) => x.code === "pinyin-length").length, 1);
 });

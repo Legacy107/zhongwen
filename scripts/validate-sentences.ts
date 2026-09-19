@@ -125,6 +125,26 @@ export function countSyllables(p: string): number {
   return p.trim().split(/\s+/).filter(Boolean).length;
 }
 
+/**
+ * Number of 儿 characters that merge into the preceding syllable (erhua).
+ *
+ * 一点儿 is three characters but two syllables — "yì diǎnr". Only a 儿 that
+ * follows another hanzi counts: a leading 儿 (as in 儿子) is its own syllable,
+ * and so is 儿 after punctuation or at the start of the string.
+ */
+export function countErhua(hanzi: string): number {
+  const chars = [...hanzi];
+  let n = 0;
+  for (let i = 1; i < chars.length; i++) {
+    if (chars[i] !== "儿") continue;
+    // 儿子 keeps its own syllable; erhua only ever attaches backwards.
+    if (chars[i + 1] === "子") continue;
+    if (!/[\u4e00-\u9fff]/.test(chars[i - 1])) continue;
+    n++;
+  }
+  return n;
+}
+
 function validateSentence(
   s: Sentence,
   opts: ValidationOptions,
@@ -199,12 +219,20 @@ function validateSentence(
   //    field, which is re-derived from these same characters and so matches by
   //    construction. Only the independent attempt can reveal that the model
   //    truncated or hallucinated one of the two fields.
+  //
+  //    Erhua is subtracted first: 儿 merges into the preceding syllable, so
+  //    一点儿 is three characters but two syllables ("yì diǎnr"). A correct
+  //    transcription is therefore legitimately shorter than the character
+  //    count, and a naive comparison rejects it.
   const got = countSyllables(s.modelPinyin);
-  if (got !== nChars) {
+  const expected = nChars - countErhua(s.hanzi);
+  if (got !== expected) {
     return {
       code: "pinyin-length",
       sentence: s,
-      detail: `model pinyin "${s.modelPinyin}" has ${got} syllables, hanzi has ${nChars} characters`,
+      detail:
+        `model pinyin "${s.modelPinyin}" has ${got} syllables, ` +
+        `hanzi has ${nChars} characters (${expected} expected after erhua)`,
     };
   }
 
