@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReviewCard } from "@/components/ReviewCard";
 import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
@@ -132,6 +133,20 @@ export function ReviewSession() {
         <p className="text-sm text-neutral-400">
           {done > 0 ? `${done} reviewed this session.` : "Come back later."}
         </p>
+        <div className="mt-4 flex flex-col items-stretch gap-2 self-stretch">
+          <Link
+            href="/build"
+            className="rounded-xl bg-emerald-600 px-4 py-3 text-center font-medium text-white active:bg-emerald-700"
+          >
+            Build sentences
+          </Link>
+          <Link
+            href="/"
+            className="rounded-xl bg-neutral-800 px-4 py-3 text-center text-sm active:bg-neutral-700"
+          >
+            Home
+          </Link>
+        </div>
       </div>
     );
   }
