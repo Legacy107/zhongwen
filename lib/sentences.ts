@@ -111,6 +111,42 @@ export const GAP_MEASURE_WORDS = [
 
 const GAP_TARGETS = new Set<string>([...GAP_PARTICLES, ...GAP_MEASURE_WORDS]);
 
+/**
+ * Readings for the gap options.
+ *
+ * Hardcoded rather than derived: every one of these is a polyphone whose
+ * grammatical reading differs from its citation form, which is exactly what
+ * pinyin-pro gets wrong without sentence context. 了 is le here, never liǎo;
+ * 得 is de, not dé; 着 is zhe, not zhuó; 地 is de, not dì.
+ */
+export const GAP_READINGS: Record<string, string> = {
+  了: 'le',
+  的: 'de',
+  吗: 'ma',
+  呢: 'ne',
+  吧: 'ba',
+  着: 'zhe',
+  过: 'guo',
+  地: 'de',
+  得: 'de',
+  个: 'gè',
+  本: 'běn',
+  杯: 'bēi',
+  件: 'jiàn',
+  张: 'zhāng',
+  只: 'zhī',
+  条: 'tiáo',
+  块: 'kuài',
+  位: 'wèi',
+  双: 'shuāng',
+  把: 'bǎ',
+  家: 'jiā',
+  口: 'kǒu',
+  岁: 'suì',
+  点: 'diǎn',
+  些: 'xiē',
+};
+
 export interface GapFill {
   sentenceId: string;
   /** Tile index that has been blanked. */

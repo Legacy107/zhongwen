@@ -2,8 +2,9 @@
 
 import { motion } from "motion/react";
 import { useCallback, useState } from "react";
-import type { GapFill, Sentence } from "@/lib/sentences";
+import { GAP_READINGS, type GapFill, type Sentence } from "@/lib/sentences";
 import { playCorrect, playWrong } from "@/lib/sfx";
+import { speak } from "@/lib/speak";
 
 interface GapFillCardProps {
   sentence: Sentence;
@@ -21,8 +22,10 @@ export function GapFillCard({ sentence, gap, onDone }: GapFillCardProps) {
       setPicked(option);
       if (option === gap.answer) playCorrect();
       else playWrong();
+      // The gap is filled now, so the sentence is complete and safe to speak.
+      void speak(sentence.hanzi);
     },
-    [picked, gap.answer],
+    [picked, gap.answer, sentence.hanzi],
   );
 
   return (
@@ -73,9 +76,10 @@ export function GapFillCard({ sentence, gap, onDone }: GapFillCardProps) {
               type="button"
               onClick={() => choose(option)}
               whileTap={{ scale: 0.95 }}
-              className={`rounded-xl border py-3 text-xl ${tone}`}
+              className={`flex flex-col items-center rounded-xl border py-3 ${tone}`}
             >
-              {option}
+              <span className="text-xl leading-tight">{option}</span>
+              <span className="text-[10px] text-neutral-500">{GAP_READINGS[option] ?? ""}</span>
             </motion.button>
           );
         })}
@@ -88,9 +92,21 @@ export function GapFillCard({ sentence, gap, onDone }: GapFillCardProps) {
               correct ? "bg-emerald-950/60 text-emerald-300" : "bg-rose-950/60 text-rose-300"
             }`}
           >
-            <p className="font-medium">{sentence.hanzi}</p>
-            <p className="mt-1 text-neutral-400">{sentence.pinyin}</p>
-            <p className="mt-1 text-neutral-500">{sentence.viGloss}</p>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-medium">{sentence.hanzi}</p>
+                <p className="mt-1 text-neutral-400">{sentence.pinyin}</p>
+                <p className="mt-1 text-neutral-500">{sentence.viGloss}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void speak(sentence.hanzi)}
+                aria-label="Replay audio"
+                className="shrink-0 rounded-full bg-neutral-800 px-3 py-1 text-xs text-neutral-200 active:bg-neutral-700"
+              >
+                ▶ audio
+              </button>
+            </div>
           </div>
           <button
             type="button"

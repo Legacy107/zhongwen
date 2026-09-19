@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { test } from 'node:test';
-import { buildGapFill, GAP_MEASURE_WORDS, GAP_PARTICLES, type Sentence } from './sentences';
+import {
+  buildGapFill,
+  GAP_MEASURE_WORDS,
+  GAP_PARTICLES,
+  GAP_READINGS,
+  type Sentence,
+} from './sentences';
 
 const sentences: Sentence[] = JSON.parse(
   readFileSync(path.resolve(import.meta.dirname, '..', 'data', 'sentences.json'), 'utf8'),
@@ -75,4 +81,20 @@ test('a sentence with no particle or measure word yields no gap', () => {
     ],
   };
   assert.equal(buildGapFill(none, prng(2)), null);
+});
+
+test('every possible option has a reading', () => {
+  // A missing entry renders a blank line under the character, which looks
+  // broken rather than merely incomplete.
+  for (const ch of [...GAP_PARTICLES, ...GAP_MEASURE_WORDS]) {
+    assert.ok(GAP_READINGS[ch], `no reading for "${ch}"`);
+  }
+});
+
+test('particle readings are the grammatical ones, not citation forms', () => {
+  // These are exactly the polyphones pinyin-pro gets wrong out of context.
+  assert.equal(GAP_READINGS['了'], 'le');
+  assert.equal(GAP_READINGS['得'], 'de');
+  assert.equal(GAP_READINGS['着'], 'zhe');
+  assert.equal(GAP_READINGS['地'], 'de');
 });

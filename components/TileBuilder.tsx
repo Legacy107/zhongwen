@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useMemo, useState } from "react";
 import type { Sentence, SentenceTile } from "@/lib/sentences";
 import { playCorrect, playTap, playWrong } from "@/lib/sfx";
+import { speak } from "@/lib/speak";
 
 /** A tile plus a stable key, since the same word can appear twice in a sentence. */
 interface Slot {
@@ -69,7 +70,10 @@ export function TileBuilder({ sentence, promptLang = "en", onDone }: TileBuilder
     setChecked(result);
     if (result === "correct") playCorrect();
     else playWrong();
-  }, [answer, target]);
+    // Hearing it only makes sense once the order is settled; playing earlier
+    // would read the answer out loud.
+    void speak(sentence.hanzi);
+  }, [answer, target, sentence.hanzi]);
 
   /**
    * A wrong answer that follows Vietnamese word order gets a specific
@@ -150,15 +154,22 @@ export function TileBuilder({ sentence, promptLang = "en", onDone }: TileBuilder
                 : "bg-rose-950/60 text-rose-300"
             }`}
           >
-            {checked === "correct" ? (
-              <p>correct</p>
-            ) : (
-              <>
-                <p className="font-medium">{target}</p>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-medium">{sentence.hanzi}</p>
                 <p className="mt-1 text-neutral-400">{sentence.pinyin}</p>
-                {viHint && <p className="mt-2 text-rose-200">{viHint}</p>}
-              </>
-            )}
+                <p className="mt-1 text-neutral-500">{sentence.viGloss}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void speak(sentence.hanzi)}
+                aria-label="Replay audio"
+                className="shrink-0 rounded-full bg-neutral-800 px-3 py-1 text-xs text-neutral-200 active:bg-neutral-700"
+              >
+                ▶ audio
+              </button>
+            </div>
+            {viHint && <p className="mt-2 text-rose-200">{viHint}</p>}
           </div>
           <button
             type="button"
