@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { GapFillCard } from "@/components/GapFillCard";
 import { TileBuilder, type TileResult } from "@/components/TileBuilder";
 import { db, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId } from "@/lib/device";
-import type { Sentence } from "@/lib/sentences";
+import { buildGapFill, type GapFill, type Sentence } from "@/lib/sentences";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
 import { buildQueue, cardId, grade, newCard, Rating } from "@/lib/srs";
 
@@ -87,6 +88,17 @@ export function BuildSession() {
   const current = queue[0];
   const sentence = current && byId ? byId.get(current.wordId) : undefined;
 
+  // Alternate the two exercise types over a card's life: a sentence you have
+  // only ever reassembled from tiles is not the same as one where you chose
+  // the right measure word. Reps is stable across a reload, so the exercise
+  // does not flip under the learner mid-card.
+  // Memoised: buildGapFill shuffles, so calling it bare in render would pick a
+  // different gap and reorder the options on every keystroke-driven re-render.
+  const gap: GapFill | null = useMemo(
+    () => (sentence && current && current.reps % 2 === 1 ? buildGapFill(sentence) : null),
+    [sentence, current],
+  );
+
   const onDone = useCallback(
     async (result: TileResult) => {
       if (!current) return;
@@ -153,7 +165,16 @@ export function BuildSession() {
       <p className="text-xs text-neutral-500">
         {queue.length} left · {done} done
       </p>
-      <TileBuilder key={`${current.id}:${done}`} sentence={sentence} onDone={onDone} />
+      {gap ? (
+        <GapFillCard
+          key={`${current.id}:${done}:gap`}
+          sentence={sentence}
+          gap={gap}
+          onDone={(ok) => onDone(ok ? "correct" : "wrong")}
+        />
+      ) : (
+        <TileBuilder key={`${current.id}:${done}`} sentence={sentence} onDone={onDone} />
+      )}
     </div>
   );
 }

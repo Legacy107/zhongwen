@@ -96,3 +96,73 @@ export function stripPunctuation(s: string): string {
   for (const ch of s) if (!SENTENCE_PUNCTUATION.includes(ch)) out += ch;
   return out;
 }
+
+/**
+ * Particles and measure words worth gap-filling.
+ *
+ * These are exactly what isolated vocabulary cannot teach: 了 and 的 are
+ * meaningless in a flashcard and decisive in a sentence, and Vietnamese
+ * classifiers do not map onto Chinese ones (cái/con/quyển vs 个/本/条).
+ */
+export const GAP_PARTICLES = ['了', '的', '吗', '呢', '吧', '着', '过', '地', '得'] as const;
+export const GAP_MEASURE_WORDS = [
+  '个', '本', '杯', '件', '张', '只', '条', '块', '位', '双', '把', '家', '口', '岁', '点', '些',
+] as const;
+
+const GAP_TARGETS = new Set<string>([...GAP_PARTICLES, ...GAP_MEASURE_WORDS]);
+
+export interface GapFill {
+  sentenceId: string;
+  /** Tile index that has been blanked. */
+  gapIndex: number;
+  /** The tile text that belongs in the gap. */
+  answer: string;
+  /** Answer plus plausible wrong choices, already shuffled. */
+  options: string[];
+  /** True when the gap is a measure word rather than a particle. */
+  isMeasureWord: boolean;
+}
+
+/**
+ * Derives a gap-fill from a sentence, or null when it has no suitable gap.
+ *
+ * Distractors are drawn from the same category — a measure-word gap offers
+ * only measure words — because offering 了 against 本 tests nothing.
+ */
+export function buildGapFill(
+  sentence: Sentence,
+  random: () => number = Math.random,
+): GapFill | null {
+  const candidates = sentence.tiles
+    .map((t, i) => ({ t, i }))
+    .filter(({ t }) => GAP_TARGETS.has(t.text));
+  if (candidates.length === 0) return null;
+
+  const chosen = candidates[Math.floor(random() * candidates.length)];
+  const answer = chosen.t.text;
+  const measure = (GAP_MEASURE_WORDS as readonly string[]).includes(answer);
+  const pool = (measure ? GAP_MEASURE_WORDS : GAP_PARTICLES).filter((c) => c !== answer);
+
+  const distractors: string[] = [];
+  const taken = new Set<string>();
+  while (distractors.length < 3 && taken.size < pool.length) {
+    const pick = pool[Math.floor(random() * pool.length)];
+    if (taken.has(pick)) continue;
+    taken.add(pick);
+    distractors.push(pick);
+  }
+
+  const options = [answer, ...distractors];
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+
+  return {
+    sentenceId: sentence.id,
+    gapIndex: chosen.i,
+    answer,
+    options,
+    isMeasureWord: measure,
+  };
+}
