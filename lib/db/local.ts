@@ -1,6 +1,8 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { z } from 'zod';
 
+import { State } from '@/lib/srs';
+
 import {
   cardPayloadSchema,
   fromStoredCard,
@@ -230,12 +232,21 @@ interface BackupFile {
  * Insurance against IndexedDB eviction, which on iOS can happen without
  * warning and is not recoverable from the server if a push never landed.
  */
+/**
+ * Serialises review history to JSON.
+ *
+ * Untouched New cards are deliberately excluded: they hold no information that
+ * `ensureCards()` cannot rebuild from the deck, and including all of them made a
+ * fresh export 5.5 MB for 14 real reviews. Suspended cards are kept even when
+ * New, because suspension is a user decision that cannot be reconstructed.
+ */
 export async function exportBackup(): Promise<Blob> {
-  const [cards, reviews, settings] = await Promise.all([
+  const [allCards, reviews, settings] = await Promise.all([
     db.cards.toArray(),
     db.reviews.toArray(),
     db.settings.toArray(),
   ]);
+  const cards = allCards.filter((c) => c.state !== State.New || c.suspended || c.reps > 0);
 
   const backup: BackupFile = {
     version: 1,
