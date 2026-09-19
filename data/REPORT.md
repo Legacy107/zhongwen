@@ -1,6 +1,6 @@
 # Data pipeline report
 
-Generated 2026-09-19T08:03:42.957Z by `yarn build:data`.
+Generated 2026-09-19T08:04:32.874Z by `yarn build:data`.
 
 All numbers below are computed from the emitted dataset, not estimated.
 

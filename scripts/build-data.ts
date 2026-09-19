@@ -13,7 +13,7 @@
  *   - Unihan (Unicode, for kVietnamese / kMandarin / stroke counts)
  */
 import { createWriteStream } from "node:fs";
-import { mkdir, readFile, writeFile, access, rm } from "node:fs/promises";
+import { mkdir, readFile, writeFile, access, rm, rename } from "node:fs/promises";
 import { pipeline } from "node:stream/promises";
 import { Readable } from "node:stream";
 import { createGunzip } from "node:zlib";
@@ -653,10 +653,21 @@ async function main() {
     stats,
   };
 
+  /**
+   * Write a data file atomically.
+   *
+   * Writes to a temporary file and renames into place, so an interrupted build
+   * (a SIGPIPE from a truncated pipe, a Ctrl-C) cannot leave a half-written or
+   * zero-byte JSON file behind for the app to load. rename(2) is atomic within
+   * a filesystem.
+   */
   const write = async (name: string, value: unknown) => {
     const file = path.join(DATA, name);
-    await writeFile(file, JSON.stringify(value));
-    const size = (await readFile(file)).byteLength;
+    const tmp = `${file}.partial`;
+    const json = JSON.stringify(value);
+    await writeFile(tmp, json);
+    await rename(tmp, file);
+    const size = Buffer.byteLength(json);
     console.log(`  ${name.padEnd(22)} ${(size / 1024).toFixed(0)} KB`);
     return size;
   };
