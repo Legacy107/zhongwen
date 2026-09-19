@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReviewCard } from "@/components/ReviewCard";
 import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
-import { fromStoredCard, type StoredCard } from "@/lib/db/wire";
+import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId } from "@/lib/device";
 import type { FalseFriend, Word } from "@/lib/hanviet";
-import { CARD_TYPES, cardId, grade, newCard, sortForReview, type CardType, type Rating } from "@/lib/srs";
+import { CARD_TYPES, cardId, grade, newCard, sortForReview, type CardType } from "@/lib/srs";
 import { speak } from "@/lib/speak";
 
 type Grade = Parameters<typeof grade>[1];
@@ -123,7 +123,7 @@ export function ReviewSession() {
         {queue.length} left · {done} done
       </p>
       <ReviewCard
-        key={`${current.id}`}
+        key={`${current.id}:${done}`}
         word={word}
         cardType={current.cardType as CardType}
         falseFriend={deck.falseFriends.get(word.simplified)}

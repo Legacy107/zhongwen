@@ -31,15 +31,11 @@ export function ReviewCard({ word, cardType, falseFriend, onGrade, onPlayAudio }
   const [answer, setAnswer] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Reset when the card changes, otherwise the previous answer bleeds through.
-  useEffect(() => {
-    setRevealed(false);
-    setAnswer("");
-  }, [word.id, cardType]);
-
+  // No reset effect here: ReviewSession remounts this component via a key per
+  // card, so useState already starts fresh for each one.
   useEffect(() => {
     if (!revealed && cardType !== "recognition") inputRef.current?.focus();
-  }, [revealed, cardType, word.id]);
+  }, [revealed, cardType]);
 
   const correct = normalisePinyin(answer) === normalisePinyin(word.pinyin);
 
