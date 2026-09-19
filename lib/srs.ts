@@ -9,10 +9,20 @@ import {
   type RecordLogItem,
 } from 'ts-fsrs';
 
-/** The three ways a word is drilled. Each gets its own independent schedule. */
-export type CardType = 'recognition' | 'typing' | 'hanviet';
+/**
+ * The ways an item is drilled. Each gets its own independent schedule.
+ *
+ * The first three drill a word. `sentence` drills a whole sentence through the
+ * tile-ordering exercise, and its `wordId` holds a sentence id instead — the
+ * column is plain text with no foreign key, so the two coexist without a
+ * schema change. WORD_CARD_TYPES is what the vocabulary review queue uses.
+ */
+export type CardType = 'recognition' | 'typing' | 'hanviet' | 'sentence';
 
-export const CARD_TYPES: readonly CardType[] = ['recognition', 'typing', 'hanviet'];
+export const CARD_TYPES: readonly CardType[] = ['recognition', 'typing', 'hanviet', 'sentence'];
+
+/** Card types that drill a single word; excludes `sentence`. */
+export const WORD_CARD_TYPES: readonly CardType[] = ['recognition', 'typing', 'hanviet'];
 
 /** Serialisable SRS state. Dates are Date objects in memory, ISO strings on the wire. */
 export interface SrsState {

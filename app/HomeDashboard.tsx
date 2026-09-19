@@ -11,6 +11,8 @@ import { computeStreak, type StreakInfo } from "@/lib/streak";
 interface Stats {
   /** Cards this session will actually contain, not every unstarted card. */
   session: number;
+  /** Sentence cards ready in a build session. */
+  sentenceSession: number;
   /** Cards never reviewed — the supply of genuinely new material. */
   fresh: number;
   learning: number;
@@ -27,10 +29,13 @@ async function readStats(): Promise<Stats> {
   midnight.setHours(0, 0, 0, 0);
 
   // Streaks need the full review history, not just today's slice.
-  const [cards, reviewTimes] = await Promise.all([
+  const [allCards, reviewTimes] = await Promise.all([
     db.cards.toArray(),
     db.reviews.orderBy("reviewedAt").keys() as Promise<unknown[]>,
   ]);
+  // Vocabulary counts exclude sentence cards; those get their own tile.
+  const cards = allCards.filter((c) => c.cardType !== "sentence");
+  const sentenceCards = allCards.filter((c) => c.cardType === "sentence");
   const timestamps = reviewTimes.map((k) => new Date(k as string | number | Date));
   const reviewedToday = timestamps.filter((t) => t >= midnight).length;
   const streak = computeStreak(timestamps, DAILY_GOAL, now);
@@ -45,7 +50,15 @@ async function readStats(): Promise<Stats> {
     else if (c.state === State.Review) known++;
     else learning++;
   }
-  return { session: buildQueue(cards).length, fresh, learning, known, reviewedToday, streak };
+  return {
+    session: buildQueue(cards).length,
+    sentenceSession: buildQueue(sentenceCards, now, { sessionSize: 12, newPerSession: 6 }).length,
+    fresh,
+    learning,
+    known,
+    reviewedToday,
+    streak,
+  };
 }
 
 function Stat({ value, label }: { value: number | undefined; label: string }) {
@@ -199,7 +212,9 @@ export function HomeDashboard() {
         className="flex items-center justify-between rounded-2xl border border-neutral-800 bg-neutral-900/60 px-5 py-4 active:bg-neutral-800"
       >
         <span className="font-medium">Build sentences</span>
-        <span className="text-xs text-neutral-500">word order</span>
+        <span className="text-xs tabular-nums text-neutral-500">
+          {stats ? `${stats.sentenceSession} ready` : "word order"}
+        </span>
       </Link>
 
       <section className="grid grid-cols-3 gap-2">

@@ -6,7 +6,15 @@ import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId } from "@/lib/device";
 import type { FalseFriend, Word } from "@/lib/hanviet";
-import { buildQueue, CARD_TYPES, cardId, grade, newCard, Rating, type CardType } from "@/lib/srs";
+import {
+  buildQueue,
+  cardId,
+  grade,
+  newCard,
+  Rating,
+  WORD_CARD_TYPES,
+  type CardType,
+} from "@/lib/srs";
 import { playCorrect, playFanfare, playWrong, unlockAudio } from "@/lib/sfx";
 import { speak } from "@/lib/speak";
 
@@ -36,7 +44,7 @@ async function ensureCards(words: Word[], deviceId: string): Promise<void> {
   const missing: StoredCard[] = [];
   const now = new Date();
   for (const w of words) {
-    for (const t of CARD_TYPES) {
+    for (const t of WORD_CARD_TYPES) {
       if (existing.has(cardId(w.id, t))) continue;
       const c = newCard(w.id, t as CardType, now);
       missing.push({ ...c, updatedAt: now, deviceId });
@@ -60,7 +68,9 @@ export function ReviewSession() {
         if (cancelled) return;
         const deviceId = getDeviceId();
         await ensureCards([...d.words.values()], deviceId);
-        const all = await db.cards.toArray();
+        // Sentence cards live in the same table but are drilled on /build,
+        // and ReviewCard cannot render one.
+        const all = (await db.cards.toArray()).filter((c) => c.cardType !== "sentence");
         if (cancelled) return;
         setDeck(d);
         setQueue(buildQueue(all) as StoredCard[]);
