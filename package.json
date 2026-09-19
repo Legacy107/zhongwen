@@ -6,6 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "build:data": "tsx scripts/build-data.ts",
+    "sentences:generate": "tsx scripts/generate-sentences.ts",
+    "sentences:validate": "tsx scripts/sentences-validate.ts",
+    "sentences:test": "tsx --test scripts/validate-sentences.test.ts",
     "start": "next start",
     "lint": "eslint",
     "db:up": "docker compose up -d",
@@ -32,6 +35,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
     "@serwist/turbopack": "^9.5.12",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
