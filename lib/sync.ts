@@ -71,8 +71,6 @@ async function request(input: string, init?: RequestInit): Promise<Response> {
   return response;
 }
 
-/* ------------------------------------------------------------------- push */
-
 interface GroupedOutbox {
   cards: CardPayload[];
   reviews: ReviewPayload[];
@@ -161,8 +159,6 @@ export async function pushOutbox(): Promise<number> {
   return pushed;
 }
 
-/* ------------------------------------------------------------------- pull */
-
 /**
  * Fetches rows changed since the watermark and merges them into Dexie.
  *
@@ -186,13 +182,12 @@ export async function pull(since?: Date | null): Promise<SyncResult['pulled']> {
       const parsed = cardPayloadSchema.safeParse(payload);
       if (!parsed.success) continue;
 
-      const incoming = toStoredCard(parsed.data);
-      const existing = await db.cards.get(incoming.id);
-
       // A card still queued locally has unsynced state; leave it alone so the
       // next push can resolve it server-side rather than dropping the grade.
-      const queued = await db.outbox.get(`card:${incoming.id}`);
-      if (queued) continue;
+      if (await db.outbox.get(`card:${parsed.data.id}`)) continue;
+
+      const incoming = toStoredCard(parsed.data);
+      const existing = await db.cards.get(incoming.id);
 
       if (!existing || incoming.updatedAt > existing.updatedAt) {
         await db.cards.put(incoming);
@@ -237,8 +232,6 @@ export async function pull(since?: Date | null): Promise<SyncResult['pulled']> {
 
   return applied;
 }
-
-/* --------------------------------------------------------------- scheduling */
 
 let inFlight: Promise<SyncResult> | null = null;
 

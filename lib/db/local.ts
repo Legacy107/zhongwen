@@ -87,8 +87,6 @@ class ChineseDb extends Dexie {
 
 export const db = new ChineseDb();
 
-/* ---------------------------------------------------------------- metadata */
-
 const LAST_SYNCED_AT = 'lastSyncedAt';
 const PERSISTENCE_REQUESTED = 'persistenceRequested';
 const PERSISTENCE_GRANTED = 'persistenceGranted';
@@ -128,8 +126,6 @@ export async function requestPersistence(): Promise<boolean | null> {
   await setMeta(PERSISTENCE_GRANTED, granted);
   return granted;
 }
-
-/* ----------------------------------------------------------------- outbox */
 
 function outboxKey(kind: OutboxKind, entityId: string): string {
   return `${kind}:${entityId}`;
@@ -193,8 +189,6 @@ export async function enqueueSetting(setting: StoredSetting): Promise<void> {
   });
 }
 
-/* --------------------------------------------------------------- mutations */
-
 /**
  * Persists a graded card and its review log entry, and queues both, in one
  * transaction. If the tab dies mid-write the card and its outbox entry are
@@ -216,8 +210,6 @@ export async function putSetting(key: string, value: unknown): Promise<void> {
     await enqueueSetting(setting);
   });
 }
-
-/* ------------------------------------------------------------ backup / restore */
 
 const backupFileSchema = z.object({
   version: z.literal(1),

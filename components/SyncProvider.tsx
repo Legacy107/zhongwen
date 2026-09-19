@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-
-import { startSync } from '@/lib/sync';
+import { useEffect } from "react";
+import { startSync } from "@/lib/sync";
 
 /**
  * Owns the background sync lifecycle for the app.
