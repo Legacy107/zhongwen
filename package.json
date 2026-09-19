@@ -20,7 +20,8 @@
     "data:sync": "tsx scripts/sync-public-data.ts",
     "prebuild": "tsx scripts/sync-public-data.ts",
     "predev": "tsx scripts/sync-public-data.ts",
-    "test": "tsx --test lib/streak.test.ts scripts/validate-sentences.test.ts"
+    "test": "tsx --test lib/streak.test.ts scripts/validate-sentences.test.ts",
+    "sentences:merge": "tsx scripts/merge-raw-sentences.ts"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
