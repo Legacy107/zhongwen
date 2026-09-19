@@ -6,7 +6,7 @@ import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId } from "@/lib/device";
 import type { FalseFriend, Word } from "@/lib/hanviet";
-import { CARD_TYPES, cardId, grade, newCard, sortForReview, type CardType } from "@/lib/srs";
+import { buildQueue, CARD_TYPES, cardId, grade, newCard, type CardType } from "@/lib/srs";
 import { speak } from "@/lib/speak";
 
 type Grade = Parameters<typeof grade>[1];
@@ -62,7 +62,7 @@ export function ReviewSession() {
         const all = await db.cards.toArray();
         if (cancelled) return;
         setDeck(d);
-        setQueue(sortForReview(all).slice(0, 40) as StoredCard[]);
+        setQueue(buildQueue(all) as StoredCard[]);
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : "Failed to load deck");
       }

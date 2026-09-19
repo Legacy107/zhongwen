@@ -148,6 +148,14 @@ export function isDue(card: ReviewCard, now = new Date()): boolean {
   return !card.suspended && card.due.getTime() <= now.getTime();
 }
 
+/** Cards per session. Everything in the deck is technically "new", so without a
+ *  cap the queue would be 16k long and the daily count meaningless. */
+export const SESSION_SIZE = 40;
+
+/** New cards admitted per session, counted inside SESSION_SIZE. Keeping intake
+ *  bounded is what stops a big deck turning into an unclearable backlog. */
+export const NEW_PER_SESSION = 10;
+
 /** Due cards first (most overdue leads), then new cards. */
 export function sortForReview(cards: ReviewCard[], now = new Date()): ReviewCard[] {
   return cards
@@ -158,4 +166,22 @@ export function sortForReview(cards: ReviewCard[], now = new Date()): ReviewCard
       if (b.state === State.New && a.state !== State.New) return -1;
       return a.due.getTime() - b.due.getTime();
     });
+}
+
+/**
+ * The actual session queue: every due review, plus a bounded number of new cards.
+ *
+ * `sortForReview` alone admits the whole unstarted deck, which makes "due"
+ * counts read as tens of thousands. Callers should use this instead so the
+ * number on the home screen is the number of cards a session will contain.
+ */
+export function buildQueue<T extends ReviewCard>(
+  cards: T[],
+  now = new Date(),
+  { sessionSize = SESSION_SIZE, newPerSession = NEW_PER_SESSION } = {},
+): T[] {
+  const sorted = sortForReview(cards, now) as T[];
+  const due = sorted.filter((c) => c.state !== State.New);
+  const fresh = sorted.filter((c) => c.state === State.New);
+  return [...due, ...fresh.slice(0, newPerSession)].slice(0, sessionSize);
 }
