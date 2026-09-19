@@ -2,6 +2,30 @@ import type { FalseFriend, Word } from "@/lib/hanviet";
 import { ToneBadge } from "./ToneBadge";
 
 /**
+ * How strongly we can claim the Vietnamese word is "the same word".
+ *
+ * These tiers are not interchangeable. An exact match is a word the learner
+ * already knows; a tone variant differs by a diacritic, and Vietnamese tone is
+ * phonemic, so a few of those are genuinely different morphemes (字 tự vs từ).
+ * A contained match means the reading appears inside a longer Vietnamese
+ * phrase. Overclaiming here is the same failure mode as a false friend, so
+ * each tier gets its own wording.
+ */
+function claim(word: Word): { lead: string; tone: "strong" | "soft" } | null {
+  if (!word.viGloss) return null;
+  switch (word.cognateMatch) {
+    case "exact":
+      return { lead: "You already know this", tone: "strong" };
+    case "toneVariant":
+      return { lead: "Close to Vietnamese", tone: "soft" };
+    case "contained":
+      return { lead: "Related to Vietnamese", tone: "soft" };
+    default:
+      return null;
+  }
+}
+
+/**
  * The bridge: shows the Sino-Vietnamese reading so a Vietnamese speaker can
  * recognise vocabulary they already half-know. A false friend overrides the
  * cognate framing entirely — asserting a cognate that has drifted is worse
@@ -25,6 +49,8 @@ export function CognateHint({ word, falseFriend }: { word: Word; falseFriend?: F
 
   if (!word.hanviet) return null;
 
+  const c = claim(word);
+
   return (
     <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-3 text-sm">
       <div className="flex items-center justify-between gap-2">
@@ -32,9 +58,9 @@ export function CognateHint({ word, falseFriend }: { word: Word; falseFriend?: F
         <ToneBadge confidence={word.toneConfidence} />
       </div>
       <p className="mt-1 text-lg font-medium text-amber-300">{word.hanviet}</p>
-      {word.isCognate && word.viGloss ? (
-        <p className="mt-1 text-neutral-300">
-          You already know this: <span className="italic">{word.viGloss}</span>
+      {c ? (
+        <p className={`mt-1 ${c.tone === "strong" ? "text-neutral-300" : "text-neutral-400"}`}>
+          {c.lead}: <span className="italic">{word.viGloss}</span>
         </p>
       ) : word.viGloss ? (
         <p className="mt-1 text-neutral-400">{word.viGloss}</p>
