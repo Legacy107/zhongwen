@@ -1,0 +1,296 @@
+/**
+ * Sentence validator.
+ *
+ * Deliberately a standalone module with no side effects at import time, so it
+ * can be unit-tested and re-run over already-committed data independently of
+ * generation. `scripts/generate-sentences.ts` calls `validateSentences` before
+ * writing anything; `yarn sentences:validate` calls it over `data/sentences.json`.
+ *
+ * Every check reports rather than silently drops. A sentence that fails any
+ * check is rejected with the reason and the offending detail attached, so the
+ * report can quote real examples instead of a bare count.
+ */
+import type { FalseFriend, Word } from "../lib/hanviet";
+import { countHanzi, stripPunctuation, type Sentence } from "../lib/sentences";
+
+export type RejectionCode =
+  | "tiles-mismatch"
+  | "out-of-level"
+  | "pinyin-length"
+  | "duplicate"
+  | "length-bounds"
+  | "malformed";
+
+export interface Rejection {
+  code: RejectionCode;
+  sentence: Sentence;
+  /** Human-readable specifics — the out-of-level word, the two strings that differ. */
+  detail: string;
+}
+
+/**
+ * A sentence that passed every check but contains a false friend.
+ *
+ * Not a rejection: a false friend in a sentence is often exactly what we want
+ * to drill. It is surfaced so a human reviews those sentences first.
+ */
+export interface Flag {
+  sentence: Sentence;
+  falseFriends: string[];
+}
+
+export interface ValidationResult {
+  valid: Sentence[];
+  rejected: Rejection[];
+  flagged: Flag[];
+  /** Rejection counts by code, for the report summary. */
+  byCode: Record<RejectionCode, number>;
+}
+
+export interface ValidationOptions {
+  /** HSK level the sentences are constrained to, e.g. "1". */
+  level: string;
+  words: Word[];
+  falseFriends: FalseFriend[];
+  /**
+   * Content words lifted from the grammar points themselves.
+   *
+   * A grammar point's own content (方位名词: 上、下、里、外…) is by definition
+   * what the sentence must exercise, and some of those characters are not in
+   * the level's wordlist. Allowing them is the difference between a usable
+   * corpus and rejecting most of the grammar points outright.
+   */
+  grammarWords?: Set<string>;
+  /** Inclusive hanzi-count bounds. Defaults to the spec's 4–12. */
+  minChars?: number;
+  maxChars?: number;
+}
+
+/**
+ * HSK levels at or below `level`.
+ *
+ * "S" (supplementary) is intentionally *not* included: it holds proper nouns
+ * like 越南 that are not part of any graded level, and letting it in would
+ * quietly defeat the level cap.
+ */
+export function levelsUpTo(level: string): string[] {
+  const order = ["1", "2", "3", "4", "5", "6"];
+  const idx = order.indexOf(level);
+  if (idx === -1) return order;
+  return order.slice(0, idx + 1);
+}
+
+/**
+ * Every character that may appear in a sentence at this level.
+ *
+ * Character-level rather than word-level, because the word-level check is done
+ * separately against the tiles. A sentence can only use characters that occur
+ * in an allowed word — this catches a hallucinated character that happens to
+ * segment into no known word at all.
+ */
+export function buildAllowedChars(
+  words: Word[],
+  level: string,
+  grammarWords?: Set<string>,
+): Set<string> {
+  const levels = new Set(levelsUpTo(level));
+  const chars = new Set<string>();
+  for (const w of words) {
+    if (!levels.has(w.level)) continue;
+    for (const ch of w.simplified) chars.add(ch);
+  }
+  for (const gw of grammarWords ?? []) {
+    for (const ch of gw) chars.add(ch);
+  }
+  return chars;
+}
+
+/** Words at or below `level`, keyed by surface form. */
+export function buildAllowedWords(words: Word[], level: string): Map<string, Word> {
+  const levels = new Set(levelsUpTo(level));
+  const map = new Map<string, Word>();
+  for (const w of words) {
+    if (!levels.has(w.level)) continue;
+    if (!map.has(w.simplified)) map.set(w.simplified, w);
+  }
+  return map;
+}
+
+/** Count pinyin syllables in a space-separated diacritic pinyin string. */
+export function countSyllables(p: string): number {
+  return p.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function validateSentence(
+  s: Sentence,
+  opts: ValidationOptions,
+  allowedChars: Set<string>,
+  allowedWords: Map<string, Word>,
+  seen: Map<string, Sentence>,
+): Rejection | null {
+  const min = opts.minChars ?? 4;
+  const max = opts.maxChars ?? 12;
+
+  // 0. Structural sanity. A malformed record is a generation bug, not a
+  //    linguistic one, and reporting it separately keeps the two apart.
+  if (
+    typeof s.hanzi !== "string" ||
+    s.hanzi.length === 0 ||
+    typeof s.pinyin !== "string" ||
+    typeof s.modelPinyin !== "string" ||
+    !Array.isArray(s.tiles) ||
+    s.tiles.length === 0
+  ) {
+    return { code: "malformed", sentence: s, detail: "missing hanzi, pinyin or tiles" };
+  }
+
+  const bare = stripPunctuation(s.hanzi);
+
+  // 1. Tiles must rejoin to exactly the original hanzi.
+  const rejoined = s.tiles.map((t) => t.text).join("");
+  if (rejoined !== bare) {
+    return {
+      code: "tiles-mismatch",
+      sentence: s,
+      detail: `tiles rejoin to "${rejoined}" but sentence is "${bare}"`,
+    };
+  }
+
+  // 2. Length bounds. Outside 4–12 the exercise stops being a tile puzzle:
+  //    three tiles is trivial, fifteen does not fit a phone screen.
+  const nChars = countHanzi(bare);
+  if (nChars < min || nChars > max) {
+    return {
+      code: "length-bounds",
+      sentence: s,
+      detail: `${nChars} characters, outside ${min}–${max}`,
+    };
+  }
+
+  // 3. No word above the target level. Checked two ways: every tile that looks
+  //    like a word must be an allowed word (or a grammar-point content word),
+  //    and every character must come from some allowed word.
+  for (const ch of bare) {
+    if (!allowedChars.has(ch)) {
+      return {
+        code: "out-of-level",
+        sentence: s,
+        detail: `character "${ch}" is not in any HSK ${opts.level} word`,
+      };
+    }
+  }
+  for (const tile of s.tiles) {
+    if (tile.text.length === 1) continue; // single chars are covered by the char check
+    if (allowedWords.has(tile.text)) continue;
+    if (opts.grammarWords?.has(tile.text)) continue;
+    return {
+      code: "out-of-level",
+      sentence: s,
+      detail: `word "${tile.text}" is not an HSK ${opts.level} word`,
+    };
+  }
+
+  // 4. Pinyin syllable count must match the hanzi character count. Checked
+  //    against `modelPinyin` — the model's own attempt — not the `pinyin`
+  //    field, which is re-derived from these same characters and so matches by
+  //    construction. Only the independent attempt can reveal that the model
+  //    truncated or hallucinated one of the two fields.
+  const got = countSyllables(s.modelPinyin);
+  if (got !== nChars) {
+    return {
+      code: "pinyin-length",
+      sentence: s,
+      detail: `model pinyin "${s.modelPinyin}" has ${got} syllables, hanzi has ${nChars} characters`,
+    };
+  }
+
+  // 5. No duplicates, compared on hanzi alone — two sentences with the same
+  //    characters teach the same thing however differently they are glossed.
+  const prior = seen.get(bare);
+  if (prior) {
+    return {
+      code: "duplicate",
+      sentence: s,
+      detail: `duplicate of ${prior.id} (grammar point ${prior.grammarPointNo})`,
+    };
+  }
+
+  return null;
+}
+
+export function validateSentences(
+  sentences: Sentence[],
+  opts: ValidationOptions,
+): ValidationResult {
+  const allowedChars = buildAllowedChars(opts.words, opts.level, opts.grammarWords);
+  const allowedWords = buildAllowedWords(opts.words, opts.level);
+  const ffBySurface = new Map(opts.falseFriends.map((f) => [f.simplified, f]));
+
+  const valid: Sentence[] = [];
+  const rejected: Rejection[] = [];
+  const flagged: Flag[] = [];
+  const seen = new Map<string, Sentence>();
+
+  for (const s of sentences) {
+    const rejection = validateSentence(s, opts, allowedChars, allowedWords, seen);
+    if (rejection) {
+      rejected.push(rejection);
+      continue;
+    }
+    const bare = stripPunctuation(s.hanzi);
+    seen.set(bare, s);
+
+    // 6. Flag false friends. These pass validation — a false friend in a
+    //    sentence is usually a teaching opportunity — but they are the
+    //    sentences most likely to mislead a Vietnamese reader, so they are
+    //    listed for human review rather than trusted.
+    const hits: string[] = [];
+    for (const tile of s.tiles) {
+      if (ffBySurface.has(tile.text)) hits.push(tile.text);
+    }
+    for (const ff of opts.falseFriends) {
+      if (!hits.includes(ff.simplified) && bare.includes(ff.simplified)) {
+        hits.push(ff.simplified);
+      }
+    }
+    if (hits.length > 0) {
+      s.falseFriends = hits;
+      flagged.push({ sentence: s, falseFriends: hits });
+    } else {
+      delete s.falseFriends;
+    }
+    valid.push(s);
+  }
+
+  const byCode: Record<RejectionCode, number> = {
+    "tiles-mismatch": 0,
+    "out-of-level": 0,
+    "pinyin-length": 0,
+    duplicate: 0,
+    "length-bounds": 0,
+    malformed: 0,
+  };
+  for (const r of rejected) byCode[r.code]++;
+
+  return { valid, rejected, flagged, byCode };
+}
+
+/** Per-grammar-point counts, for the coverage table in the report. */
+export function coverageByGrammarPoint(
+  valid: Sentence[],
+  rejected: Rejection[],
+  pointNos: number[],
+): Map<number, { valid: number; rejected: number }> {
+  const cov = new Map<number, { valid: number; rejected: number }>();
+  for (const no of pointNos) cov.set(no, { valid: 0, rejected: 0 });
+  for (const s of valid) {
+    const e = cov.get(s.grammarPointNo);
+    if (e) e.valid++;
+  }
+  for (const r of rejected) {
+    const e = cov.get(r.sentence.grammarPointNo);
+    if (e) e.rejected++;
+  }
+  return cov;
+}
+
