@@ -1,6 +1,6 @@
 # Data pipeline report
 
-Generated 2026-09-19T08:25:33.279Z by `yarn build:data`.
+Generated 2026-09-19T13:52:44.360Z by `yarn build:data`.
 
 All numbers below are computed from the emitted dataset, not estimated.
 
@@ -77,17 +77,17 @@ Mandarin neutral-tone syllables (which no Hán-Việt reading could predict).
 
 | Cohort | Syllables | Correct | Accuracy |
 | --- | --- | --- | --- |
-| Non-entering tone | 8284 | 6680 | **80.6%** |
+| Non-entering tone | 8271 | 6672 | **80.7%** |
 | Entering tone (-p -t -c -ch) | 1548 | 632 | **40.8%** |
 
 Breakdown of the non-entering cohort by Vietnamese tone:
 
 | Vietnamese tone | Syllables | Correct | Accuracy |
 | --- | --- | --- | --- |
-| sắc/nặng | 3007 | 2653 | **88.2%** |
-| ngang | 2592 | 1714 | **66.1%** |
-| hỏi/ngã | 1620 | 1417 | **87.5%** |
-| huyền | 1065 | 896 | **84.1%** |
+| sắc/nặng | 3003 | 2650 | **88.2%** |
+| ngang | 2589 | 1713 | **66.2%** |
+| hỏi/ngã | 1619 | 1416 | **87.5%** |
+| huyền | 1060 | 893 | **84.2%** |
 
 ### What this means for the confidence badges
 
@@ -121,14 +121,14 @@ so a word can currently be marked `"high"` on the strength of a prediction
 that is right only about two-thirds of the time. That is the single weakest
 point in the confidence badges and the one most likely to erode trust.
 
-Confidence distribution across the corpus: high 2777, medium 1246, low 1474.
+Confidence distribution across the corpus: high 2778, medium 1246, low 1473.
 
 ## Coverage gaps
 
 | Metric | Count | Share |
 | --- | --- | --- |
-| Words missing `viGloss` | 50 | 0.9% |
-| Words missing `enGloss` | 50 | 0.9% |
+| Words missing `viGloss` | 41 | 0.7% |
+| Words missing `enGloss` | 41 | 0.7% |
 | Words missing `hanviet` | 11 | 0.2% |
 | Characters missing `hanviet` | 3 | 0.2% |
 
@@ -136,7 +136,7 @@ Missing Hán-Việt by level: L1 0, L2 0, L3 0, L4 0, L5 0, L6 0, LS 11.
 
 Unresolved characters: `韩` (3), `澳` (2), `兰` (1)
 
-Hán-Việt coverage is complete. The 50 words missing glosses
+Hán-Việt coverage is complete. The 41 words missing glosses
 are not lookup failures but **HSK notation artifacts**: the wordlist encodes
 reduplication and disambiguation inline, so the headword is not a dictionary
 form. They fall into four shapes:
@@ -179,7 +179,7 @@ any of the four sources. They are supplied by a hand-written table in
 purely derivable from public data. A curated component is load-bearing, and it
 will need extending if the wordlist grows beyond HSK 6.
 
-Reading provenance across all word-character lookups: supplement 1272, unihan 6386, unihan-trad 2573, unihan-ambiguous 0.
+Reading provenance across all word-character lookups: supplement 1270, unihan 6380, unihan-trad 2569, unihan-ambiguous 0.
 
 ### 3. `kVietnamese` mixes Hán-Việt with Nôm readings, unordered
 

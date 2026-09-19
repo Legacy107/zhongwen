@@ -41,6 +41,13 @@ export interface Word {
   /** Actual Mandarin tone, per syllable. */
   actualTone: number[];
   chars: string[];
+  /**
+   * Accepted short forms, e.g. 爸 for 爸爸.
+   *
+   * HSK lists these in the same cell as the headword. They are worth showing
+   * but not worth drilling as separate cards.
+   */
+  variants?: string[];
 }
 
 export interface FalseFriend {

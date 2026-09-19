@@ -294,6 +294,20 @@ function splitSyllables(diacritic: string): string {
     .trim();
 }
 
+/**
+ * Splits an HSK variant field on "|".
+ *
+ * HSK writes a full form and its accepted short form in one cell, and does the
+ * same in the pinyin column: "爸爸|爸" / "bàba|bà". Only the first is the
+ * headword; the rest are alternates worth keeping but not worth drilling.
+ */
+function splitVariants(raw: string | undefined): string[] {
+  return (raw ?? "")
+    .split("|")
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
 function pickEntry(
   entries: DictEntry[] | undefined,
   wantTones: number[],
@@ -545,9 +559,14 @@ async function main() {
     const level = row.Level?.trim();
     if (!LEVELS.includes(level as (typeof LEVELS)[number])) continue;
 
-    const simplified = row.Simplified?.trim();
+    // HSK writes a full form and its short form as "爸爸|爸", and the pinyin
+    // column matches ("bàba|bà"). Taking the raw string as one word produced a
+    // three-character 爸爸|爸 with han-viet "ba ba ba" and no gloss, because no
+    // dictionary has an entry for it. Split on the bar: the first form is the
+    // headword, the rest are recorded as variants.
+    const [simplified, ...variants] = splitVariants(row.Simplified);
     if (!simplified) continue;
-    const traditional = row.Traditional?.trim() || simplified;
+    const traditional = splitVariants(row.Traditional)[0] || simplified;
     const chars = [...simplified].filter(isHanzi);
     chars.forEach((c) => charSet.add(c));
 
@@ -563,7 +582,7 @@ async function main() {
     // hái and once as huán. pinyin-pro sees the character in isolation and
     // returns its default reading for both, so relying on it here collapses
     // the two rows onto one dictionary entry and both inherit a single gloss.
-    const rowReading = row.Pinyin?.trim() || "";
+    const rowReading = splitVariants(row.Pinyin)[0] || "";
     const provisionalTones = toneNumbersFromNumericPinyin(provisional.join(" "));
 
     const ce = pickEntry(cedict.get(simplified), provisionalTones, rowReading);
@@ -575,7 +594,7 @@ async function main() {
     const toneNumbers = toneNumbersFromNumericPinyin(pinyinNumeric);
 
     const pinyinDiacritic =
-      row.Pinyin?.trim() ||
+      splitVariants(row.Pinyin)[0] ||
       pinyin(simplified, { toneType: "symbol", type: "string", nonZh: "removed" });
 
     // Hán-Việt: compose per character, unless a word-level override applies.
@@ -636,6 +655,7 @@ async function main() {
         predictedTone.length === actualTone.length ? predictedTone : [],
       actualTone,
       chars,
+      ...(variants.length > 0 ? { variants } : {}),
     });
   }
 
