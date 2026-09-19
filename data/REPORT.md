@@ -1,6 +1,6 @@
 # Data pipeline report
 
-Generated 2026-09-19T08:19:39.579Z by `yarn build:data`.
+Generated 2026-09-19T08:25:33.279Z by `yarn build:data`.
 
 All numbers below are computed from the emitted dataset, not estimated.
 
@@ -8,12 +8,12 @@ All numbers below are computed from the emitted dataset, not estimated.
 
 | File | Contents |
 | --- | --- |
-| `words.json` | 5456 HSK 3.0 words, levels 1-6 |
-| `chars.json` | 1800 unique characters |
+| `words.json` | 5497 HSK 3.0 words, levels 1-6 |
+| `chars.json` | 1805 unique characters |
 | `false-friends.json` | 73 curated false friends |
 | `grammar.json` | 573 HSK grammar points |
 
-Words per level: L1 500, L2 772, L3 973, L4 1000, L5 1071, L6 1140.
+Words per level: L1 500, L2 772, L3 973, L4 1000, L5 1071, L6 1140, LS 41.
 
 ## Cognate rate by HSK level
 
@@ -24,10 +24,10 @@ are applied, strongest first, and the rule that fired is recorded per word in
 
 | `cognateMatch` | Meaning | Count |
 | --- | --- | --- |
-| `exact` | The reading **is** a gloss. Safe to claim identity. | 748 |
+| `exact` | The reading **is** a gloss. Safe to claim identity. | 751 |
 | `toneVariant` | Same letters, different tone marks (tri/trí, trường/trưởng). | 63 |
-| `contained` | The reading is a whole word inside a longer gloss (bắc ⊂ phía bắc). | 382 |
-| `none` | Vietnamese uses an unrelated native word. | 4263 |
+| `contained` | The reading is a whole word inside a longer gloss (bắc ⊂ phía bắc). | 386 |
+| `none` | Vietnamese uses an unrelated native word. | 4297 |
 
 | Level | Words | Exact | All cognates | Rate |
 | --- | --- | --- | --- | --- |
@@ -37,7 +37,8 @@ are applied, strongest first, and the rule that fired is recorded per word in
 | HSK 4 | 1000 | 138 (13.8%) | 213 | **21.3%** |
 | HSK 5 | 1071 | 134 (12.5%) | 212 | **19.8%** |
 | HSK 6 | 1140 | 118 (10.4%) | 192 | **16.8%** |
-| **All** | **5456** | **748** | **1193** | **21.9%** |
+| HSK S | 41 | 3 (7.3%) | 7 | **17.1%** |
+| **All** | **5497** | **751** | **1200** | **21.8%** |
 
 ### On the ~45% figure
 
@@ -76,17 +77,17 @@ Mandarin neutral-tone syllables (which no Hán-Việt reading could predict).
 
 | Cohort | Syllables | Correct | Accuracy |
 | --- | --- | --- | --- |
-| Non-entering tone | 8241 | 6651 | **80.7%** |
-| Entering tone (-p -t -c -ch) | 1523 | 625 | **41%** |
+| Non-entering tone | 8284 | 6680 | **80.6%** |
+| Entering tone (-p -t -c -ch) | 1548 | 632 | **40.8%** |
 
 Breakdown of the non-entering cohort by Vietnamese tone:
 
 | Vietnamese tone | Syllables | Correct | Accuracy |
 | --- | --- | --- | --- |
-| sắc/nặng | 3001 | 2647 | **88.2%** |
-| ngang | 2569 | 1705 | **66.4%** |
-| hỏi/ngã | 1608 | 1405 | **87.4%** |
-| huyền | 1063 | 894 | **84.1%** |
+| sắc/nặng | 3007 | 2653 | **88.2%** |
+| ngang | 2592 | 1714 | **66.1%** |
+| hỏi/ngã | 1620 | 1417 | **87.5%** |
+| huyền | 1065 | 896 | **84.1%** |
 
 ### What this means for the confidence badges
 
@@ -120,7 +121,7 @@ so a word can currently be marked `"high"` on the strength of a prediction
 that is right only about two-thirds of the time. That is the single weakest
 point in the confidence badges and the one most likely to erode trust.
 
-Confidence distribution across the corpus: high 2771, medium 1243, low 1442.
+Confidence distribution across the corpus: high 2777, medium 1246, low 1474.
 
 ## Coverage gaps
 
@@ -128,12 +129,12 @@ Confidence distribution across the corpus: high 2771, medium 1243, low 1442.
 | --- | --- | --- |
 | Words missing `viGloss` | 50 | 0.9% |
 | Words missing `enGloss` | 50 | 0.9% |
-| Words missing `hanviet` | 0 | 0.0% |
-| Characters missing `hanviet` | 0 | 0.0% |
+| Words missing `hanviet` | 11 | 0.2% |
+| Characters missing `hanviet` | 3 | 0.2% |
 
-Missing Hán-Việt by level: L1 0, L2 0, L3 0, L4 0, L5 0, L6 0.
+Missing Hán-Việt by level: L1 0, L2 0, L3 0, L4 0, L5 0, L6 0, LS 11.
 
-Unresolved characters: _None — every character in HSK 1-6 resolved to a Hán-Việt reading._
+Unresolved characters: `韩` (3), `澳` (2), `兰` (1)
 
 Hán-Việt coverage is complete. The 50 words missing glosses
 are not lookup failures but **HSK notation artifacts**: the wordlist encodes
@@ -178,7 +179,7 @@ any of the four sources. They are supplied by a hand-written table in
 purely derivable from public data. A curated component is load-bearing, and it
 will need extending if the wordlist grows beyond HSK 6.
 
-Reading provenance across all word-character lookups: supplement 1265, unihan 6316, unihan-trad 2551, unihan-ambiguous 0.
+Reading provenance across all word-character lookups: supplement 1272, unihan 6386, unihan-trad 2573, unihan-ambiguous 0.
 
 ### 3. `kVietnamese` mixes Hán-Việt with Nôm readings, unordered
 

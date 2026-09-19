@@ -37,6 +37,11 @@ import {
 } from "../lib/hanviet";
 import { HANVIET_SUPPLEMENT, WORD_HANVIET_OVERRIDES } from "./hanviet-supplement";
 import { FALSE_FRIENDS } from "./false-friends";
+import {
+  SUPPLEMENT_GLOSSES,
+  SUPPLEMENT_HANVIET,
+  SUPPLEMENT_WORDS,
+} from "./supplement-words";
 
 const execFileAsync = promisify(execFile);
 
@@ -68,7 +73,7 @@ const SOURCES = {
 } as const;
 
 /** HSK levels emitted into words.json. 7-9 is a single merged band upstream. */
-const LEVELS = ["1", "2", "3", "4", "5", "6"] as const;
+const LEVELS = ["1", "2", "3", "4", "5", "6", "S"] as const;
 
 async function exists(p: string): Promise<boolean> {
   try {
@@ -520,7 +525,23 @@ async function main() {
   };
   const missingCharHv = new Map<string, number>();
 
-  for (const row of hskRows) {
+  // Countries, nationalities and languages HSK omits. Appended as synthetic
+  // rows so they pick up the same Hán-Việt derivation, cognate classification
+  // and tone scoring as every other word rather than a parallel code path.
+  const supplementRows = SUPPLEMENT_WORDS.map((simplified, i) => ({
+    ID: `S-${String(i + 1).padStart(4, "0")}`,
+    Simplified: simplified,
+    Traditional: "",
+    Pinyin: pinyin(simplified, {
+      toneType: "symbol",
+      type: "string",
+      nonZh: "removed",
+    }).replace(/\s+/g, ""),
+    POS: "n",
+    Level: "S",
+  }));
+
+  for (const row of [...hskRows, ...supplementRows] as typeof hskRows) {
     const level = row.Level?.trim();
     if (!LEVELS.includes(level as (typeof LEVELS)[number])) continue;
 
@@ -564,11 +585,17 @@ async function main() {
       else missingCharHv.set(c, (missingCharHv.get(c) ?? 0) + 1);
       return r.reading;
     });
-    const override = WORD_HANVIET_OVERRIDES[simplified];
+    const override =
+      simplified in SUPPLEMENT_HANVIET
+        ? SUPPLEMENT_HANVIET[simplified]
+        : WORD_HANVIET_OVERRIDES[simplified];
+    // An explicit null override means "suppress the bridge for this word",
+    // which is different from having no override at all.
+    const suppressed = simplified in SUPPLEMENT_HANVIET && override === null;
     let hanviet: string | null = null;
     if (override) {
       hanviet = override;
-    } else if (perChar.length > 0 && perChar.every(Boolean)) {
+    } else if (!suppressed && perChar.length > 0 && perChar.every(Boolean)) {
       hanviet = perChar.join(" ");
       // Proper nouns keep their capitalisation (CC-CEDICT marks them with an
       // uppercase initial in the pinyin field).
@@ -578,6 +605,7 @@ async function main() {
     const viGlosses = dropSurnameGlosses(
       cv?.glosses.filter((g) => !/^LT:/.test(g)) ?? [],
     );
+    const fallback = SUPPLEMENT_GLOSSES[simplified];
     const enGlosses = dropSurnameGlosses(
       ce?.glosses.filter((g) => !/^CL:/.test(g)) ?? [],
     );
@@ -598,8 +626,8 @@ async function main() {
         .split(/[\s,;|]+/)
         .map((p) => p.trim())
         .filter(Boolean),
-      enGloss: enGlosses.length > 0 ? enGlosses.join("; ") : null,
-      viGloss: viGlosses.length > 0 ? viGlosses.join("; ") : null,
+      enGloss: enGlosses.length > 0 ? enGlosses.join("; ") : (fallback?.en ?? null),
+      viGloss: viGlosses.length > 0 ? viGlosses.join("; ") : (fallback?.vi ?? null),
       hanviet,
       isCognate: cognateMatch !== "none",
       cognateMatch,
