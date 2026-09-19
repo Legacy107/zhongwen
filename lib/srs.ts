@@ -1,0 +1,161 @@
+import {
+  createEmptyCard,
+  fsrs,
+  generatorParameters,
+  Rating,
+  State,
+  type Card as FsrsCard,
+  type Grade,
+  type RecordLogItem,
+} from 'ts-fsrs';
+
+/** The three ways a word is drilled. Each gets its own independent schedule. */
+export type CardType = 'recognition' | 'typing' | 'hanviet';
+
+export const CARD_TYPES: readonly CardType[] = ['recognition', 'typing', 'hanviet'];
+
+/** Serialisable SRS state. Dates are Date objects in memory, ISO strings on the wire. */
+export interface SrsState {
+  due: Date;
+  stability: number;
+  difficulty: number;
+  elapsedDays: number;
+  scheduledDays: number;
+  reps: number;
+  lapses: number;
+  state: State;
+  lastReview?: Date;
+  /** How many learning steps the card has completed. Must survive storage or
+   *  the card never graduates out of the learning phase. */
+  learningSteps: number;
+}
+
+export interface ReviewCard extends SrsState {
+  id: string;
+  wordId: string;
+  cardType: CardType;
+  suspended: boolean;
+}
+
+/**
+ * Higher retention means more reviews for the same material. 0.9 is the FSRS
+ * default and a sane starting point; exposed so it can become a user setting.
+ */
+export const DEFAULT_RETENTION = 0.9;
+
+const scheduler = fsrs(
+  generatorParameters({
+    request_retention: DEFAULT_RETENTION,
+    enable_fuzz: true,
+    enable_short_term: true,
+  }),
+);
+
+/** Stable across devices so two clients independently derive the same id. */
+export function cardId(wordId: string, cardType: CardType): string {
+  return `${wordId}:${cardType}`;
+}
+
+export function newCard(wordId: string, cardType: CardType, now = new Date()): ReviewCard {
+  return { id: cardId(wordId, cardType), wordId, cardType, suspended: false, ...toSrsState(createEmptyCard(now)) };
+}
+
+/**
+ * Seeds a card as already-known, for vocabulary learned before the app existed.
+ * `stability` is in days: how long until recall probability decays to the
+ * retention target. A wrongly-seeded card simply resurfaces early, which is
+ * harmless, so a rough estimate is fine.
+ */
+export function seedKnownCard(
+  wordId: string,
+  cardType: CardType,
+  stabilityDays: number,
+  now = new Date(),
+): ReviewCard {
+  const card = newCard(wordId, cardType, now);
+  const due = new Date(now.getTime() + stabilityDays * 86_400_000);
+  return {
+    ...card,
+    state: State.Review,
+    stability: stabilityDays,
+    difficulty: 5,
+    scheduledDays: stabilityDays,
+    reps: 1,
+    lastReview: now,
+    learningSteps: 0,
+    due,
+  };
+}
+
+function toSrsState(card: FsrsCard): SrsState {
+  return {
+    due: card.due,
+    stability: card.stability,
+    difficulty: card.difficulty,
+    elapsedDays: card.elapsed_days,
+    scheduledDays: card.scheduled_days,
+    reps: card.reps,
+    lapses: card.lapses,
+    state: card.state,
+    lastReview: card.last_review,
+    learningSteps: card.learning_steps,
+  };
+}
+
+function toFsrsCard(state: SrsState): FsrsCard {
+  return {
+    due: state.due,
+    stability: state.stability,
+    difficulty: state.difficulty,
+    elapsed_days: state.elapsedDays,
+    scheduled_days: state.scheduledDays,
+    reps: state.reps,
+    lapses: state.lapses,
+    state: state.state,
+    last_review: state.lastReview,
+    learning_steps: state.learningSteps,
+  };
+}
+
+export { Rating, State };
+
+export interface GradeResult {
+  card: ReviewCard;
+  /** Append-only log entry; never conflicts between devices. */
+  review: { cardId: string; rating: Grade; reviewedAt: Date; state: State };
+}
+
+export function grade(card: ReviewCard, rating: Grade, now = new Date()): GradeResult {
+  const next = scheduler.next(toFsrsCard(card), now, rating) as RecordLogItem;
+  return {
+    card: { ...card, ...toSrsState(next.card) },
+    review: { cardId: card.id, rating, reviewedAt: now, state: card.state },
+  };
+}
+
+/** Interval previews for the four rating buttons, so the UI can show "2d / 5d / 12d". */
+export function previewIntervals(card: ReviewCard, now = new Date()): Record<Grade, Date> {
+  const log = scheduler.repeat(toFsrsCard(card), now) as Record<Grade, RecordLogItem>;
+  return {
+    [Rating.Again]: log[Rating.Again].card.due,
+    [Rating.Hard]: log[Rating.Hard].card.due,
+    [Rating.Good]: log[Rating.Good].card.due,
+    [Rating.Easy]: log[Rating.Easy].card.due,
+  };
+}
+
+export function isDue(card: ReviewCard, now = new Date()): boolean {
+  return !card.suspended && card.due.getTime() <= now.getTime();
+}
+
+/** Due cards first (most overdue leads), then new cards. */
+export function sortForReview(cards: ReviewCard[], now = new Date()): ReviewCard[] {
+  return cards
+    .filter((c) => !c.suspended)
+    .filter((c) => c.state === State.New || isDue(c, now))
+    .sort((a, b) => {
+      if (a.state === State.New && b.state !== State.New) return 1;
+      if (b.state === State.New && a.state !== State.New) return -1;
+      return a.due.getTime() - b.due.getTime();
+    });
+}
