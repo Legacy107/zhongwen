@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: chinese-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chinese
+      POSTGRES_USER: chinese
+      POSTGRES_PASSWORD: chinese
+    ports:
+      - "5433:5432"
+    volumes:
+      - chinese-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chinese -d chinese"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  chinese-pgdata:
