@@ -193,6 +193,15 @@ export function HomeDashboard() {
         </span>
       </Link>
 
+      <Link
+        href="/build"
+        onClick={unlockAudio}
+        className="flex items-center justify-between rounded-2xl border border-neutral-800 bg-neutral-900/60 px-5 py-4 active:bg-neutral-800"
+      >
+        <span className="font-medium">Build sentences</span>
+        <span className="text-xs text-neutral-500">word order</span>
+      </Link>
+
       <section className="grid grid-cols-3 gap-2">
         <Stat value={stats?.known} label="in review" />
         <Stat value={stats?.learning} label="learning" />

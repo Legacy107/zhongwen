@@ -1,0 +1,232 @@
+[
+ {
+  "id": "S1-fixture-1",
+  "hanzi": "我是越南人。",
+  "pinyin": "wǒ shì yuè nán rén",
+  "modelPinyin": "wǒ shì yuè nán rén",
+  "enGloss": "I am Vietnamese.",
+  "viGloss": "Tôi là người Việt Nam.",
+  "grammarPointNo": 5,
+  "level": "1",
+  "tiles": [
+   {
+    "text": "我",
+    "pinyin": "wǒ",
+    "wordId": "L1-0380"
+   },
+   {
+    "text": "是",
+    "pinyin": "shì",
+    "wordId": "L1-0337"
+   },
+   {
+    "text": "越南人",
+    "pinyin": "yuè nán rén",
+    "wordId": "S-0017"
+   }
+  ],
+  "viContrast": {
+   "vietnameseOrder": "người Việt Nam",
+   "chineseOrder": "越南人",
+   "note": "Vietnamese names the head first (\"người Việt Nam\"); Chinese puts the modifier first, 越南 + 人."
+  }
+ },
+ {
+  "id": "S1-fixture-2",
+  "hanzi": "这是我的书。",
+  "pinyin": "zhè shì wǒ de shū",
+  "modelPinyin": "zhè shì wǒ de shū",
+  "enGloss": "This is my book.",
+  "viGloss": "Đây là sách của tôi.",
+  "grammarPointNo": 6,
+  "level": "1",
+  "tiles": [
+   {
+    "text": "这",
+    "pinyin": "zhè",
+    "wordId": "L1-0464"
+   },
+   {
+    "text": "是",
+    "pinyin": "shì",
+    "wordId": "L1-0337"
+   },
+   {
+    "text": "我",
+    "pinyin": "wǒ",
+    "wordId": "L1-0380"
+   },
+   {
+    "text": "的",
+    "pinyin": "de",
+    "wordId": "L1-0067"
+   },
+   {
+    "text": "书",
+    "pinyin": "shū",
+    "wordId": "L1-0341"
+   }
+  ],
+  "viContrast": {
+   "vietnameseOrder": "<danh từ> của tôi",
+   "chineseOrder": "我的书",
+   "note": "Vietnamese puts the possessor after the noun (\"... của tôi\"); Chinese puts it before, as 我的 + noun."
+  }
+ },
+ {
+  "id": "S1-fixture-3",
+  "hanzi": "我喜欢喝茶。",
+  "pinyin": "wǒ xǐ huan hē chá",
+  "modelPinyin": "wǒ xǐ huan hē chá",
+  "enGloss": "I like drinking tea.",
+  "viGloss": "Tôi thích uống trà.",
+  "grammarPointNo": 2,
+  "level": "1",
+  "tiles": [
+   {
+    "text": "我",
+    "pinyin": "wǒ",
+    "wordId": "L1-0380"
+   },
+   {
+    "text": "喜欢",
+    "pinyin": "xǐ huan",
+    "wordId": "L1-0388"
+   },
+   {
+    "text": "喝",
+    "pinyin": "hē",
+    "wordId": "L1-0144"
+   },
+   {
+    "text": "茶",
+    "pinyin": "chá",
+    "wordId": "L1-0036"
+   }
+  ]
+ },
+ {
+  "id": "S1-fixture-4",
+  "hanzi": "他是我的老师。",
+  "pinyin": "tā shì wǒ de lǎo shī",
+  "modelPinyin": "tā shì wǒ de lǎo shī",
+  "enGloss": "He is my teacher.",
+  "viGloss": "Thầy ấy là giáo viên của tôi.",
+  "grammarPointNo": 6,
+  "level": "1",
+  "tiles": [
+   {
+    "text": "他",
+    "pinyin": "tā",
+    "wordId": "L1-0354"
+   },
+   {
+    "text": "是",
+    "pinyin": "shì",
+    "wordId": "L1-0337"
+   },
+   {
+    "text": "我",
+    "pinyin": "wǒ",
+    "wordId": "L1-0380"
+   },
+   {
+    "text": "的",
+    "pinyin": "de",
+    "wordId": "L1-0067"
+   },
+   {
+    "text": "老师",
+    "pinyin": "lǎo shī",
+    "wordId": "L1-0209"
+   }
+  ],
+  "viContrast": {
+   "vietnameseOrder": "<danh từ> của tôi",
+   "chineseOrder": "我的老师",
+   "note": "Vietnamese puts the possessor after the noun (\"... của tôi\"); Chinese puts it before, as 我的 + noun."
+  },
+  "falseFriends": [
+   "老师"
+  ]
+ },
+ {
+  "id": "S1-fixture-5",
+  "hanzi": "我想喝热水。",
+  "pinyin": "wǒ xiǎng hē rè shuǐ",
+  "modelPinyin": "wǒ xiǎng hē rè shuǐ",
+  "enGloss": "I want to drink hot water.",
+  "viGloss": "Tôi muốn uống nước nóng.",
+  "grammarPointNo": 3,
+  "level": "1",
+  "tiles": [
+   {
+    "text": "我",
+    "pinyin": "wǒ",
+    "wordId": "L1-0380"
+   },
+   {
+    "text": "想",
+    "pinyin": "xiǎng",
+    "wordId": "L1-0400"
+   },
+   {
+    "text": "喝",
+    "pinyin": "hē",
+    "wordId": "L1-0144"
+   },
+   {
+    "text": "热",
+    "pinyin": "rè",
+    "wordId": "L1-0304"
+   },
+   {
+    "text": "水",
+    "pinyin": "shuǐ",
+    "wordId": "L1-0345"
+   }
+  ]
+ },
+ {
+  "id": "S1-fixture-6",
+  "hanzi": "这个人是中国人。",
+  "pinyin": "zhè ge rén shì zhōng guó rén",
+  "modelPinyin": "zhè ge rén shì zhōng guó rén",
+  "enGloss": "This person is Chinese.",
+  "viGloss": "Người này là người Trung Quốc.",
+  "grammarPointNo": 5,
+  "level": "1",
+  "tiles": [
+   {
+    "text": "这",
+    "pinyin": "zhè",
+    "wordId": "L1-0464"
+   },
+   {
+    "text": "个",
+    "pinyin": "gè",
+    "wordId": "L1-0120"
+   },
+   {
+    "text": "人",
+    "pinyin": "rén",
+    "wordId": "L1-0305"
+   },
+   {
+    "text": "是",
+    "pinyin": "shì",
+    "wordId": "L1-0337"
+   },
+   {
+    "text": "中国人",
+    "pinyin": "zhōng guó rén",
+    "wordId": "S-0016"
+   }
+  ],
+  "viContrast": {
+   "vietnameseOrder": "người Trung Quốc",
+   "chineseOrder": "中国人",
+   "note": "Vietnamese names the head first (\"người Trung Quốc\"); Chinese puts the modifier first, 中国 + 人."
+  }
+ }
+]
