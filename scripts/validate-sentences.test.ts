@@ -56,12 +56,13 @@ function make(hanzi: string, over: Partial<Sentence> = {}): Sentence {
   return s;
 }
 
-test("levelsUpTo excludes the supplementary level", () => {
-  assert.deepEqual(levelsUpTo("1"), ["1"]);
-  assert.deepEqual(levelsUpTo("3"), ["1", "2", "3"]);
-  // "S" holds proper nouns outside the graded levels; letting it in would
-  // silently defeat the cap.
-  assert.ok(!levelsUpTo("6").includes("S"));
+test("levelsUpTo includes the curated supplementary level", () => {
+  assert.deepEqual(levelsUpTo("1"), ["1", "S"]);
+  assert.deepEqual(levelsUpTo("3"), ["1", "2", "3", "S"]);
+  // "S" is a hand-curated 41-word list of countries, nationalities and
+  // languages that HSK omits. It must be available at every level, or
+  // 我是越南人 - the motivating example for this stage - is rejected.
+  assert.ok(levelsUpTo("6").includes("S"));
 });
 
 test("accepts a clean HSK 1 sentence", () => {

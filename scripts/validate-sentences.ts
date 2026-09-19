@@ -69,15 +69,19 @@ export interface ValidationOptions {
 /**
  * HSK levels at or below `level`.
  *
- * "S" (supplementary) is intentionally *not* included: it holds proper nouns
- * like 越南 that are not part of any graded level, and letting it in would
- * quietly defeat the level cap.
+ * "S" (supplementary) *is* included at every level. It is not an ungraded
+ * dumping ground: it is a hand-curated 41-word list of countries, nationalities
+ * and languages that HSK omits entirely (越南, 越南人, 墨尔本, …), added because
+ * the learner already knows several of them and they cannot be expressed
+ * otherwise. Excluding it would reject 我是越南人 - the motivating example for
+ * this whole stage - and with it most of the Vietnamese word-order contrast
+ * material, which is exactly what the tile exercises exist to drill.
  */
 export function levelsUpTo(level: string): string[] {
   const order = ["1", "2", "3", "4", "5", "6"];
   const idx = order.indexOf(level);
-  if (idx === -1) return order;
-  return order.slice(0, idx + 1);
+  const graded = idx === -1 ? order : order.slice(0, idx + 1);
+  return [...graded, "S"];
 }
 
 /**
