@@ -47,7 +47,7 @@ export function SessionShell({
   const [slot, setSlot] = useState<HTMLElement | null>(null);
   return (
     <div className="flex min-h-dvh flex-col bg-bg">
-      <header className="sticky top-0 z-30 bg-bg/95 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur">
+      <header className="sticky top-0 z-30 bg-bg/95 pt-[max(1.5rem,env(safe-area-inset-top))] backdrop-blur">
         <div className="mx-auto flex w-full max-w-xl items-center gap-3 px-4 pb-2">
           <Link
             href={exitHref}

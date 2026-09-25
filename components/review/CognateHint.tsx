@@ -38,7 +38,9 @@ function matchingSense(word: Word): string {
     senses.find((s) => normalizeVietnamese(s) === target) ??
     senses.find((s) => stripTones(normalizeVietnamese(s)) === bare) ??
     senses.find((s) => ` ${normalizeVietnamese(s)} `.includes(` ${target} `));
-  return hit ?? senses[0] ?? "";
+  const sense = hit ?? senses[0] ?? "";
+  // CVDICT marks bound forms with a hyphen ("bất-"): say so instead of showing it.
+  return /^-|-$/.test(sense) ? `${sense.replace(/^-|-$/g, "")} (in compounds)` : sense;
 }
 
 type BadgeKind = "follows" | "differs" | "entering" | "neutral";

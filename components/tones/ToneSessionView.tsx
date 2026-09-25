@@ -11,7 +11,7 @@ import { goalProgress, type GoalProgress } from "@/lib/goal";
 import type { Word } from "@/lib/hanviet";
 import { playCombo } from "@/lib/sound";
 import { speak, warmUpSpeech } from "@/lib/speak";
-import { buildToneDrills, drawSession, type ToneDrill } from "@/lib/tones";
+import { buildToneDrills, CONTRAST_LABEL, drawSession, type ToneContrast, type ToneDrill } from "@/lib/tones";
 import { ToneDrillCard } from "./ToneDrillCard";
 
 const SESSION_SIZE = 12;
@@ -35,6 +35,7 @@ export function ToneSessionView() {
   const [i, setI] = useState(0);
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
   const [combo, setCombo] = useState(0);
+  const [byContrast, setByContrast] = useState<Partial<Record<ToneContrast, { right: number; total: number }>>>({});
   const [finished, setFinished] = useState<{ ms: number; goal: GoalProgress; crossed: boolean } | null>(null);
   const startedAt = useRef(0);
   const goalBefore = useRef<GoalProgress | null>(null);
@@ -48,6 +49,7 @@ export function ToneSessionView() {
     setI(0);
     setScore({ correct: 0, wrong: 0 });
     setCombo(0);
+    setByContrast({});
     setFinished(null);
     startedAt.current = Date.now();
   }, []);
@@ -83,6 +85,11 @@ export function ToneSessionView() {
       // a user gesture, so an effect on the next card would be silent there.
       if (nextDrill) speak(nextDrill.word.simplified, 0.8);
       setScore((s) => ({ correct: s.correct + (ok ? 1 : 0), wrong: s.wrong + (ok ? 0 : 1) }));
+      const contrast = drills[i].contrast;
+      setByContrast((b) => {
+        const e = b[contrast] ?? { right: 0, total: 0 };
+        return { ...b, [contrast]: { right: e.right + (ok ? 1 : 0), total: e.total + 1 } };
+      });
       const run = ok ? combo + 1 : 0;
       setCombo(run);
       if (run === 3 || run === 5 || run === 10) setTimeout(() => playCombo(run), 200);
@@ -127,7 +134,19 @@ export function ToneSessionView() {
         goalMet={finished.crossed ? { streak: finished.goal.streak } : null}
         primary={{ label: "Continue", href: "/" }}
         secondary={{ label: "Train again", onClick: () => void start() }}
-      />
+      >
+        {/* Which contrast needs work: the point of a weighted drill. */}
+        <ul className="card w-full divide-y-2 divide-line text-left">
+          {(Object.entries(byContrast) as [ToneContrast, { right: number; total: number }][]).map(([c, r]) => (
+            <li key={c} className="flex items-center justify-between gap-3 px-4 py-2.5">
+              <span className="font-bold text-ink">{CONTRAST_LABEL[c]}</span>
+              <span className={`font-extrabold tabular-nums ${r.right === r.total ? "text-green-ink" : r.right / r.total < 0.6 ? "text-red-ink" : "text-gold-ink"}`}>
+                {r.right}/{r.total}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </SessionComplete>
     );
   }
 
