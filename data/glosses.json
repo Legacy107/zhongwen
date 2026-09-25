@@ -1,0 +1,5254 @@
+{
+ "L1-0001": {
+  "en": "to love; to like (to do); to tend to",
+  "vi": "yêu; thích; hay (làm gì)"
+ },
+ "L1-0002": {
+  "en": "hobby; interest; to be keen on",
+  "vi": "sở thích; thích; đam mê"
+ },
+ "L1-0003": {
+  "en": "eight",
+  "vi": "tám"
+ },
+ "L1-0004": {
+  "en": "dad; father",
+  "vi": "bố; ba"
+ },
+ "L1-0005": {
+  "en": "(suggestion: let's…; guess: …, right?)",
+  "vi": "(… nhé; … đi; … nhỉ? – gợi ý, phỏng đoán)"
+ },
+ "L1-0006": {
+  "en": "white; in vain; for free",
+  "vi": "trắng; uổng công; miễn phí"
+ },
+ "L1-0007": {
+  "en": "daytime; during the day",
+  "vi": "ban ngày"
+ },
+ "L1-0008": {
+  "en": "hundred",
+  "vi": "trăm; một trăm"
+ },
+ "L1-0009": {
+  "en": "class; shift; (measure word: groups, trips)",
+  "vi": "lớp; ca; (lượng từ: nhóm, chuyến xe)"
+ },
+ "L1-0010": {
+  "en": "half; and a half; half past (the hour)",
+  "vi": "nửa; rưỡi"
+ },
+ "L1-0011": {
+  "en": "half a year; six months",
+  "vi": "nửa năm; sáu tháng"
+ },
+ "L1-0012": {
+  "en": "half a day; a long while",
+  "vi": "nửa ngày; một lúc lâu; cả buổi"
+ },
+ "L1-0013": {
+  "en": "to help",
+  "vi": "giúp; giúp đỡ"
+ },
+ "L1-0014": {
+  "en": "to help (out); to do (sb) a favor",
+  "vi": "giúp đỡ; giúp một tay"
+ },
+ "L1-0015": {
+  "en": "bag; to wrap; (measure word: packs, packets)",
+  "vi": "túi; gói (lại); (lượng từ: gói, bao)"
+ },
+ "L1-0016": {
+  "en": "steamed stuffed bun",
+  "vi": "bánh bao"
+ },
+ "L1-0017": {
+  "en": "cup; (measure word: a cup or glass of)",
+  "vi": "cốc; (lượng từ: cốc, ly, tách)"
+ },
+ "L1-0018": {
+  "en": "cup; glass; mug",
+  "vi": "cốc; ly"
+ },
+ "L1-0019": {
+  "en": "north",
+  "vi": "bắc; phía bắc"
+ },
+ "L1-0020": {
+  "en": "north side; the north",
+  "vi": "phía bắc"
+ },
+ "L1-0021": {
+  "en": "Beijing",
+  "vi": "Bắc Kinh"
+ },
+ "L1-0022": {
+  "en": "(measure word: books, notebooks)",
+  "vi": "(lượng từ: quyển, cuốn – sách, vở)"
+ },
+ "L1-0023": {
+  "en": "notebook; exercise book",
+  "vi": "vở; sổ"
+ },
+ "L1-0024": {
+  "en": "than (in comparisons); to compare",
+  "vi": "so với; hơn (khi so sánh); so sánh"
+ },
+ "L1-0025": {
+  "en": "don't (do sth); other",
+  "vi": "đừng; khác"
+ },
+ "L1-0026": {
+  "en": "other; else; something else",
+  "vi": "khác; cái khác; thứ khác"
+ },
+ "L1-0027": {
+  "en": "other people; others",
+  "vi": "người khác"
+ },
+ "L1-0028": {
+  "en": "illness; disease; to be ill",
+  "vi": "bệnh; ốm; bị ốm"
+ },
+ "L1-0029": {
+  "en": "patient; sick person",
+  "vi": "người bệnh; bệnh nhân"
+ },
+ "L1-0030": {
+  "en": "not very; not much; not often",
+  "vi": "không … lắm; không mấy; ít khi"
+ },
+ "L1-0031": {
+  "en": "wrong; incorrect; not right",
+  "vi": "không đúng; sai; không ổn"
+ },
+ "L1-0032": {
+  "en": "you're welcome; don't mention it",
+  "vi": "không có gì; đừng khách sáo"
+ },
+ "L1-0033": {
+  "en": "no need to; don't have to",
+  "vi": "không cần; khỏi phải"
+ },
+ "L1-0034": {
+  "en": "not; no",
+  "vi": "không"
+ },
+ "L1-0035": {
+  "en": "dish (of food); vegetables; cuisine",
+  "vi": "món ăn; rau; thức ăn"
+ },
+ "L1-0036": {
+  "en": "tea",
+  "vi": "trà; chè"
+ },
+ "L1-0037": {
+  "en": "bad; poor; to be short of",
+  "vi": "kém; tệ; thiếu"
+ },
+ "L1-0038": {
+  "en": "often; frequently",
+  "vi": "thường; hay"
+ },
+ "L1-0039": {
+  "en": "often; frequently",
+  "vi": "thường; thường xuyên"
+ },
+ "L1-0040": {
+  "en": "to sing",
+  "vi": "hát"
+ },
+ "L1-0041": {
+  "en": "to sing (songs)",
+  "vi": "hát; ca hát"
+ },
+ "L1-0042": {
+  "en": "vehicle; car",
+  "vi": "xe; xe cộ"
+ },
+ "L1-0043": {
+  "en": "(bus or train) ticket",
+  "vi": "vé xe; vé tàu"
+ },
+ "L1-0044": {
+  "en": "in the car; on the bus; on board",
+  "vi": "trên xe"
+ },
+ "L1-0045": {
+  "en": "station; bus stop",
+  "vi": "nhà ga; bến xe; trạm xe buýt"
+ },
+ "L1-0046": {
+  "en": "to eat; to take (medicine)",
+  "vi": "ăn; uống (thuốc)"
+ },
+ "L1-0047": {
+  "en": "to eat; to have a meal",
+  "vi": "ăn cơm; ăn; dùng bữa"
+ },
+ "L1-0048": {
+  "en": "to go out; to come out; to occur",
+  "vi": "ra; đi ra; xảy ra"
+ },
+ "L1-0049": {
+  "en": "to come out; to appear; (after verb) out",
+  "vi": "đi ra; ra (đây); … ra (sau động từ)"
+ },
+ "L1-0050": {
+  "en": "to go out; to get out",
+  "vi": "đi ra ngoài; ra ngoài"
+ },
+ "L1-0051": {
+  "en": "to wear; to put on; to go through",
+  "vi": "mặc; đi (giày); xuyên qua"
+ },
+ "L1-0052": {
+  "en": "bed",
+  "vi": "giường"
+ },
+ "L1-0053": {
+  "en": "(measure word: times, occurrences)",
+  "vi": "(lượng từ: lần, lượt)"
+ },
+ "L1-0054": {
+  "en": "from; since",
+  "vi": "từ; kể từ"
+ },
+ "L1-0055": {
+  "en": "wrong; mistaken; mistake",
+  "vi": "sai; nhầm; lỗi"
+ },
+ "L1-0056": {
+  "en": "to hit; to play (ball games); to make (a call)",
+  "vi": "đánh; chơi (bóng); gọi (điện)"
+ },
+ "L1-0057": {
+  "en": "to take a taxi; to get a ride",
+  "vi": "bắt taxi; gọi xe"
+ },
+ "L1-0058": {
+  "en": "to make a phone call; to call",
+  "vi": "gọi điện thoại"
+ },
+ "L1-0059": {
+  "en": "to open; to turn on; to switch on",
+  "vi": "mở; bật (lên)"
+ },
+ "L1-0060": {
+  "en": "to play ball (games)",
+  "vi": "chơi bóng"
+ },
+ "L1-0061": {
+  "en": "big; large; older (in age)",
+  "vi": "to; lớn; lớn tuổi hơn"
+ },
+ "L1-0062": {
+  "en": "university; college",
+  "vi": "đại học; trường đại học"
+ },
+ "L1-0063": {
+  "en": "university student; college student",
+  "vi": "sinh viên; sinh viên đại học"
+ },
+ "L1-0064": {
+  "en": "to arrive; to (a place); until (a time)",
+  "vi": "đến; tới; cho đến (khi)"
+ },
+ "L1-0065": {
+  "en": "to get; to obtain; to receive",
+  "vi": "nhận được; có được; đạt được"
+ },
+ "L1-0066": {
+  "en": "-ly (joins describer to verb)",
+  "vi": "(một cách … – nối trạng ngữ với động từ)"
+ },
+ "L1-0067": {
+  "en": "'s; of (joins describer to noun)",
+  "vi": "của; (nối định ngữ với danh từ)"
+ },
+ "L1-0068": {
+  "en": "to wait; to wait for",
+  "vi": "đợi; chờ"
+ },
+ "L1-0069": {
+  "en": "ground; floor; land",
+  "vi": "đất; mặt đất; sàn nhà"
+ },
+ "L1-0070": {
+  "en": "place; location; venue",
+  "vi": "địa điểm; nơi; chỗ"
+ },
+ "L1-0071": {
+  "en": "place; area; part (of sth)",
+  "vi": "nơi; chỗ; vùng"
+ },
+ "L1-0072": {
+  "en": "on the ground; on the floor",
+  "vi": "trên mặt đất; dưới đất; trên sàn"
+ },
+ "L1-0073": {
+  "en": "map",
+  "vi": "bản đồ"
+ },
+ "L1-0074": {
+  "en": "younger brother",
+  "vi": "em trai"
+ },
+ "L1-0075": {
+  "en": "(ordinal prefix: 1st, 2nd, 3rd…)",
+  "vi": "thứ (số thứ tự: thứ nhất, thứ hai…)"
+ },
+ "L1-0076": {
+  "en": "o'clock; dot, point; to order (food)",
+  "vi": "giờ; chấm, điểm; gọi (món)"
+ },
+ "L1-0077": {
+  "en": "electricity; electric; power",
+  "vi": "điện"
+ },
+ "L1-0078": {
+  "en": "telephone; phone call; phone number",
+  "vi": "điện thoại; cuộc gọi; số điện thoại"
+ },
+ "L1-0079": {
+  "en": "computer",
+  "vi": "máy tính"
+ },
+ "L1-0080": {
+  "en": "television; TV",
+  "vi": "tivi; truyền hình"
+ },
+ "L1-0081": {
+  "en": "TV set; television set",
+  "vi": "tivi; máy thu hình"
+ },
+ "L1-0082": {
+  "en": "movie; film",
+  "vi": "phim; điện ảnh"
+ },
+ "L1-0083": {
+  "en": "cinema; movie theatre",
+  "vi": "rạp chiếu phim; rạp phim"
+ },
+ "L1-0084": {
+  "en": "east",
+  "vi": "đông; phía đông"
+ },
+ "L1-0085": {
+  "en": "east side; the east",
+  "vi": "phía đông"
+ },
+ "L1-0086": {
+  "en": "thing; stuff",
+  "vi": "đồ; đồ vật; thứ"
+ },
+ "L1-0087": {
+  "en": "to move; to touch (sth)",
+  "vi": "cử động; động đậy; đụng vào"
+ },
+ "L1-0088": {
+  "en": "movement; action; motion",
+  "vi": "động tác; cử động; hành động"
+ },
+ "L1-0089": {
+  "en": "all; both; already",
+  "vi": "đều; cả; đã … rồi"
+ },
+ "L1-0090": {
+  "en": "to read (aloud); to study (at school)",
+  "vi": "đọc; học; theo học"
+ },
+ "L1-0091": {
+  "en": "to read (books); to study; to go to school",
+  "vi": "đọc sách; học; đi học"
+ },
+ "L1-0092": {
+  "en": "right; correct",
+  "vi": "đúng; phải"
+ },
+ "L1-0093": {
+  "en": "sorry; excuse me; to let (sb) down",
+  "vi": "xin lỗi; có lỗi với (ai)"
+ },
+ "L1-0094": {
+  "en": "many; much; how (old, long…?)",
+  "vi": "nhiều; bao (lâu, xa, nhiêu…?)"
+ },
+ "L1-0095": {
+  "en": "how many; how much",
+  "vi": "bao nhiêu"
+ },
+ "L1-0096": {
+  "en": "hungry; to starve (sb)",
+  "vi": "đói; bỏ đói (ai)"
+ },
+ "L1-0097": {
+  "en": "son",
+  "vi": "con trai"
+ },
+ "L1-0098": {
+  "en": "two",
+  "vi": "hai"
+ },
+ "L1-0099": {
+  "en": "meal; (cooked) rice; food",
+  "vi": "cơm; bữa ăn"
+ },
+ "L1-0100": {
+  "en": "restaurant; hotel",
+  "vi": "nhà hàng; khách sạn"
+ },
+ "L1-0101": {
+  "en": "room",
+  "vi": "phòng; căn phòng"
+ },
+ "L1-0102": {
+  "en": "house; home; apartment",
+  "vi": "nhà; căn nhà"
+ },
+ "L1-0103": {
+  "en": "to put; to place; to let go",
+  "vi": "để; đặt; thả"
+ },
+ "L1-0104": {
+  "en": "to have a holiday; to be on vacation",
+  "vi": "được nghỉ; nghỉ lễ; nghỉ hè"
+ },
+ "L1-0105": {
+  "en": "to finish school for the day",
+  "vi": "tan học; tan trường"
+ },
+ "L1-0106": {
+  "en": "to fly",
+  "vi": "bay"
+ },
+ "L1-0107": {
+  "en": "airplane; plane",
+  "vi": "máy bay"
+ },
+ "L1-0108": {
+  "en": "very; extremely",
+  "vi": "rất; vô cùng"
+ },
+ "L1-0109": {
+  "en": "minute; point (score); cent (1/100 yuan)",
+  "vi": "phút; điểm; xu (1/100 tệ)"
+ },
+ "L1-0110": {
+  "en": "wind",
+  "vi": "gió"
+ },
+ "L1-0111": {
+  "en": "dry; dried",
+  "vi": "khô; cạn"
+ },
+ "L1-0112": {
+  "en": "clean; neat; tidy",
+  "vi": "sạch; sạch sẽ"
+ },
+ "L1-0113": {
+  "en": "to do; to work",
+  "vi": "làm; làm việc"
+ },
+ "L1-0114": {
+  "en": "what (are you) doing?; what for?",
+  "vi": "làm gì?; để làm gì?"
+ },
+ "L1-0115": {
+  "en": "tall; high",
+  "vi": "cao"
+ },
+ "L1-0116": {
+  "en": "happy; glad; pleased",
+  "vi": "vui; vui vẻ; mừng"
+ },
+ "L1-0117": {
+  "en": "to tell; to let (sb) know",
+  "vi": "nói cho (ai) biết; bảo; báo"
+ },
+ "L1-0118": {
+  "en": "older brother",
+  "vi": "anh trai; anh"
+ },
+ "L1-0119": {
+  "en": "song",
+  "vi": "bài hát"
+ },
+ "L1-0120": {
+  "en": "(general measure word: people, things)",
+  "vi": "(lượng từ chung: cái, chiếc, người)"
+ },
+ "L1-0121": {
+  "en": "to give; for; to (sb)",
+  "vi": "cho; đưa (cho); (làm gì) cho ai"
+ },
+ "L1-0122": {
+  "en": "with; and; to follow",
+  "vi": "với; và; đi theo"
+ },
+ "L1-0123": {
+  "en": "worker; laborer",
+  "vi": "công nhân"
+ },
+ "L1-0124": {
+  "en": "to work; job; work",
+  "vi": "làm việc; công việc; việc làm"
+ },
+ "L1-0125": {
+  "en": "to close; to shut; to turn off",
+  "vi": "đóng; tắt"
+ },
+ "L1-0126": {
+  "en": "to close; to shut; to turn off",
+  "vi": "đóng lại; tắt"
+ },
+ "L1-0127": {
+  "en": "expensive; precious; (honourific) your",
+  "vi": "đắt; quý giá; (kính ngữ) quý …"
+ },
+ "L1-0128": {
+  "en": "country; nation; state",
+  "vi": "nước; quốc gia"
+ },
+ "L1-0129": {
+  "en": "country; nation; state",
+  "vi": "quốc gia; đất nước; nhà nước"
+ },
+ "L1-0130": {
+  "en": "abroad; overseas; foreign",
+  "vi": "nước ngoài; ở nước ngoài"
+ },
+ "L1-0131": {
+  "en": "to cross; to pass (time); to celebrate",
+  "vi": "qua; đi qua; đón (Tết, sinh nhật)"
+ },
+ "L1-0132": {
+  "en": "still; also; even more",
+  "vi": "vẫn; còn; còn … hơn (nữa)"
+ },
+ "L1-0133": {
+  "en": "or (in questions); still; had better",
+  "vi": "hay (là); vẫn; tốt hơn là"
+ },
+ "L1-0134": {
+  "en": "also; in addition; there's still",
+  "vi": "còn (có); ngoài ra; vẫn còn"
+ },
+ "L1-0135": {
+  "en": "child; kid; son or daughter",
+  "vi": "trẻ con; con; đứa bé"
+ },
+ "L1-0136": {
+  "en": "Chinese (language)",
+  "vi": "tiếng Trung; tiếng Hán"
+ },
+ "L1-0137": {
+  "en": "Chinese character(s)",
+  "vi": "chữ Hán"
+ },
+ "L1-0138": {
+  "en": "good; fine; OK",
+  "vi": "tốt; hay; được (đồng ý)"
+ },
+ "L1-0139": {
+  "en": "delicious; tasty",
+  "vi": "ngon"
+ },
+ "L1-0140": {
+  "en": "good-looking; pretty; (film, book) good",
+  "vi": "đẹp; xinh; hay (phim, sách)"
+ },
+ "L1-0141": {
+  "en": "pleasant to hear; nice (song, voice)",
+  "vi": "hay; dễ nghe; êm tai"
+ },
+ "L1-0142": {
+  "en": "fun; amusing; interesting",
+  "vi": "vui; thú vị; hay"
+ },
+ "L1-0143": {
+  "en": "day (of the month); number; size",
+  "vi": "ngày (trong tháng); số; cỡ"
+ },
+ "L1-0144": {
+  "en": "to drink",
+  "vi": "uống"
+ },
+ "L1-0145": {
+  "en": "and; with",
+  "vi": "và; với"
+ },
+ "L1-0146": {
+  "en": "very; quite; (neutral link before adjectives)",
+  "vi": "rất; khá; (đệm trước tính từ)"
+ },
+ "L1-0147": {
+  "en": "after; behind; later",
+  "vi": "sau; phía sau; sau khi"
+ },
+ "L1-0148": {
+  "en": "the back; behind; at the rear",
+  "vi": "phía sau; đằng sau"
+ },
+ "L1-0149": {
+  "en": "the day after tomorrow",
+  "vi": "ngày kia; ngày mốt"
+ },
+ "L1-0150": {
+  "en": "flower; blossom",
+  "vi": "hoa; bông hoa"
+ },
+ "L1-0151": {
+  "en": "words; speech; spoken language",
+  "vi": "lời nói; câu nói; tiếng"
+ },
+ "L1-0152": {
+  "en": "bad; broken; spoiled",
+  "vi": "xấu; hỏng; hư"
+ },
+ "L1-0153": {
+  "en": "to give back; to return (sth); to pay back",
+  "vi": "trả; trả lại"
+ },
+ "L1-0154": {
+  "en": "to return; to go back; to reply",
+  "vi": "về; quay lại; trả lời (tin)"
+ },
+ "L1-0155": {
+  "en": "to answer; to reply; answer",
+  "vi": "trả lời; câu trả lời"
+ },
+ "L1-0156": {
+  "en": "to return to; to get back to",
+  "vi": "về đến; trở về; quay lại"
+ },
+ "L1-0157": {
+  "en": "to go home; to return home",
+  "vi": "về nhà"
+ },
+ "L1-0158": {
+  "en": "to come back; to return",
+  "vi": "quay lại (đây); trở về"
+ },
+ "L1-0159": {
+  "en": "to go back; to return",
+  "vi": "đi về; quay về (đó)"
+ },
+ "L1-0160": {
+  "en": "can (learned skill); will (likely to)",
+  "vi": "biết (làm, kỹ năng); sẽ (có thể xảy ra)"
+ },
+ "L1-0161": {
+  "en": "train",
+  "vi": "tàu hỏa; xe lửa"
+ },
+ "L1-0162": {
+  "en": "airport",
+  "vi": "sân bay"
+ },
+ "L1-0163": {
+  "en": "plane ticket; air ticket",
+  "vi": "vé máy bay"
+ },
+ "L1-0164": {
+  "en": "egg; chicken egg",
+  "vi": "trứng gà; trứng"
+ },
+ "L1-0165": {
+  "en": "how many; a few; several",
+  "vi": "mấy; bao nhiêu; vài"
+ },
+ "L1-0166": {
+  "en": "to remember; to write down; to note",
+  "vi": "nhớ; ghi (lại); ghi nhớ"
+ },
+ "L1-0167": {
+  "en": "to remember",
+  "vi": "nhớ; còn nhớ"
+ },
+ "L1-0168": {
+  "en": "to remember; to $1is$2; to keep in mind",
+  "vi": "nhớ kỹ; ghi nhớ; nhớ lấy"
+ },
+ "L1-0169": {
+  "en": "home; family; (measure word: shops, companies)",
+  "vi": "nhà; gia đình; (lượng từ: cửa hàng, công ty)"
+ },
+ "L1-0170": {
+  "en": "at home; home; family",
+  "vi": "ở nhà; trong nhà; gia đình"
+ },
+ "L1-0171": {
+  "en": "family members; family",
+  "vi": "người nhà; gia đình"
+ },
+ "L1-0172": {
+  "en": "(measure word: rooms)",
+  "vi": "(lượng từ: căn, gian – phòng)"
+ },
+ "L1-0173": {
+  "en": "to see; to meet",
+  "vi": "thấy; gặp"
+ },
+ "L1-0174": {
+  "en": "to meet; to see each other",
+  "vi": "gặp mặt; gặp nhau"
+ },
+ "L1-0175": {
+  "en": "to teach",
+  "vi": "dạy"
+ },
+ "L1-0176": {
+  "en": "to be called; to call; to ask (sb to)",
+  "vi": "tên là; gọi; bảo (ai làm gì)"
+ },
+ "L1-0177": {
+  "en": "teaching building; classroom block",
+  "vi": "tòa nhà lớp học; giảng đường"
+ },
+ "L1-0178": {
+  "en": "older sister",
+  "vi": "chị gái; chị"
+ },
+ "L1-0179": {
+  "en": "to introduce; introduction",
+  "vi": "giới thiệu; lời giới thiệu"
+ },
+ "L1-0180": {
+  "en": "this year",
+  "vi": "năm nay"
+ },
+ "L1-0181": {
+  "en": "today",
+  "vi": "hôm nay"
+ },
+ "L1-0182": {
+  "en": "to enter; to come in; to go in",
+  "vi": "vào; đi vào"
+ },
+ "L1-0183": {
+  "en": "to come in",
+  "vi": "vào (đây); đi vào"
+ },
+ "L1-0184": {
+  "en": "to go in",
+  "vi": "đi vào; vào trong (đó)"
+ },
+ "L1-0185": {
+  "en": "nine",
+  "vi": "chín"
+ },
+ "L1-0186": {
+  "en": "then; right away; just, only",
+  "vi": "thì; ngay; chỉ, chính là"
+ },
+ "L1-0187": {
+  "en": "to feel; to think (that)",
+  "vi": "cảm thấy; thấy; nghĩ (rằng)"
+ },
+ "L1-0188": {
+  "en": "to open; to drive; to turn on",
+  "vi": "mở; lái (xe); bật"
+ },
+ "L1-0189": {
+  "en": "to drive (a car)",
+  "vi": "lái xe"
+ },
+ "L1-0190": {
+  "en": "to have a meeting; to attend a meeting",
+  "vi": "họp; dự họp"
+ },
+ "L1-0191": {
+  "en": "to joke; to kid; to make fun of",
+  "vi": "đùa; nói đùa; trêu"
+ },
+ "L1-0192": {
+  "en": "to look at; to watch; to read",
+  "vi": "xem; nhìn; đọc"
+ },
+ "L1-0193": {
+  "en": "to see a doctor; to treat a patient",
+  "vi": "đi khám bệnh; khám bệnh (cho ai)"
+ },
+ "L1-0194": {
+  "en": "to see; to catch sight of",
+  "vi": "nhìn thấy; thấy"
+ },
+ "L1-0195": {
+  "en": "to see; to catch sight of",
+  "vi": "nhìn thấy; trông thấy"
+ },
+ "L1-0196": {
+  "en": "to take an exam; to test (sb)",
+  "vi": "thi; kiểm tra"
+ },
+ "L1-0197": {
+  "en": "exam; test; to take an exam",
+  "vi": "kỳ thi; bài kiểm tra; đi thi"
+ },
+ "L1-0198": {
+  "en": "thirsty",
+  "vi": "khát"
+ },
+ "L1-0199": {
+  "en": "class; lesson; course",
+  "vi": "bài học; tiết học; môn học"
+ },
+ "L1-0200": {
+  "en": "textbook",
+  "vi": "sách giáo khoa"
+ },
+ "L1-0201": {
+  "en": "text (of a lesson)",
+  "vi": "bài khóa; bài đọc"
+ },
+ "L1-0202": {
+  "en": "mouth; (measure word: family members, bites)",
+  "vi": "miệng; (lượng từ: người trong nhà, miếng)"
+ },
+ "L1-0203": {
+  "en": "piece; lump; yuan (informal)",
+  "vi": "miếng; cục; tệ (tiền, khẩu ngữ)"
+ },
+ "L1-0204": {
+  "en": "fast; quickly; soon (about to)",
+  "vi": "nhanh; mau; sắp (…rồi)"
+ },
+ "L1-0205": {
+  "en": "to come; to arrive; (stands in for a verb)",
+  "vi": "đến; tới; (thay động từ: để tôi…)"
+ },
+ "L1-0206": {
+  "en": "to arrive; to come (to)",
+  "vi": "đến; tới"
+ },
+ "L1-0207": {
+  "en": "old; long-time; (before a surname) Old …",
+  "vi": "già; cũ; (trước họ) anh, bác (thân mật)"
+ },
+ "L1-0208": {
+  "en": "old person; the elderly",
+  "vi": "người già; người cao tuổi"
+ },
+ "L1-0209": {
+  "en": "teacher",
+  "vi": "thầy giáo, cô giáo; giáo viên"
+ },
+ "L1-0210": {
+  "en": "(completed action; change of state)",
+  "vi": "(đã; rồi – hành động hoàn thành)"
+ },
+ "L1-0211": {
+  "en": "tired; worn out",
+  "vi": "mệt; mệt mỏi"
+ },
+ "L1-0212": {
+  "en": "cold",
+  "vi": "lạnh; rét"
+ },
+ "L1-0213": {
+  "en": "in; inside (after a noun)",
+  "vi": "trong; bên trong"
+ },
+ "L1-0214": {
+  "en": "inside; in",
+  "vi": "bên trong; ở trong"
+ },
+ "L1-0215": {
+  "en": "two (before measure words); both; a few",
+  "vi": "hai (trước lượng từ); cả hai; vài"
+ },
+ "L1-0216": {
+  "en": "zero; nought; (placeholder zero, e.g. 105)",
+  "vi": "không; số không; linh, lẻ (như 105)"
+ },
+ "L1-0217": {
+  "en": "six",
+  "vi": "sáu"
+ },
+ "L1-0218": {
+  "en": "building; floor (storey)",
+  "vi": "tòa nhà; tầng, lầu"
+ },
+ "L1-0219": {
+  "en": "upstairs",
+  "vi": "tầng trên; trên lầu"
+ },
+ "L1-0220": {
+  "en": "downstairs",
+  "vi": "tầng dưới; dưới lầu"
+ },
+ "L1-0221": {
+  "en": "road; way; (bus) route, line",
+  "vi": "đường; con đường; tuyến (xe buýt)"
+ },
+ "L1-0222": {
+  "en": "intersection; crossing",
+  "vi": "ngã tư; ngã ba; giao lộ"
+ },
+ "L1-0223": {
+  "en": "on the way; on the road",
+  "vi": "trên đường; dọc đường"
+ },
+ "L1-0224": {
+  "en": "mom; mother",
+  "vi": "mẹ; má"
+ },
+ "L1-0225": {
+  "en": "road; street",
+  "vi": "đường; đường phố"
+ },
+ "L1-0226": {
+  "en": "right away; at once; immediately",
+  "vi": "ngay; ngay lập tức; liền"
+ },
+ "L1-0227": {
+  "en": "(makes a yes/no question)",
+  "vi": "(… không? – câu hỏi có/không)"
+ },
+ "L1-0228": {
+  "en": "to buy",
+  "vi": "mua"
+ },
+ "L1-0229": {
+  "en": "slow; slowly",
+  "vi": "chậm; từ từ"
+ },
+ "L1-0230": {
+  "en": "busy; to be busy with",
+  "vi": "bận; bận rộn"
+ },
+ "L1-0231": {
+  "en": "ten cents (1/10 yuan); hair; fur",
+  "vi": "hào (1/10 tệ); lông; tóc"
+ },
+ "L1-0232": {
+  "en": "not have; didn't; haven't",
+  "vi": "không có; chưa; đã không"
+ },
+ "L1-0233": {
+  "en": "it doesn't matter; that's OK; never mind",
+  "vi": "không sao (đâu); không hề gì"
+ },
+ "L1-0234": {
+  "en": "it's nothing; never mind; you're welcome",
+  "vi": "không có gì; không sao"
+ },
+ "L1-0235": {
+  "en": "it's OK; it's nothing; to be free",
+  "vi": "không sao; không có gì; rảnh (không bận)"
+ },
+ "L1-0236": {
+  "en": "not have; there isn't; didn't, haven't",
+  "vi": "không có; chưa (làm); không bằng (so sánh)"
+ },
+ "L1-0237": {
+  "en": "younger sister",
+  "vi": "em gái"
+ },
+ "L1-0238": {
+  "en": "door; gate; (measure word: subjects, courses)",
+  "vi": "cửa; cổng; (lượng từ: môn học)"
+ },
+ "L1-0239": {
+  "en": "doorway; entrance; at the door",
+  "vi": "cửa; trước cửa; lối vào"
+ },
+ "L1-0240": {
+  "en": "admission ticket; entrance ticket",
+  "vi": "vé vào cửa"
+ },
+ "L1-0241": {
+  "en": "(plural suffix for people: -s)",
+  "vi": "(các …; những … – số nhiều chỉ người)"
+ },
+ "L1-0242": {
+  "en": "(cooked) rice",
+  "vi": "cơm; cơm trắng"
+ },
+ "L1-0243": {
+  "en": "bread",
+  "vi": "bánh mì"
+ },
+ "L1-0244": {
+  "en": "noodles",
+  "vi": "mì; sợi mì"
+ },
+ "L1-0245": {
+  "en": "name",
+  "vi": "tên"
+ },
+ "L1-0246": {
+  "en": "to understand; clear; obvious",
+  "vi": "hiểu; rõ; rõ ràng"
+ },
+ "L1-0247": {
+  "en": "next year",
+  "vi": "năm sau; sang năm"
+ },
+ "L1-0248": {
+  "en": "tomorrow",
+  "vi": "ngày mai"
+ },
+ "L1-0249": {
+  "en": "to take; to hold; to carry",
+  "vi": "cầm; lấy; mang"
+ },
+ "L1-0250": {
+  "en": "which; which one",
+  "vi": "nào; cái nào"
+ },
+ "L1-0251": {
+  "en": "where; wherever; (modest) not at all",
+  "vi": "đâu; ở đâu; (khiêm tốn) đâu có"
+ },
+ "L1-0252": {
+  "en": "where; wherever; somewhere",
+  "vi": "đâu; ở đâu"
+ },
+ "L1-0253": {
+  "en": "which (ones)",
+  "vi": "những … nào; những cái nào"
+ },
+ "L1-0254": {
+  "en": "that; those",
+  "vi": "đó; kia; ấy"
+ },
+ "L1-0255": {
+  "en": "over there; that side",
+  "vi": "bên kia; đằng kia; bên đó"
+ },
+ "L1-0256": {
+  "en": "there; that place",
+  "vi": "ở đó; chỗ đó; đằng đó"
+ },
+ "L1-0257": {
+  "en": "there; over there",
+  "vi": "đó; ở đó; chỗ đó"
+ },
+ "L1-0258": {
+  "en": "those",
+  "vi": "những … đó; những cái đó"
+ },
+ "L1-0259": {
+  "en": "milk; breast",
+  "vi": "sữa; vú"
+ },
+ "L1-0260": {
+  "en": "grandma (father's mother)",
+  "vi": "bà nội; bà"
+ },
+ "L1-0261": {
+  "en": "male; man; men's",
+  "vi": "nam; trai; đàn ông"
+ },
+ "L1-0262": {
+  "en": "boy",
+  "vi": "con trai; bé trai; cậu bé"
+ },
+ "L1-0263": {
+  "en": "boyfriend",
+  "vi": "bạn trai; người yêu"
+ },
+ "L1-0264": {
+  "en": "man; men",
+  "vi": "đàn ông; người đàn ông"
+ },
+ "L1-0265": {
+  "en": "male student; boy; guy",
+  "vi": "nam sinh; con trai; bạn nam"
+ },
+ "L1-0266": {
+  "en": "south",
+  "vi": "nam; phía nam"
+ },
+ "L1-0267": {
+  "en": "south side; the south",
+  "vi": "phía nam"
+ },
+ "L1-0268": {
+  "en": "difficult; hard",
+  "vi": "khó; khó khăn"
+ },
+ "L1-0269": {
+  "en": "(and you?; ongoing action)",
+  "vi": "(còn … thì sao?; … thế?; đang … đấy)"
+ },
+ "L1-0270": {
+  "en": "can; to be able to; may (be allowed)",
+  "vi": "có thể; được (phép)"
+ },
+ "L1-0271": {
+  "en": "you",
+  "vi": "bạn; anh, chị, em… (ngôi thứ hai)"
+ },
+ "L1-0272": {
+  "en": "you (plural)",
+  "vi": "các bạn; các anh chị"
+ },
+ "L1-0273": {
+  "en": "year",
+  "vi": "năm"
+ },
+ "L1-0274": {
+  "en": "you (polite)",
+  "vi": "ngài; ông, bà (ngôi hai, kính trọng)"
+ },
+ "L1-0275": {
+  "en": "milk; cow's milk",
+  "vi": "sữa bò; sữa"
+ },
+ "L1-0276": {
+  "en": "female; woman; women's",
+  "vi": "nữ; gái; phụ nữ"
+ },
+ "L1-0277": {
+  "en": "daughter",
+  "vi": "con gái"
+ },
+ "L1-0278": {
+  "en": "girl",
+  "vi": "bé gái; cô bé; con gái"
+ },
+ "L1-0279": {
+  "en": "girlfriend",
+  "vi": "bạn gái; người yêu"
+ },
+ "L1-0280": {
+  "en": "woman; women",
+  "vi": "phụ nữ; đàn bà"
+ },
+ "L1-0281": {
+  "en": "female student; girl",
+  "vi": "nữ sinh; con gái; bạn nữ"
+ },
+ "L1-0282": {
+  "en": "beside; next to; side",
+  "vi": "bên cạnh; cạnh"
+ },
+ "L1-0283": {
+  "en": "to run; to run away; to rush about",
+  "vi": "chạy; chạy trốn; chạy đi (đâu)"
+ },
+ "L1-0284": {
+  "en": "friend",
+  "vi": "bạn; bạn bè"
+ },
+ "L1-0285": {
+  "en": "ticket; vote; ballot",
+  "vi": "vé; phiếu"
+ },
+ "L1-0286": {
+  "en": "seven",
+  "vi": "bảy"
+ },
+ "L1-0287": {
+  "en": "to get up; to rise; starting (from)",
+  "vi": "dậy; đứng lên; bắt đầu (từ)"
+ },
+ "L1-0288": {
+  "en": "to get up (out of bed)",
+  "vi": "thức dậy; ngủ dậy; dậy"
+ },
+ "L1-0289": {
+  "en": "to get up; to stand up; (after verb) begin to",
+  "vi": "dậy; đứng lên; (sau động từ) bắt đầu"
+ },
+ "L1-0290": {
+  "en": "car; automobile",
+  "vi": "xe hơi; ô tô"
+ },
+ "L1-0291": {
+  "en": "front; before; ago",
+  "vi": "trước; phía trước; trước đây"
+ },
+ "L1-0292": {
+  "en": "front; in front; ahead",
+  "vi": "phía trước; đằng trước"
+ },
+ "L1-0293": {
+  "en": "the day before yesterday",
+  "vi": "hôm kia"
+ },
+ "L1-0294": {
+  "en": "money",
+  "vi": "tiền"
+ },
+ "L1-0295": {
+  "en": "wallet; purse",
+  "vi": "ví; bóp (tiền)"
+ },
+ "L1-0296": {
+  "en": "please; to invite; to treat (to a meal)",
+  "vi": "mời; xin, làm ơn; đãi, bao (ăn)"
+ },
+ "L1-0297": {
+  "en": "to ask for leave; to take time off",
+  "vi": "xin nghỉ; xin nghỉ phép"
+ },
+ "L1-0298": {
+  "en": "please come in",
+  "vi": "mời vào"
+ },
+ "L1-0299": {
+  "en": "excuse me, may I ask…",
+  "vi": "xin hỏi; cho tôi hỏi"
+ },
+ "L1-0300": {
+  "en": "please sit down; have a seat",
+  "vi": "mời ngồi; xin mời ngồi"
+ },
+ "L1-0301": {
+  "en": "ball; ball game",
+  "vi": "bóng; quả bóng; trận bóng"
+ },
+ "L1-0302": {
+  "en": "to go; to go to (a place); to leave",
+  "vi": "đi; đi đến"
+ },
+ "L1-0303": {
+  "en": "last year",
+  "vi": "năm ngoái; năm trước"
+ },
+ "L1-0304": {
+  "en": "hot; to heat up; warm",
+  "vi": "nóng; hâm nóng; nhiệt tình"
+ },
+ "L1-0305": {
+  "en": "person; people",
+  "vi": "người"
+ },
+ "L1-0306": {
+  "en": "to know (sb); to $1is$2; understanding",
+  "vi": "quen, biết (ai); nhận ra; nhận thức"
+ },
+ "L1-0307": {
+  "en": "serious; conscientious; earnest",
+  "vi": "nghiêm túc; chăm chỉ; tận tâm"
+ },
+ "L1-0308": {
+  "en": "day; day of the month; sun",
+  "vi": "ngày; mặt trời"
+ },
+ "L1-0309": {
+  "en": "date",
+  "vi": "ngày; ngày tháng"
+ },
+ "L1-0310": {
+  "en": "meat",
+  "vi": "thịt"
+ },
+ "L1-0311": {
+  "en": "three",
+  "vi": "ba"
+ },
+ "L1-0312": {
+  "en": "mountain; hill",
+  "vi": "núi; đồi"
+ },
+ "L1-0313": {
+  "en": "shopping mall; department store",
+  "vi": "trung tâm thương mại; trung tâm mua sắm"
+ },
+ "L1-0314": {
+  "en": "shop; store",
+  "vi": "cửa hàng; tiệm"
+ },
+ "L1-0315": {
+  "en": "on, above; last (week etc.); to go up, get on",
+  "vi": "trên; trước (tuần trước); lên, đi (học, làm)"
+ },
+ "L1-0316": {
+  "en": "to go to work; to be at work",
+  "vi": "đi làm; vào làm"
+ },
+ "L1-0317": {
+  "en": "top; above; on top (of)",
+  "vi": "phía trên; bên trên"
+ },
+ "L1-0318": {
+  "en": "to get on (a bus, car, train)",
+  "vi": "lên xe"
+ },
+ "L1-0319": {
+  "en": "last time",
+  "vi": "lần trước"
+ },
+ "L1-0320": {
+  "en": "to attend class; to have a lesson",
+  "vi": "vào học; lên lớp; đi học"
+ },
+ "L1-0321": {
+  "en": "to go online; to use the Internet",
+  "vi": "lên mạng; vào mạng"
+ },
+ "L1-0322": {
+  "en": "morning; a.m.",
+  "vi": "buổi sáng"
+ },
+ "L1-0323": {
+  "en": "to go to school; to attend school",
+  "vi": "đi học; đến trường"
+ },
+ "L1-0324": {
+  "en": "few; little; to be missing",
+  "vi": "ít; thiếu"
+ },
+ "L1-0325": {
+  "en": "who; whom; anyone",
+  "vi": "ai"
+ },
+ "L1-0326": {
+  "en": "on the body; on (sb); on one's person",
+  "vi": "trên người; trong người"
+ },
+ "L1-0327": {
+  "en": "body; health",
+  "vi": "cơ thể; sức khỏe; thân thể"
+ },
+ "L1-0328": {
+  "en": "what; something; anything",
+  "vi": "gì; cái gì; bất cứ gì"
+ },
+ "L1-0329": {
+  "en": "to get sick; to fall ill",
+  "vi": "bị ốm; bị bệnh"
+ },
+ "L1-0330": {
+  "en": "to get angry; to be mad",
+  "vi": "giận; tức giận; nổi giận"
+ },
+ "L1-0331": {
+  "en": "birthday",
+  "vi": "sinh nhật"
+ },
+ "L1-0332": {
+  "en": "ten",
+  "vi": "mười"
+ },
+ "L1-0333": {
+  "en": "time; moment; (at the time) when",
+  "vi": "lúc; khi; thời gian"
+ },
+ "L1-0334": {
+  "en": "time; period of time",
+  "vi": "thời gian; thì giờ"
+ },
+ "L1-0335": {
+  "en": "thing; matter; business",
+  "vi": "việc; chuyện"
+ },
+ "L1-0336": {
+  "en": "to try; to test; to try on",
+  "vi": "thử; thử xem"
+ },
+ "L1-0337": {
+  "en": "to be (am, is, are); yes; right",
+  "vi": "là; vâng, phải; đúng"
+ },
+ "L1-0338": {
+  "en": "is it (or not)?; …, right?",
+  "vi": "có phải … không?; phải không?; đúng không?"
+ },
+ "L1-0339": {
+  "en": "hand",
+  "vi": "tay; bàn tay"
+ },
+ "L1-0340": {
+  "en": "mobile phone; cell phone",
+  "vi": "điện thoại di động; điện thoại"
+ },
+ "L1-0341": {
+  "en": "book",
+  "vi": "sách; quyển sách"
+ },
+ "L1-0342": {
+  "en": "schoolbag; book bag",
+  "vi": "cặp sách; cặp"
+ },
+ "L1-0343": {
+  "en": "bookstore; bookshop",
+  "vi": "hiệu sách; nhà sách"
+ },
+ "L1-0344": {
+  "en": "tree",
+  "vi": "cây; cây cối"
+ },
+ "L1-0345": {
+  "en": "water",
+  "vi": "nước"
+ },
+ "L1-0346": {
+  "en": "fruit",
+  "vi": "hoa quả; trái cây"
+ },
+ "L1-0347": {
+  "en": "to sleep",
+  "vi": "ngủ"
+ },
+ "L1-0348": {
+  "en": "to sleep; to go to bed",
+  "vi": "ngủ; đi ngủ"
+ },
+ "L1-0349": {
+  "en": "to say; to speak; to tell off",
+  "vi": "nói; kể; la mắng"
+ },
+ "L1-0350": {
+  "en": "to talk; to speak; to say",
+  "vi": "nói; nói chuyện"
+ },
+ "L1-0351": {
+  "en": "four",
+  "vi": "bốn"
+ },
+ "L1-0352": {
+  "en": "to give (as a gift); to deliver; to see off",
+  "vi": "tặng; đưa; tiễn"
+ },
+ "L1-0353": {
+  "en": "years old; year (of age)",
+  "vi": "tuổi"
+ },
+ "L1-0354": {
+  "en": "he; him",
+  "vi": "anh ấy; ông ấy; nó"
+ },
+ "L1-0355": {
+  "en": "they; them",
+  "vi": "họ; bọn họ; chúng nó"
+ },
+ "L1-0356": {
+  "en": "she; her",
+  "vi": "cô ấy; chị ấy; bà ấy"
+ },
+ "L1-0357": {
+  "en": "they; them (female)",
+  "vi": "họ (nữ); các cô ấy; các chị ấy"
+ },
+ "L1-0358": {
+  "en": "too (much); so; extremely",
+  "vi": "quá; lắm; rất"
+ },
+ "L1-0359": {
+  "en": "day; sky; heaven",
+  "vi": "ngày; trời; bầu trời"
+ },
+ "L1-0360": {
+  "en": "weather",
+  "vi": "thời tiết"
+ },
+ "L1-0361": {
+  "en": "to listen; to hear; to obey",
+  "vi": "nghe; nghe lời"
+ },
+ "L1-0362": {
+  "en": "to hear",
+  "vi": "nghe thấy; nghe được"
+ },
+ "L1-0363": {
+  "en": "to hear",
+  "vi": "nghe thấy"
+ },
+ "L1-0364": {
+  "en": "dictation; to write from dictation",
+  "vi": "nghe viết; viết chính tả"
+ },
+ "L1-0365": {
+  "en": "classmate; schoolmate; fellow student",
+  "vi": "bạn học; bạn cùng lớp"
+ },
+ "L1-0366": {
+  "en": "library",
+  "vi": "thư viện"
+ },
+ "L1-0367": {
+  "en": "outside; foreign; other",
+  "vi": "ngoài; bên ngoài; nước ngoài"
+ },
+ "L1-0368": {
+  "en": "outside; out",
+  "vi": "bên ngoài; ngoài"
+ },
+ "L1-0369": {
+  "en": "foreign country; foreign",
+  "vi": "nước ngoài"
+ },
+ "L1-0370": {
+  "en": "foreign language",
+  "vi": "ngoại ngữ; tiếng nước ngoài"
+ },
+ "L1-0371": {
+  "en": "to play; to have fun; to hang out",
+  "vi": "chơi; đi chơi; vui chơi"
+ },
+ "L1-0372": {
+  "en": "late; evening; night",
+  "vi": "muộn; trễ; tối"
+ },
+ "L1-0373": {
+  "en": "dinner; supper",
+  "vi": "bữa tối; cơm tối"
+ },
+ "L1-0374": {
+  "en": "evening; night; in the evening",
+  "vi": "buổi tối; tối; ban đêm"
+ },
+ "L1-0375": {
+  "en": "online; on the Internet",
+  "vi": "trên mạng; trực tuyến"
+ },
+ "L1-0376": {
+  "en": "online friend; netizen; Internet user",
+  "vi": "bạn trên mạng; cư dân mạng"
+ },
+ "L1-0377": {
+  "en": "to forget",
+  "vi": "quên"
+ },
+ "L1-0378": {
+  "en": "to forget",
+  "vi": "quên; quên mất"
+ },
+ "L1-0379": {
+  "en": "to ask",
+  "vi": "hỏi"
+ },
+ "L1-0380": {
+  "en": "I; me; my",
+  "vi": "tôi; mình; tớ"
+ },
+ "L1-0381": {
+  "en": "we; us",
+  "vi": "chúng tôi; chúng ta; bọn mình"
+ },
+ "L1-0382": {
+  "en": "five",
+  "vi": "năm"
+ },
+ "L1-0383": {
+  "en": "lunch",
+  "vi": "bữa trưa; cơm trưa"
+ },
+ "L1-0384": {
+  "en": "west",
+  "vi": "tây; phía tây"
+ },
+ "L1-0385": {
+  "en": "west side; the west",
+  "vi": "phía tây"
+ },
+ "L1-0386": {
+  "en": "to wash; to bathe",
+  "vi": "rửa; giặt; tắm"
+ },
+ "L1-0387": {
+  "en": "toilet; restroom; washroom",
+  "vi": "nhà vệ sinh; phòng vệ sinh"
+ },
+ "L1-0388": {
+  "en": "to like; to be fond of",
+  "vi": "thích"
+ },
+ "L1-0389": {
+  "en": "below; next (week etc.); to go down, get off",
+  "vi": "dưới; sau, tới (tuần sau); xuống"
+ },
+ "L1-0390": {
+  "en": "to get off work; to finish work",
+  "vi": "tan làm; tan ca; hết giờ làm"
+ },
+ "L1-0391": {
+  "en": "below; under; underneath",
+  "vi": "phía dưới; bên dưới; ở dưới"
+ },
+ "L1-0392": {
+  "en": "to get off (a bus, train, car)",
+  "vi": "xuống xe"
+ },
+ "L1-0393": {
+  "en": "next time",
+  "vi": "lần sau; lần tới"
+ },
+ "L1-0394": {
+  "en": "to finish class; class is over",
+  "vi": "tan học; hết giờ học"
+ },
+ "L1-0395": {
+  "en": "afternoon; p.m.",
+  "vi": "buổi chiều; chiều"
+ },
+ "L1-0396": {
+  "en": "to rain",
+  "vi": "mưa; trời mưa"
+ },
+ "L1-0397": {
+  "en": "first; in advance; earlier",
+  "vi": "trước; trước tiên; trước đã"
+ },
+ "L1-0398": {
+  "en": "Mr.; sir; husband",
+  "vi": "ông, ngài (cách gọi); chồng"
+ },
+ "L1-0399": {
+  "en": "now; at present; currently",
+  "vi": "bây giờ; hiện nay; hiện tại"
+ },
+ "L1-0400": {
+  "en": "to want to; to think; to miss (sb)",
+  "vi": "muốn; nghĩ; nhớ (ai)"
+ },
+ "L1-0401": {
+  "en": "small; little; young",
+  "vi": "nhỏ; bé; trẻ (tuổi)"
+ },
+ "L1-0402": {
+  "en": "child; kid",
+  "vi": "trẻ con; đứa trẻ; con nít"
+ },
+ "L1-0403": {
+  "en": "Miss; young lady",
+  "vi": "cô (cách gọi); cô gái trẻ"
+ },
+ "L1-0404": {
+  "en": "child; kid; (addressing a child) kiddo",
+  "vi": "em bé; bạn nhỏ; cháu (gọi trẻ em)"
+ },
+ "L1-0405": {
+  "en": "hour",
+  "vi": "tiếng (đồng hồ); giờ"
+ },
+ "L1-0406": {
+  "en": "primary school; elementary school",
+  "vi": "tiểu học; trường tiểu học"
+ },
+ "L1-0407": {
+  "en": "primary school pupil; schoolchild",
+  "vi": "học sinh tiểu học"
+ },
+ "L1-0408": {
+  "en": "to laugh; to smile; to laugh at",
+  "vi": "cười; cười nhạo"
+ },
+ "L1-0409": {
+  "en": "to write",
+  "vi": "viết"
+ },
+ "L1-0410": {
+  "en": "thank you; thanks; to thank",
+  "vi": "cảm ơn"
+ },
+ "L1-0411": {
+  "en": "new; newly",
+  "vi": "mới"
+ },
+ "L1-0412": {
+  "en": "New Year",
+  "vi": "năm mới"
+ },
+ "L1-0413": {
+  "en": "week; day of the week",
+  "vi": "tuần; thứ (thứ Hai…)"
+ },
+ "L1-0414": {
+  "en": "Sunday",
+  "vi": "Chủ nhật"
+ },
+ "L1-0415": {
+  "en": "Sunday",
+  "vi": "Chủ nhật"
+ },
+ "L1-0416": {
+  "en": "OK; all right; capable (good at it)",
+  "vi": "được; ổn; giỏi"
+ },
+ "L1-0417": {
+  "en": "to rest; to take a break; rest",
+  "vi": "nghỉ; nghỉ ngơi"
+ },
+ "L1-0418": {
+  "en": "to learn; to study; to imitate",
+  "vi": "học; bắt chước"
+ },
+ "L1-0419": {
+  "en": "student; pupil",
+  "vi": "học sinh; sinh viên"
+ },
+ "L1-0420": {
+  "en": "to study; to learn",
+  "vi": "học; học tập"
+ },
+ "L1-0421": {
+  "en": "school",
+  "vi": "trường; trường học"
+ },
+ "L1-0422": {
+  "en": "college; institute; faculty",
+  "vi": "học viện; trường (cao đẳng); khoa"
+ },
+ "L1-0423": {
+  "en": "to want; to need; will, going to",
+  "vi": "muốn; cần; sẽ, sắp"
+ },
+ "L1-0424": {
+  "en": "grandpa (father's father)",
+  "vi": "ông nội; ông"
+ },
+ "L1-0425": {
+  "en": "also; too; (not) either",
+  "vi": "cũng"
+ },
+ "L1-0426": {
+  "en": "page",
+  "vi": "trang"
+ },
+ "L1-0427": {
+  "en": "one; a, an; as soon as (…then)",
+  "vi": "một; hễ … là …"
+ },
+ "L1-0428": {
+  "en": "clothes; clothing",
+  "vi": "quần áo; áo"
+ },
+ "L1-0429": {
+  "en": "doctor",
+  "vi": "bác sĩ"
+ },
+ "L1-0430": {
+  "en": "hospital",
+  "vi": "bệnh viện"
+ },
+ "L1-0431": {
+  "en": "half; one half",
+  "vi": "một nửa"
+ },
+ "L1-0432": {
+  "en": "a moment; a little while; in a moment",
+  "vi": "một lát; một lúc; lát nữa"
+ },
+ "L1-0433": {
+  "en": "together; (in) the same place",
+  "vi": "cùng nhau; cùng; chung"
+ },
+ "L1-0434": {
+  "en": "(after a verb) briefly, a bit; once",
+  "vi": "(sau động từ) một chút, một lát"
+ },
+ "L1-0435": {
+  "en": "same; alike; the same as",
+  "vi": "giống; như nhau; giống như"
+ },
+ "L1-0436": {
+  "en": "(doing A) while (doing B); one side",
+  "vi": "vừa … vừa …; một bên"
+ },
+ "L1-0437": {
+  "en": "a little; a bit; some",
+  "vi": "một chút; một ít; hơi"
+ },
+ "L1-0438": {
+  "en": "together; in the same place; in all",
+  "vi": "cùng nhau; cùng; cùng một chỗ"
+ },
+ "L1-0439": {
+  "en": "some; a few; a little",
+  "vi": "một số; một vài; một ít"
+ },
+ "L1-0440": {
+  "en": "to use; with (a tool); to need (usu. negative)",
+  "vi": "dùng; bằng (dụng cụ); cần (không cần…)"
+ },
+ "L1-0441": {
+  "en": "to have; there is; there are",
+  "vi": "có"
+ },
+ "L1-0442": {
+  "en": "some (people or things)",
+  "vi": "một số; có người; có cái"
+ },
+ "L1-0443": {
+  "en": "famous; well-known",
+  "vi": "nổi tiếng; có tiếng"
+ },
+ "L1-0444": {
+  "en": "sometimes",
+  "vi": "đôi khi; có lúc; thỉnh thoảng"
+ },
+ "L1-0445": {
+  "en": "some; a few; somewhat",
+  "vi": "một số; một vài; hơi (một chút)"
+ },
+ "L1-0446": {
+  "en": "useful; to be of use",
+  "vi": "có ích; hữu ích"
+ },
+ "L1-0447": {
+  "en": "right; right side",
+  "vi": "phải; bên phải"
+ },
+ "L1-0448": {
+  "en": "right side; on the right",
+  "vi": "bên phải; phía bên phải"
+ },
+ "L1-0449": {
+  "en": "rain",
+  "vi": "mưa"
+ },
+ "L1-0450": {
+  "en": "yuan (unit of Chinese money)",
+  "vi": "tệ (đơn vị tiền Trung Quốc); đồng"
+ },
+ "L1-0451": {
+  "en": "far; distant",
+  "vi": "xa; xa xôi"
+ },
+ "L1-0452": {
+  "en": "month; moon",
+  "vi": "tháng; mặt trăng; trăng"
+ },
+ "L1-0453": {
+  "en": "again; once more; then (after that)",
+  "vi": "lại; … nữa; rồi hãy (sau đó)"
+ },
+ "L1-0454": {
+  "en": "goodbye; see you",
+  "vi": "tạm biệt; hẹn gặp lại"
+ },
+ "L1-0455": {
+  "en": "at; in; (doing) -ing",
+  "vi": "ở; tại; đang (làm gì)"
+ },
+ "L1-0456": {
+  "en": "to be at home; to be in",
+  "vi": "ở nhà; có nhà"
+ },
+ "L1-0457": {
+  "en": "early; good morning!; long ago",
+  "vi": "sớm; chào buổi sáng!; từ lâu"
+ },
+ "L1-0458": {
+  "en": "breakfast",
+  "vi": "bữa sáng; cơm sáng"
+ },
+ "L1-0459": {
+  "en": "morning; early morning",
+  "vi": "buổi sáng; sáng sớm"
+ },
+ "L1-0460": {
+  "en": "how?; why?; how come?",
+  "vi": "thế nào?; làm sao?; sao (lại)?"
+ },
+ "L1-0461": {
+  "en": "station; stop (bus, metro)",
+  "vi": "trạm; ga; bến (xe)"
+ },
+ "L1-0462": {
+  "en": "to look for; to call on (sb); to give change",
+  "vi": "tìm; tìm gặp (ai); trả tiền thừa"
+ },
+ "L1-0463": {
+  "en": "to find",
+  "vi": "tìm thấy; tìm được"
+ },
+ "L1-0464": {
+  "en": "this; these",
+  "vi": "này; đây; cái này"
+ },
+ "L1-0465": {
+  "en": "this side; over here",
+  "vi": "bên này; phía này; ở đây"
+ },
+ "L1-0466": {
+  "en": "here; this place",
+  "vi": "ở đây; chỗ này; đây"
+ },
+ "L1-0467": {
+  "en": "here; over here",
+  "vi": "đây; ở đây; chỗ này"
+ },
+ "L1-0468": {
+  "en": "these",
+  "vi": "những … này; những cái này"
+ },
+ "L1-0469": {
+  "en": "(ongoing action or lasting state: -ing)",
+  "vi": "(đang; vẫn – trạng thái tiếp diễn)"
+ },
+ "L1-0470": {
+  "en": "really; truly; real",
+  "vi": "thật; thật là; thật sự"
+ },
+ "L1-0471": {
+  "en": "really; truly; real (genuine)",
+  "vi": "thật sự; thật; thật à?"
+ },
+ "L1-0472": {
+  "en": "in the middle of (doing); exactly; just",
+  "vi": "đang (đúng lúc); đúng; chính (là)"
+ },
+ "L1-0473": {
+  "en": "in the process of; (right now) -ing",
+  "vi": "đang (làm gì); đang lúc"
+ },
+ "L1-0474": {
+  "en": "to know; to be aware of",
+  "vi": "biết; biết được"
+ },
+ "L1-0475": {
+  "en": "knowledge",
+  "vi": "kiến thức; tri thức"
+ },
+ "L1-0476": {
+  "en": "middle; in (within); among",
+  "vi": "giữa; trong; trong số"
+ },
+ "L1-0477": {
+  "en": "China",
+  "vi": "Trung Quốc"
+ },
+ "L1-0478": {
+  "en": "middle; between; among",
+  "vi": "ở giữa; chính giữa; trong số"
+ },
+ "L1-0479": {
+  "en": "Chinese (language)",
+  "vi": "tiếng Trung; tiếng Hoa"
+ },
+ "L1-0480": {
+  "en": "noon; midday",
+  "vi": "buổi trưa; trưa"
+ },
+ "L1-0481": {
+  "en": "secondary school; middle school",
+  "vi": "trường trung học"
+ },
+ "L1-0482": {
+  "en": "secondary-school student",
+  "vi": "học sinh trung học"
+ },
+ "L1-0483": {
+  "en": "heavy; serious; important",
+  "vi": "nặng; nghiêm trọng; quan trọng"
+ },
+ "L1-0484": {
+  "en": "important; significant",
+  "vi": "quan trọng; hệ trọng"
+ },
+ "L1-0485": {
+  "en": "to live (at); to stay; (after verb) firmly",
+  "vi": "ở; sống (tại); (sau động từ) chặt, kỹ"
+ },
+ "L1-0486": {
+  "en": "to prepare; to plan (to); preparation",
+  "vi": "chuẩn bị; định (làm gì); sự chuẩn bị"
+ },
+ "L1-0487": {
+  "en": "table; desk",
+  "vi": "cái bàn; bàn"
+ },
+ "L1-0488": {
+  "en": "(written) character; word; handwriting",
+  "vi": "chữ; chữ viết; từ"
+ },
+ "L1-0489": {
+  "en": "(noun suffix: table, chopsticks…)",
+  "vi": "(hậu tố danh từ: cái bàn, đôi đũa…)"
+ },
+ "L1-0490": {
+  "en": "to walk; to go; to leave",
+  "vi": "đi; đi bộ; rời đi"
+ },
+ "L1-0491": {
+  "en": "to walk; to go on foot",
+  "vi": "đi bộ; đi đường"
+ },
+ "L1-0492": {
+  "en": "most; -est (superlative)",
+  "vi": "nhất (tốt nhất, đẹp nhất…)"
+ },
+ "L1-0493": {
+  "en": "had better; it's best to; best",
+  "vi": "tốt nhất (là); tốt hơn hết; nên"
+ },
+ "L1-0494": {
+  "en": "finally; last; in the end",
+  "vi": "cuối cùng; sau cùng"
+ },
+ "L1-0495": {
+  "en": "yesterday",
+  "vi": "hôm qua"
+ },
+ "L1-0496": {
+  "en": "left; left side",
+  "vi": "trái; bên trái"
+ },
+ "L1-0497": {
+  "en": "left side; on the left",
+  "vi": "bên trái; phía bên trái"
+ },
+ "L1-0498": {
+  "en": "to sit; to take (a bus, plane etc.)",
+  "vi": "ngồi; đi (xe, tàu, máy bay)"
+ },
+ "L1-0499": {
+  "en": "to sit down",
+  "vi": "ngồi xuống"
+ },
+ "L1-0500": {
+  "en": "to do; to make; to be (work as)",
+  "vi": "làm; nấu (ăn); làm (nghề, vai)"
+ },
+ "L2-0001": {
+  "en": "(softens or adds feeling: ah, oh)",
+  "vi": "(à; vậy; quá – thêm sắc thái cuối câu)"
+ },
+ "L2-0002": {
+  "en": "(romantic) love; romance",
+  "vi": "tình yêu (đôi lứa)"
+ },
+ "L2-0003": {
+  "en": "husband or wife; spouse; lover",
+  "vi": "vợ hoặc chồng; bạn đời; người yêu"
+ },
+ "L2-0004": {
+  "en": "quiet; calm; peaceful",
+  "vi": "yên tĩnh; yên lặng; giữ trật tự"
+ },
+ "L2-0005": {
+  "en": "safe; safety; security",
+  "vi": "an toàn; sự an toàn; an ninh"
+ },
+ "L2-0006": {
+  "en": "white (colour)",
+  "vi": "màu trắng"
+ },
+ "L2-0007": {
+  "en": "class monitor; team leader",
+  "vi": "lớp trưởng; trưởng nhóm"
+ },
+ "L2-0008": {
+  "en": "to do; to handle; to organise (an event)",
+  "vi": "làm (thủ tục…); giải quyết; tổ chức"
+ },
+ "L2-0009": {
+  "en": "way; means; solution",
+  "vi": "cách; biện pháp; cách giải quyết"
+ },
+ "L2-0010": {
+  "en": "office",
+  "vi": "văn phòng; phòng làm việc"
+ },
+ "L2-0011": {
+  "en": "midnight; middle of the night",
+  "vi": "nửa đêm; giữa đêm; đêm khuya"
+ },
+ "L2-0012": {
+  "en": "to help; help; assistance",
+  "vi": "giúp đỡ; giúp; sự giúp đỡ"
+ },
+ "L2-0013": {
+  "en": "full (after eating); satisfied",
+  "vi": "no; no bụng"
+ },
+ "L2-0014": {
+  "en": "to sign up; to register; to enrol",
+  "vi": "đăng ký; ghi danh; ghi tên"
+ },
+ "L2-0015": {
+  "en": "newspaper",
+  "vi": "báo; tờ báo"
+ },
+ "L2-0016": {
+  "en": "the north; northern region",
+  "vi": "phía bắc; miền bắc; phương bắc"
+ },
+ "L2-0017": {
+  "en": "to learn by heart; to recite; back (of body)",
+  "vi": "học thuộc lòng; đọc thuộc; lưng"
+ },
+ "L2-0018": {
+  "en": "for example; such as",
+  "vi": "ví dụ; chẳng hạn; như là"
+ },
+ "L2-0019": {
+  "en": "for example; for instance",
+  "vi": "ví dụ như; chẳng hạn như"
+ },
+ "L2-0020": {
+  "en": "pen; brush; (measure word: sums of money)",
+  "vi": "bút; cây bút; (lượng từ: khoản tiền)"
+ },
+ "L2-0021": {
+  "en": "notes; to take notes",
+  "vi": "ghi chép; bài ghi; ghi chú"
+ },
+ "L2-0022": {
+  "en": "notebook; laptop (computer)",
+  "vi": "sổ tay; vở ghi chép; máy tính xách tay"
+ },
+ "L2-0023": {
+  "en": "must; to have to",
+  "vi": "phải; bắt buộc phải; nhất định phải"
+ },
+ "L2-0024": {
+  "en": "side; edge; while (doing two things)",
+  "vi": "bên; cạnh; vừa … vừa … (đồng thời)"
+ },
+ "L2-0025": {
+  "en": "to change; to become; to turn into",
+  "vi": "thay đổi; biến đổi; trở nên"
+ },
+ "L2-0026": {
+  "en": "to become; to turn into; to change into",
+  "vi": "trở thành; biến thành; thành"
+ },
+ "L2-0027": {
+  "en": "(measure word: times, from start to finish)",
+  "vi": "(lượng từ: lần, lượt – từ đầu đến cuối)"
+ },
+ "L2-0028": {
+  "en": "watch (timepiece); table (chart); form",
+  "vi": "đồng hồ (đeo tay); bảng biểu; mẫu đơn"
+ },
+ "L2-0029": {
+  "en": "to express; to show; to indicate",
+  "vi": "bày tỏ; thể hiện; biểu thị"
+ },
+ "L2-0030": {
+  "en": "not bad; pretty good; correct",
+  "vi": "không tệ; khá tốt; đúng"
+ },
+ "L2-0031": {
+  "en": "not only (… but also)",
+  "vi": "không những; không chỉ (… mà còn)"
+ },
+ "L2-0032": {
+  "en": "not enough; insufficient",
+  "vi": "không đủ; chưa đủ; thiếu"
+ },
+ "L2-0033": {
+  "en": "but; however; only (merely)",
+  "vi": "nhưng; có điều; chẳng qua (chỉ là)"
+ },
+ "L2-0034": {
+  "en": "not very; not too; not quite",
+  "vi": "không … lắm; không mấy"
+ },
+ "L2-0035": {
+  "en": "don't!; must not; don't want",
+  "vi": "đừng; không được; không muốn"
+ },
+ "L2-0036": {
+  "en": "sorry; excuse me; to feel embarrassed",
+  "vi": "xin lỗi; ngại quá; thấy ngại"
+ },
+ "L2-0037": {
+  "en": "soon; before long; not long after",
+  "vi": "không lâu (sau); chẳng bao lâu; sắp"
+ },
+ "L2-0038": {
+  "en": "dissatisfied; discontented; resentful",
+  "vi": "không hài lòng; bất mãn; bực bội"
+ },
+ "L2-0039": {
+  "en": "not as good as; it would be better to",
+  "vi": "không bằng; kém hơn; chi bằng"
+ },
+ "L2-0040": {
+  "en": "quite a few; a lot of; many",
+  "vi": "không ít; khá nhiều; nhiều"
+ },
+ "L2-0041": {
+  "en": "different; not the same; distinct",
+  "vi": "khác nhau; khác; không giống nhau"
+ },
+ "L2-0042": {
+  "en": "won't do; not OK; no good",
+  "vi": "không được; không ổn; kém"
+ },
+ "L2-0043": {
+  "en": "not necessarily; not sure; maybe",
+  "vi": "chưa chắc; không nhất thiết; có thể"
+ },
+ "L2-0044": {
+  "en": "soon; in a moment; before long",
+  "vi": "chẳng mấy chốc; một lát sau; ngay sau đó"
+ },
+ "L2-0045": {
+  "en": "part; portion; section",
+  "vi": "phần; bộ phận; một phần"
+ },
+ "L2-0046": {
+  "en": "only then (not until); just (now); only",
+  "vi": "mới (muộn hơn dự kiến); vừa mới; chỉ (có)"
+ },
+ "L2-0047": {
+  "en": "menu",
+  "vi": "thực đơn"
+ },
+ "L2-0048": {
+  "en": "to visit (a place); to tour; to look around",
+  "vi": "tham quan; thăm (nơi nào đó)"
+ },
+ "L2-0049": {
+  "en": "to take part in; to join; to attend",
+  "vi": "tham gia; tham dự; dự"
+ },
+ "L2-0050": {
+  "en": "grass; straw",
+  "vi": "cỏ; rơm"
+ },
+ "L2-0051": {
+  "en": "lawn; grassland; meadow",
+  "vi": "bãi cỏ; thảm cỏ; đồng cỏ"
+ },
+ "L2-0052": {
+  "en": "(measure word: floors, layers); layer",
+  "vi": "(lượng từ: tầng, lớp); tầng; lớp"
+ },
+ "L2-0053": {
+  "en": "to check; to look up (a word); to investigate",
+  "vi": "tra (từ điển); kiểm tra; điều tra"
+ },
+ "L2-0054": {
+  "en": "almost; about the same; more or less",
+  "vi": "gần như; xấp xỉ; na ná nhau"
+ },
+ "L2-0055": {
+  "en": "long (length or time); length",
+  "vi": "dài; lâu; chiều dài"
+ },
+ "L2-0056": {
+  "en": "common; commonly seen",
+  "vi": "thường gặp; phổ biến; hay thấy"
+ },
+ "L2-0057": {
+  "en": "commonly used; in common use",
+  "vi": "thường dùng; hay dùng; thông dụng"
+ },
+ "L2-0058": {
+  "en": "(measure word: games, shows, showers); field",
+  "vi": "(lượng từ: trận đấu, buổi diễn, cơn mưa); sân"
+ },
+ "L2-0059": {
+  "en": "to exceed; to surpass; to overtake",
+  "vi": "vượt quá; vượt qua; hơn"
+ },
+ "L2-0060": {
+  "en": "supermarket",
+  "vi": "siêu thị"
+ },
+ "L2-0061": {
+  "en": "vehicle (car, bus etc.); traffic",
+  "vi": "xe cộ; phương tiện giao thông"
+ },
+ "L2-0062": {
+  "en": "to call; to be called; to weigh",
+  "vi": "gọi (là); được gọi là; cân (đo cân nặng)"
+ },
+ "L2-0063": {
+  "en": "to become; to turn into; to succeed",
+  "vi": "thành; trở thành; thành công"
+ },
+ "L2-0064": {
+  "en": "grades; results; achievement",
+  "vi": "thành tích; điểm số; kết quả"
+ },
+ "L2-0065": {
+  "en": "to become; to turn into",
+  "vi": "trở thành; thành"
+ },
+ "L2-0066": {
+  "en": "to repeat; to duplicate",
+  "vi": "lặp lại; nhắc lại; trùng lặp"
+ },
+ "L2-0067": {
+  "en": "again; anew; (start) over",
+  "vi": "lại; lại từ đầu; một lần nữa"
+ },
+ "L2-0068": {
+  "en": "to set off; to depart; to start out",
+  "vi": "xuất phát; khởi hành; lên đường"
+ },
+ "L2-0069": {
+  "en": "to go abroad; to leave the country",
+  "vi": "ra nước ngoài; đi nước ngoài"
+ },
+ "L2-0070": {
+  "en": "exit; way out; export",
+  "vi": "lối ra; cửa ra; xuất khẩu"
+ },
+ "L2-0071": {
+  "en": "to go out; to leave home; to travel",
+  "vi": "ra ngoài; ra khỏi nhà; đi xa"
+ },
+ "L2-0072": {
+  "en": "to be born; birth",
+  "vi": "sinh ra; ra đời; chào đời"
+ },
+ "L2-0073": {
+  "en": "to appear; to show up; to arise",
+  "vi": "xuất hiện; hiện ra; nảy sinh"
+ },
+ "L2-0074": {
+  "en": "to leave hospital; to be discharged",
+  "vi": "xuất viện; ra viện"
+ },
+ "L2-0075": {
+  "en": "to rent out; to let; for hire",
+  "vi": "cho thuê"
+ },
+ "L2-0076": {
+  "en": "taxi; cab",
+  "vi": "taxi; xe taxi"
+ },
+ "L2-0077": {
+  "en": "boat; ship",
+  "vi": "thuyền; tàu thủy"
+ },
+ "L2-0078": {
+  "en": "to blow; to play (a wind instrument); to boast",
+  "vi": "thổi; thổi (sáo, kèn); khoác lác"
+ },
+ "L2-0079": {
+  "en": "Spring Festival (Chinese New Year)",
+  "vi": "Tết Nguyên Đán; Tết (âm lịch)"
+ },
+ "L2-0080": {
+  "en": "spring (season)",
+  "vi": "mùa xuân"
+ },
+ "L2-0081": {
+  "en": "word; term; (song) lyrics",
+  "vi": "từ; từ ngữ; lời (bài hát)"
+ },
+ "L2-0082": {
+  "en": "dictionary",
+  "vi": "từ điển"
+ },
+ "L2-0083": {
+  "en": "word; expression; term",
+  "vi": "từ ngữ; từ; cụm từ"
+ },
+ "L2-0084": {
+  "en": "from childhood; from a young age",
+  "vi": "từ nhỏ; từ bé"
+ },
+ "L2-0085": {
+  "en": "to agree; to promise; to answer (when called)",
+  "vi": "đồng ý; nhận lời; hứa"
+ },
+ "L2-0086": {
+  "en": "to work part-time; to do casual work",
+  "vi": "làm thêm; làm thuê; đi làm công"
+ },
+ "L2-0087": {
+  "en": "to plan; to intend; plan",
+  "vi": "định; dự định; kế hoạch"
+ },
+ "L2-0088": {
+  "en": "to print (out)",
+  "vi": "in; in ra"
+ },
+ "L2-0089": {
+  "en": "most; the majority; the greater part",
+  "vi": "phần lớn; hầu hết; đa số"
+ },
+ "L2-0090": {
+  "en": "greatly; enormously",
+  "vi": "rất nhiều; đáng kể"
+ },
+ "L2-0091": {
+  "en": "the (vast) majority; most",
+  "vi": "đại đa số; phần lớn; hầu hết"
+ },
+ "L2-0092": {
+  "en": "sea; ocean",
+  "vi": "biển; biển cả"
+ },
+ "L2-0093": {
+  "en": "everyone; everybody; all of us",
+  "vi": "mọi người; tất cả mọi người"
+ },
+ "L2-0094": {
+  "en": "a large amount; a lot of; in large numbers",
+  "vi": "lượng lớn; số lượng lớn; rất nhiều"
+ },
+ "L2-0095": {
+  "en": "main gate; front door; entrance",
+  "vi": "cổng chính; cửa chính; cổng"
+ },
+ "L2-0096": {
+  "en": "adult; grown-up",
+  "vi": "người lớn"
+ },
+ "L2-0097": {
+  "en": "loudly; in a loud voice",
+  "vi": "to tiếng; lớn tiếng; (nói) to"
+ },
+ "L2-0098": {
+  "en": "size; large and small; adults and children",
+  "vi": "kích cỡ; to nhỏ; lớn bé"
+ },
+ "L2-0099": {
+  "en": "overcoat; (long) coat",
+  "vi": "áo khoác (dài); áo măng tô; áo choàng"
+ },
+ "L2-0100": {
+  "en": "nature; the natural world",
+  "vi": "thiên nhiên; giới tự nhiên"
+ },
+ "L2-0101": {
+  "en": "to bring; to take along; to lead",
+  "vi": "mang; mang theo; dẫn (dắt)"
+ },
+ "L2-0102": {
+  "en": "to bring; to bring about; to cause",
+  "vi": "mang đến; mang lại; đem lại"
+ },
+ "L2-0103": {
+  "en": "unit (of measure); workplace; organisation",
+  "vi": "đơn vị (đo); cơ quan; nơi làm việc"
+ },
+ "L2-0104": {
+  "en": "but; yet; however",
+  "vi": "nhưng; song; tuy nhiên"
+ },
+ "L2-0105": {
+  "en": "but; however",
+  "vi": "nhưng; nhưng mà; tuy nhiên"
+ },
+ "L2-0106": {
+  "en": "egg",
+  "vi": "trứng; quả trứng"
+ },
+ "L2-0107": {
+  "en": "to work as; to act as; when (at the time of)",
+  "vi": "làm (nghề, vai); đảm nhận; khi (lúc)"
+ },
+ "L2-0108": {
+  "en": "at that time; then",
+  "vi": "lúc đó; khi đó; hồi đó"
+ },
+ "L2-0109": {
+  "en": "to fall over; to collapse; to change (trains)",
+  "vi": "ngã; đổ (sập); đổi (tàu, xe)"
+ },
+ "L2-0110": {
+  "en": "everywhere; all over (the place)",
+  "vi": "khắp nơi; mọi nơi; đâu đâu cũng"
+ },
+ "L2-0111": {
+  "en": "to pour (out); to reverse; upside down",
+  "vi": "rót (nước); đổ (ra); lộn ngược"
+ },
+ "L2-0112": {
+  "en": "(measure word: questions, dishes, doors); road",
+  "vi": "(lượng từ: câu hỏi, món ăn, cánh cửa); đường"
+ },
+ "L2-0113": {
+  "en": "reason; sense; principle",
+  "vi": "lý lẽ; lẽ phải; đạo lý"
+ },
+ "L2-0114": {
+  "en": "road; path; way",
+  "vi": "đường; con đường; đường sá"
+ },
+ "L2-0115": {
+  "en": "to get; to obtain; to catch (an illness)",
+  "vi": "được; đạt được; mắc (bệnh)"
+ },
+ "L2-0116": {
+  "en": "to reach (a conclusion); to get (a result)",
+  "vi": "rút ra (kết luận); thu được (kết quả)"
+ },
+ "L2-0117": {
+  "en": "(if …; placed after the condition)",
+  "vi": "(nếu … – đặt sau vế điều kiện)"
+ },
+ "L2-0118": {
+  "en": "(after a verb: how well, to what degree)",
+  "vi": "(sau động từ: chỉ mức độ, kết quả)"
+ },
+ "L2-0119": {
+  "en": "lamp; light; lantern",
+  "vi": "đèn; bóng đèn; đèn lồng"
+ },
+ "L2-0120": {
+  "en": "and so on; etc.; grade (class)",
+  "vi": "vân vân (v.v.); hạng; loại"
+ },
+ "L2-0121": {
+  "en": "by the time; when; to wait until",
+  "vi": "đến khi; đợi đến lúc; chờ tới khi"
+ },
+ "L2-0122": {
+  "en": "to equal; to amount to; to be the same as",
+  "vi": "bằng; tương đương; chẳng khác gì"
+ },
+ "L2-0123": {
+  "en": "low; to lower (one's head)",
+  "vi": "thấp; cúi (đầu); hạ thấp"
+ },
+ "L2-0124": {
+  "en": "the Earth; the globe",
+  "vi": "Trái Đất; địa cầu"
+ },
+ "L2-0125": {
+  "en": "metro; subway; underground",
+  "vi": "tàu điện ngầm; metro"
+ },
+ "L2-0126": {
+  "en": "metro station; subway station",
+  "vi": "ga tàu điện ngầm; ga metro"
+ },
+ "L2-0127": {
+  "en": "to nod (one's head)",
+  "vi": "gật đầu"
+ },
+ "L2-0128": {
+  "en": "shop; store; inn",
+  "vi": "cửa hàng; tiệm; quán"
+ },
+ "L2-0129": {
+  "en": "to fall; to drop; (after verb) off, away",
+  "vi": "rơi; đánh rơi; (sau động từ) mất, hết"
+ },
+ "L2-0130": {
+  "en": "northeast; Northeast China",
+  "vi": "đông bắc; vùng Đông Bắc (Trung Quốc)"
+ },
+ "L2-0131": {
+  "en": "the East; the Orient; east",
+  "vi": "phương Đông; phía đông"
+ },
+ "L2-0132": {
+  "en": "southeast",
+  "vi": "đông nam; phía đông nam"
+ },
+ "L2-0133": {
+  "en": "winter",
+  "vi": "mùa đông"
+ },
+ "L2-0134": {
+  "en": "to understand; to know",
+  "vi": "hiểu; biết"
+ },
+ "L2-0135": {
+  "en": "to understand; to know (how to)",
+  "vi": "hiểu; hiểu được; biết (cách)"
+ },
+ "L2-0136": {
+  "en": "animal",
+  "vi": "động vật; con vật"
+ },
+ "L2-0137": {
+  "en": "zoo",
+  "vi": "sở thú; vườn thú"
+ },
+ "L2-0138": {
+  "en": "pronunciation; reading (of a character)",
+  "vi": "cách đọc; cách phát âm; âm đọc"
+ },
+ "L2-0139": {
+  "en": "degree (temperature, angle); extent",
+  "vi": "độ (nhiệt độ, góc); mức độ"
+ },
+ "L2-0140": {
+  "en": "short; brief; to lack",
+  "vi": "ngắn; ngắn ngủi; thiếu"
+ },
+ "L2-0141": {
+  "en": "text message; SMS",
+  "vi": "tin nhắn; tin nhắn SMS"
+ },
+ "L2-0142": {
+  "en": "(measure word: passages, stretches, periods)",
+  "vi": "(lượng từ: đoạn, quãng, khoảng thời gian)"
+ },
+ "L2-0143": {
+  "en": "team; group; line (queue)",
+  "vi": "đội; nhóm; hàng (người xếp)"
+ },
+ "L2-0144": {
+  "en": "team captain; team leader",
+  "vi": "đội trưởng; trưởng nhóm"
+ },
+ "L2-0145": {
+  "en": "to; towards (sb); regarding",
+  "vi": "với; đối với; về (việc gì)"
+ },
+ "L2-0146": {
+  "en": "dialogue; conversation; to talk (with sb)",
+  "vi": "hội thoại; đối thoại; trò chuyện"
+ },
+ "L2-0147": {
+  "en": "opposite; across (the street); face to face",
+  "vi": "đối diện; phía đối diện; trước mặt"
+ },
+ "L2-0148": {
+  "en": "how (old, far…)?; how …! (exclaiming); more",
+  "vi": "bao (xa, lâu, nhiêu…)?; biết bao!; thêm"
+ },
+ "L2-0149": {
+  "en": "how long?; (not) very long",
+  "vi": "bao lâu?; (chẳng) bao lâu"
+ },
+ "L2-0150": {
+  "en": "how (wonderful)!; what (a) …!",
+  "vi": "biết bao; biết mấy; thật là"
+ },
+ "L2-0151": {
+  "en": "majority; most",
+  "vi": "đa số; phần lớn"
+ },
+ "L2-0152": {
+  "en": "cloudy (weather)",
+  "vi": "nhiều mây; trời nhiều mây"
+ },
+ "L2-0153": {
+  "en": "moreover; and also; (not only…) but also",
+  "vi": "hơn nữa; mà còn; vả lại"
+ },
+ "L2-0154": {
+  "en": "to send; to give out; to develop (a fever etc.)",
+  "vi": "gửi (tin nhắn…); phát (ra); phát (sốt…)"
+ },
+ "L2-0155": {
+  "en": "to discover; to find (out); to notice",
+  "vi": "phát hiện; nhận ra; khám phá"
+ },
+ "L2-0156": {
+  "en": "restaurant",
+  "vi": "quán ăn; nhà hàng; tiệm ăn"
+ },
+ "L2-0157": {
+  "en": "convenient; handy; suitable",
+  "vi": "tiện; thuận tiện; tiện lợi"
+ },
+ "L2-0158": {
+  "en": "instant noodles",
+  "vi": "mì ăn liền; mì gói; mì tôm"
+ },
+ "L2-0159": {
+  "en": "method; way; technique",
+  "vi": "cách; phương pháp; cách thức"
+ },
+ "L2-0160": {
+  "en": "aspect; respect; side",
+  "vi": "mặt; phương diện; khía cạnh"
+ },
+ "L2-0161": {
+  "en": "direction; orientation",
+  "vi": "hướng; phương hướng"
+ },
+ "L2-0162": {
+  "en": "to put down; to set down; to let go of",
+  "vi": "đặt xuống; để xuống; buông bỏ"
+ },
+ "L2-0163": {
+  "en": "to be at ease; not to worry; rest assured",
+  "vi": "yên tâm; an tâm; khỏi lo"
+ },
+ "L2-0164": {
+  "en": "to divide; to split; to share out",
+  "vi": "chia; chia ra; phân (loại)"
+ },
+ "L2-0165": {
+  "en": "to separate; to part; to split up",
+  "vi": "tách ra; chia ra; xa nhau"
+ },
+ "L2-0166": {
+  "en": "score; mark (grade); fraction",
+  "vi": "điểm; điểm số; phân số"
+ },
+ "L2-0167": {
+  "en": "minute",
+  "vi": "phút"
+ },
+ "L2-0168": {
+  "en": "(measure word: portions, copies, jobs); share",
+  "vi": "(lượng từ: suất, bản, tờ, công việc); phần"
+ },
+ "L2-0169": {
+  "en": "(measure word: letters, emails); to seal",
+  "vi": "(lượng từ: bức thư, lá thư); niêm phong"
+ },
+ "L2-0170": {
+  "en": "to serve; service",
+  "vi": "phục vụ; dịch vụ"
+ },
+ "L2-0171": {
+  "en": "to review; to revise (lessons)",
+  "vi": "ôn tập; ôn lại; ôn bài"
+ },
+ "L2-0172": {
+  "en": "should; ought to; to be (sb's) turn",
+  "vi": "nên; phải; đến lượt (ai)"
+ },
+ "L2-0173": {
+  "en": "to change; to correct; to alter",
+  "vi": "sửa; đổi; thay đổi"
+ },
+ "L2-0174": {
+  "en": "to change; to alter; change",
+  "vi": "thay đổi; biến đổi; sự thay đổi"
+ },
+ "L2-0175": {
+  "en": "cheers!; bottoms up!; to drink a toast",
+  "vi": "cạn ly!; dô!; nâng ly"
+ },
+ "L2-0176": {
+  "en": "to feel; to sense",
+  "vi": "cảm thấy; thấy"
+ },
+ "L2-0177": {
+  "en": "moved; touched; to move (sb emotionally)",
+  "vi": "cảm động; xúc động; làm cảm động"
+ },
+ "L2-0178": {
+  "en": "to feel; feeling; sense",
+  "vi": "cảm thấy; cảm giác; cảm nhận"
+ },
+ "L2-0179": {
+  "en": "to thank; thanks; to be grateful",
+  "vi": "cảm ơn; biết ơn"
+ },
+ "L2-0180": {
+  "en": "to work; to do manual work; to do chores",
+  "vi": "làm việc; làm lụng; làm việc chân tay"
+ },
+ "L2-0181": {
+  "en": "just (now); only just; exactly",
+  "vi": "vừa; vừa mới; vừa đúng"
+ },
+ "L2-0182": {
+  "en": "just now; a moment ago",
+  "vi": "vừa nãy; lúc nãy; vừa rồi"
+ },
+ "L2-0183": {
+  "en": "just (now); only just; a moment ago",
+  "vi": "vừa mới; vừa nãy; vừa đúng"
+ },
+ "L2-0184": {
+  "en": "advanced; high-level; high-end",
+  "vi": "cao cấp; trình độ cao; sang trọng"
+ },
+ "L2-0185": {
+  "en": "senior high school; high school",
+  "vi": "cấp ba; trung học phổ thông"
+ },
+ "L2-0186": {
+  "en": "height; build (of a person)",
+  "vi": "dáng người; chiều cao; vóc dáng"
+ },
+ "L2-0187": {
+  "en": "more; even more; further",
+  "vi": "hơn; càng; càng … hơn"
+ },
+ "L2-0188": {
+  "en": "bus; public bus",
+  "vi": "xe buýt"
+ },
+ "L2-0189": {
+  "en": "bus; city bus",
+  "vi": "xe buýt; xe công cộng"
+ },
+ "L2-0190": {
+  "en": "kilogram (kg); kilo",
+  "vi": "ki-lô-gam (kg); cân; ký"
+ },
+ "L2-0191": {
+  "en": "kilometre (km)",
+  "vi": "ki-lô-mét (km); cây số"
+ },
+ "L2-0192": {
+  "en": "highway; road; main road",
+  "vi": "đường cái; quốc lộ; đường bộ"
+ },
+ "L2-0193": {
+  "en": "fair; just; impartial",
+  "vi": "công bằng; không thiên vị"
+ },
+ "L2-0194": {
+  "en": "company; firm; corporation",
+  "vi": "công ty; hãng"
+ },
+ "L2-0195": {
+  "en": "park (public)",
+  "vi": "công viên"
+ },
+ "L2-0196": {
+  "en": "dog",
+  "vi": "chó; con chó"
+ },
+ "L2-0197": {
+  "en": "enough; to reach (for sth); really, quite",
+  "vi": "đủ; với tới (được); thật là (khá)"
+ },
+ "L2-0198": {
+  "en": "story; tale",
+  "vi": "câu chuyện; truyện; chuyện kể"
+ },
+ "L2-0199": {
+  "en": "on purpose; deliberately",
+  "vi": "cố ý; cố tình"
+ },
+ "L2-0200": {
+  "en": "customer; client",
+  "vi": "khách hàng; khách"
+ },
+ "L2-0201": {
+  "en": "to switch off (a device); to shut down",
+  "vi": "tắt máy; tắt nguồn"
+ },
+ "L2-0202": {
+  "en": "to care about; to be concerned about",
+  "vi": "quan tâm; lo lắng cho; chăm lo"
+ },
+ "L2-0203": {
+  "en": "point of view; viewpoint; standpoint",
+  "vi": "quan điểm; góc nhìn; lập trường"
+ },
+ "L2-0204": {
+  "en": "public square; plaza",
+  "vi": "quảng trường"
+ },
+ "L2-0205": {
+  "en": "advertisement; ad; commercial",
+  "vi": "quảng cáo; mẩu quảng cáo"
+ },
+ "L2-0206": {
+  "en": "international",
+  "vi": "quốc tế"
+ },
+ "L2-0207": {
+  "en": "to come over; to come here; (after verb) over",
+  "vi": "lại đây; qua đây; sang (bên này)"
+ },
+ "L2-0208": {
+  "en": "to celebrate the (Chinese) New Year",
+  "vi": "ăn Tết; đón Tết"
+ },
+ "L2-0209": {
+  "en": "to go over (there); to pass; the past",
+  "vi": "qua đó; đi qua; trước đây (quá khứ)"
+ },
+ "L2-0210": {
+  "en": "(have done before: past experience)",
+  "vi": "(đã từng – kinh nghiệm đã trải qua)"
+ },
+ "L2-0211": {
+  "en": "sea; ocean",
+  "vi": "biển; biển cả"
+ },
+ "L2-0212": {
+  "en": "seaside; beach; coast",
+  "vi": "bờ biển; bãi biển; ven biển"
+ },
+ "L2-0213": {
+  "en": "to shout; to yell; to call (sb)",
+  "vi": "hét; la; gọi to (ai)"
+ },
+ "L2-0214": {
+  "en": "very; so; (after verb) done, ready",
+  "vi": "rất; … quá!; (sau động từ) xong"
+ },
+ "L2-0215": {
+  "en": "benefit; advantage; good point",
+  "vi": "lợi ích; cái lợi; điểm tốt"
+ },
+ "L2-0216": {
+  "en": "many; a lot (of); so much",
+  "vi": "rất nhiều; bao nhiêu là; nhiều"
+ },
+ "L2-0217": {
+  "en": "a long time; for ages",
+  "vi": "lâu lắm; rất lâu; lâu rồi"
+ },
+ "L2-0218": {
+  "en": "good person; nice guy",
+  "vi": "người tốt"
+ },
+ "L2-0219": {
+  "en": "good thing; good deed; happy event",
+  "vi": "việc tốt; chuyện tốt; chuyện vui"
+ },
+ "L2-0220": {
+  "en": "it seems; as if; to be like",
+  "vi": "hình như; dường như; giống như"
+ },
+ "L2-0221": {
+  "en": "suitable; fitting; appropriate",
+  "vi": "phù hợp; thích hợp; vừa (vặn)"
+ },
+ "L2-0222": {
+  "en": "river",
+  "vi": "sông; con sông"
+ },
+ "L2-0223": {
+  "en": "black; dark; shady (illegal)",
+  "vi": "đen; tối; mờ ám"
+ },
+ "L2-0224": {
+  "en": "blackboard",
+  "vi": "bảng đen; bảng"
+ },
+ "L2-0225": {
+  "en": "black (colour)",
+  "vi": "màu đen"
+ },
+ "L2-0226": {
+  "en": "red; popular",
+  "vi": "đỏ; nổi tiếng"
+ },
+ "L2-0227": {
+  "en": "red (colour)",
+  "vi": "màu đỏ"
+ },
+ "L2-0228": {
+  "en": "later; afterwards",
+  "vi": "sau đó; về sau; sau này"
+ },
+ "L2-0229": {
+  "en": "suddenly; all of a sudden",
+  "vi": "bỗng nhiên; đột nhiên; bỗng dưng"
+ },
+ "L2-0230": {
+  "en": "lake",
+  "vi": "hồ"
+ },
+ "L2-0231": {
+  "en": "passport",
+  "vi": "hộ chiếu"
+ },
+ "L2-0232": {
+  "en": "to spend (money, time)",
+  "vi": "tiêu (tiền); tốn, mất (thời gian)"
+ },
+ "L2-0233": {
+  "en": "garden; flower garden",
+  "vi": "vườn hoa; khu vườn"
+ },
+ "L2-0234": {
+  "en": "to draw; to paint; picture (painting)",
+  "vi": "vẽ; tranh; bức vẽ"
+ },
+ "L2-0235": {
+  "en": "painter; artist",
+  "vi": "họa sĩ"
+ },
+ "L2-0236": {
+  "en": "picture; drawing; painting",
+  "vi": "bức tranh; tranh; bức vẽ"
+ },
+ "L2-0237": {
+  "en": "harm; disadvantage; downside",
+  "vi": "tác hại; cái hại; mặt xấu"
+ },
+ "L2-0238": {
+  "en": "bad person; villain; bad guy",
+  "vi": "người xấu; kẻ xấu; kẻ gian"
+ },
+ "L2-0239": {
+  "en": "to welcome; welcome!",
+  "vi": "chào mừng; hoan nghênh; đón tiếp"
+ },
+ "L2-0240": {
+  "en": "to change; to exchange; to swap",
+  "vi": "đổi; thay; trao đổi"
+ },
+ "L2-0241": {
+  "en": "yellow; pornographic (slang)",
+  "vi": "vàng; màu vàng; đồi trụy"
+ },
+ "L2-0242": {
+  "en": "yellow (colour); pornographic",
+  "vi": "màu vàng; (nội dung) đồi trụy"
+ },
+ "L2-0243": {
+  "en": "(measure word: times, occasions); chapter",
+  "vi": "(lượng từ: lần, lượt); hồi (chương truyện)"
+ },
+ "L2-0244": {
+  "en": "to return to one's country",
+  "vi": "về nước; trở về nước"
+ },
+ "L2-0245": {
+  "en": "meeting; gathering; association",
+  "vi": "cuộc họp; buổi gặp mặt; hội"
+ },
+ "L2-0246": {
+  "en": "activity; event; to move about (exercise)",
+  "vi": "hoạt động; sự kiện; vận động"
+ },
+ "L2-0247": {
+  "en": "or; either … or; maybe",
+  "vi": "hoặc; hay; có lẽ"
+ },
+ "L2-0248": {
+  "en": "or (in statements); either … or; maybe",
+  "vi": "hoặc; hoặc là; có lẽ"
+ },
+ "L2-0249": {
+  "en": "chance; opportunity",
+  "vi": "cơ hội; dịp"
+ },
+ "L2-0250": {
+  "en": "chicken",
+  "vi": "gà; con gà"
+ },
+ "L2-0251": {
+  "en": "level; grade (school year); rank",
+  "vi": "cấp; bậc; lớp (năm học)"
+ },
+ "L2-0252": {
+  "en": "in a hurry; anxious; urgent",
+  "vi": "vội; gấp; sốt ruột"
+ },
+ "L2-0253": {
+  "en": "plan; programme; to plan",
+  "vi": "kế hoạch; lên kế hoạch; dự định"
+ },
+ "L2-0254": {
+  "en": "computer",
+  "vi": "máy tính; máy vi tính"
+ },
+ "L2-0255": {
+  "en": "to add; plus; to increase",
+  "vi": "thêm; cộng; tăng"
+ },
+ "L2-0256": {
+  "en": "come on!; keep it up!; to refuel",
+  "vi": "cố lên!; đổ xăng"
+ },
+ "L2-0257": {
+  "en": "(suffix for experts: scientist, painter…)",
+  "vi": "(hậu tố chỉ chuyên gia: nhà khoa học, họa sĩ…)"
+ },
+ "L2-0258": {
+  "en": "family; household; home",
+  "vi": "gia đình; hộ gia đình"
+ },
+ "L2-0259": {
+  "en": "parent; guardian; head of a family",
+  "vi": "phụ huynh; cha mẹ; chủ gia đình"
+ },
+ "L2-0260": {
+  "en": "fake; false; artificial",
+  "vi": "giả; giả tạo; không thật"
+ },
+ "L2-0261": {
+  "en": "holiday; vacation; time off",
+  "vi": "kỳ nghỉ; ngày nghỉ"
+ },
+ "L2-0262": {
+  "en": "to check; to inspect; (medical) check-up",
+  "vi": "kiểm tra; khám (sức khỏe); xem xét"
+ },
+ "L2-0263": {
+  "en": "to see; to meet",
+  "vi": "gặp; thấy; gặp được"
+ },
+ "L2-0264": {
+  "en": "to have seen; to have met (before)",
+  "vi": "đã gặp; từng gặp; đã thấy"
+ },
+ "L2-0265": {
+  "en": "(measure word: clothes, matters, items)",
+  "vi": "(lượng từ: chiếc áo, việc, món đồ)"
+ },
+ "L2-0266": {
+  "en": "healthy; health",
+  "vi": "khỏe mạnh; sức khỏe"
+ },
+ "L2-0267": {
+  "en": "to speak; to tell (a story); to explain",
+  "vi": "nói; kể (chuyện); giảng (bài)"
+ },
+ "L2-0268": {
+  "en": "to speak; to talk; a speech",
+  "vi": "nói; nói chuyện; bài phát biểu"
+ },
+ "L2-0269": {
+  "en": "to hand in; to pay (fees); to make (friends)",
+  "vi": "nộp; đóng (tiền); kết (bạn)"
+ },
+ "L2-0270": {
+  "en": "to hand over (to); to give to",
+  "vi": "giao cho; đưa cho; trao cho"
+ },
+ "L2-0271": {
+  "en": "to make friends",
+  "vi": "kết bạn; làm bạn"
+ },
+ "L2-0272": {
+  "en": "traffic; transport; communications",
+  "vi": "giao thông; đi lại; vận tải"
+ },
+ "L2-0273": {
+  "en": "ten cents (1/10 yuan); corner; horn",
+  "vi": "hào (1/10 tệ); góc; sừng"
+ },
+ "L2-0274": {
+  "en": "angle; point of view; perspective",
+  "vi": "góc; góc độ; góc nhìn"
+ },
+ "L2-0275": {
+  "en": "dumpling; pot-sticker",
+  "vi": "sủi cảo; bánh chẻo"
+ },
+ "L2-0276": {
+  "en": "foot",
+  "vi": "chân; bàn chân"
+ },
+ "L2-0277": {
+  "en": "to be called; to be known as; to call",
+  "vi": "gọi là; được gọi là"
+ },
+ "L2-0278": {
+  "en": "teacher",
+  "vi": "giáo viên; thầy cô giáo"
+ },
+ "L2-0279": {
+  "en": "classroom",
+  "vi": "phòng học; lớp học"
+ },
+ "L2-0280": {
+  "en": "teaching; instruction",
+  "vi": "giảng dạy; dạy học"
+ },
+ "L2-0281": {
+  "en": "to educate; education; to teach (a lesson)",
+  "vi": "giáo dục; dạy dỗ; nền giáo dục"
+ },
+ "L2-0282": {
+  "en": "to pick up (sb); to answer (a call); to catch",
+  "vi": "đón (người); nghe (điện thoại); bắt (bóng)"
+ },
+ "L2-0283": {
+  "en": "to receive (a call, letter); to pick up (sb)",
+  "vi": "nhận được; đón được (người)"
+ },
+ "L2-0284": {
+  "en": "to accept; to receive (treatment etc.)",
+  "vi": "chấp nhận; tiếp nhận; nhận"
+ },
+ "L2-0285": {
+  "en": "next; then (after this); to take on",
+  "vi": "tiếp theo; sau đây; nhận lấy (việc)"
+ },
+ "L2-0286": {
+  "en": "then; next; to continue",
+  "vi": "tiếp đó; tiếp theo; tiếp tục"
+ },
+ "L2-0287": {
+  "en": "street",
+  "vi": "phố; đường phố"
+ },
+ "L2-0288": {
+  "en": "festival; (measure word: lessons, train cars)",
+  "vi": "lễ; ngày lễ; (lượng từ: tiết học, toa tàu)"
+ },
+ "L2-0289": {
+  "en": "programme (TV, radio); show; act",
+  "vi": "chương trình; tiết mục; màn biểu diễn"
+ },
+ "L2-0290": {
+  "en": "festival; holiday",
+  "vi": "ngày lễ; lễ hội; ngày hội"
+ },
+ "L2-0291": {
+  "en": "result; outcome; in the end, as a result",
+  "vi": "kết quả; kết cục; rốt cuộc (kết quả là)"
+ },
+ "L2-0292": {
+  "en": "to borrow; to lend",
+  "vi": "mượn; vay; cho mượn"
+ },
+ "L2-0293": {
+  "en": "catty (500 g); half a kilo",
+  "vi": "cân (500 g); nửa ký"
+ },
+ "L2-0294": {
+  "en": "from now on; in future; hereafter",
+  "vi": "từ nay về sau; sau này; mai sau"
+ },
+ "L2-0295": {
+  "en": "to enter; to go into; to get into",
+  "vi": "vào; đi vào; bước vào"
+ },
+ "L2-0296": {
+  "en": "to carry out; to conduct; to be in progress",
+  "vi": "tiến hành; thực hiện; diễn ra"
+ },
+ "L2-0297": {
+  "en": "near; close; recent",
+  "vi": "gần; sát; gần đây"
+ },
+ "L2-0298": {
+  "en": "often; frequently; regularly",
+  "vi": "thường xuyên; thường; hay"
+ },
+ "L2-0299": {
+  "en": "to pass (by); to go through; process",
+  "vi": "đi qua; trải qua; quá trình"
+ },
+ "L2-0300": {
+  "en": "manager; director",
+  "vi": "quản lý; giám đốc"
+ },
+ "L2-0301": {
+  "en": "alcohol; liquor; wine",
+  "vi": "rượu; đồ uống có cồn"
+ },
+ "L2-0302": {
+  "en": "hotel; restaurant; bar",
+  "vi": "khách sạn; nhà hàng; quán rượu"
+ },
+ "L2-0303": {
+  "en": "about to; going to (soon); will",
+  "vi": "sắp; sắp sửa; sẽ"
+ },
+ "L2-0304": {
+  "en": "to raise; to lift; to give (an example)",
+  "vi": "giơ (lên); nâng; nêu (ví dụ)"
+ },
+ "L2-0305": {
+  "en": "to raise one's hand; to put one's hand up",
+  "vi": "giơ tay"
+ },
+ "L2-0306": {
+  "en": "to hold (a meeting, ceremony etc.)",
+  "vi": "tổ chức; cử hành (lễ)"
+ },
+ "L2-0307": {
+  "en": "(measure word: sentences, lines); sentence",
+  "vi": "(lượng từ: câu nói, câu thơ); câu"
+ },
+ "L2-0308": {
+  "en": "sentence",
+  "vi": "câu; câu văn"
+ },
+ "L2-0309": {
+  "en": "card; calorie; to get stuck",
+  "vi": "thẻ; calo; bị kẹt"
+ },
+ "L2-0310": {
+  "en": "to switch on (a device); to boot up",
+  "vi": "bật máy; mở máy; khởi động"
+ },
+ "L2-0311": {
+  "en": "happy; glad; to have fun",
+  "vi": "vui; vui vẻ; vui sướng"
+ },
+ "L2-0312": {
+  "en": "school starts; to start a new term",
+  "vi": "khai giảng; vào học; bắt đầu năm học"
+ },
+ "L2-0313": {
+  "en": "view; opinion; way of seeing things",
+  "vi": "cách nhìn; quan điểm; ý kiến"
+ },
+ "L2-0314": {
+  "en": "exam candidate; examinee",
+  "vi": "thí sinh; người dự thi"
+ },
+ "L2-0315": {
+  "en": "to lean on; to depend on; to be near",
+  "vi": "tựa vào; trông cậy vào; sát, gần"
+ },
+ "L2-0316": {
+  "en": "department; subject (of study); branch",
+  "vi": "khoa; môn (học); ngành"
+ },
+ "L2-0317": {
+  "en": "science; scientific",
+  "vi": "khoa học; có tính khoa học"
+ },
+ "L2-0318": {
+  "en": "cute; lovely; adorable",
+  "vi": "dễ thương; đáng yêu"
+ },
+ "L2-0319": {
+  "en": "maybe; possible; possibility",
+  "vi": "có thể; có lẽ; khả năng"
+ },
+ "L2-0320": {
+  "en": "scary; terrible; awful",
+  "vi": "đáng sợ; kinh khủng; khủng khiếp"
+ },
+ "L2-0321": {
+  "en": "but; however",
+  "vi": "nhưng; nhưng mà; thế nhưng"
+ },
+ "L2-0322": {
+  "en": "can; may (be allowed); not bad",
+  "vi": "có thể; được (phép); tạm được"
+ },
+ "L2-0323": {
+  "en": "gram (g)",
+  "vi": "gam (g)"
+ },
+ "L2-0324": {
+  "en": "quarter (of an hour); moment; to carve",
+  "vi": "một khắc (15 phút); khoảnh khắc; khắc (chữ)"
+ },
+ "L2-0325": {
+  "en": "guest; visitor; customer",
+  "vi": "khách; khách mời; khách hàng"
+ },
+ "L2-0326": {
+  "en": "classroom; class (session)",
+  "vi": "lớp học; giờ học (trên lớp)"
+ },
+ "L2-0327": {
+  "en": "air; atmosphere",
+  "vi": "không khí; bầu không khí"
+ },
+ "L2-0328": {
+  "en": "to cry; to weep",
+  "vi": "khóc"
+ },
+ "L2-0329": {
+  "en": "fast food; quick meal",
+  "vi": "đồ ăn nhanh; thức ăn nhanh"
+ },
+ "L2-0330": {
+  "en": "hurry up!; a bit faster",
+  "vi": "nhanh lên!; nhanh chút đi"
+ },
+ "L2-0331": {
+  "en": "happy; joyful; merry",
+  "vi": "vui vẻ; vui; hạnh phúc"
+ },
+ "L2-0332": {
+  "en": "about to; soon; nearly",
+  "vi": "sắp; sắp sửa; gần (như)"
+ },
+ "L2-0333": {
+  "en": "chopsticks",
+  "vi": "đũa; đôi đũa"
+ },
+ "L2-0334": {
+  "en": "to pull; to drag; to play (violin etc.)",
+  "vi": "kéo; lôi; kéo (đàn nhị, vĩ cầm)"
+ },
+ "L2-0335": {
+  "en": "to come from (a place)",
+  "vi": "đến từ"
+ },
+ "L2-0336": {
+  "en": "blue",
+  "vi": "xanh lam; xanh da trời"
+ },
+ "L2-0337": {
+  "en": "blue (colour)",
+  "vi": "màu xanh lam; màu xanh dương"
+ },
+ "L2-0338": {
+  "en": "basketball",
+  "vi": "bóng rổ"
+ },
+ "L2-0339": {
+  "en": "always; keeps (doing); very (far, long)",
+  "vi": "lúc nào cũng; cứ (mãi); rất (xa, lâu)"
+ },
+ "L2-0340": {
+  "en": "Old … (before a surname, for older people)",
+  "vi": "anh …, lão … (trước họ, gọi thân mật)"
+ },
+ "L2-0341": {
+  "en": "old age; the elderly",
+  "vi": "tuổi già; người cao tuổi; lúc về già"
+ },
+ "L2-0342": {
+  "en": "old friend",
+  "vi": "bạn cũ; bạn lâu năm"
+ },
+ "L2-0343": {
+  "en": "always; constantly; keep (doing)",
+  "vi": "cứ; luôn luôn; lúc nào cũng"
+ },
+ "L2-0344": {
+  "en": "(distance) from; to leave; to part from",
+  "vi": "cách (bao xa); rời (khỏi); xa"
+ },
+ "L2-0345": {
+  "en": "to leave; to depart (from)",
+  "vi": "rời khỏi; rời đi; rời xa"
+ },
+ "L2-0346": {
+  "en": "gift; present",
+  "vi": "quà; món quà; quà tặng"
+ },
+ "L2-0347": {
+  "en": "inside; interior",
+  "vi": "bên trong; ở trong; phía trong"
+ },
+ "L2-0348": {
+  "en": "ideal; dream (ambition); perfect",
+  "vi": "lý tưởng; ước mơ; hoàn hảo"
+ },
+ "L2-0349": {
+  "en": "for example; for instance; such as",
+  "vi": "ví dụ; chẳng hạn; như"
+ },
+ "L2-0350": {
+  "en": "example; case; instance",
+  "vi": "ví dụ; thí dụ"
+ },
+ "L2-0351": {
+  "en": "face",
+  "vi": "mặt; khuôn mặt"
+ },
+ "L2-0352": {
+  "en": "to practise; to train; to drill",
+  "vi": "luyện; tập; rèn luyện"
+ },
+ "L2-0353": {
+  "en": "to practise; exercise (task); practice",
+  "vi": "luyện tập; bài tập; thực hành"
+ },
+ "L2-0354": {
+  "en": "cool; cold",
+  "vi": "mát; lạnh; nguội"
+ },
+ "L2-0355": {
+  "en": "nice and cool; pleasantly cool",
+  "vi": "mát mẻ; mát"
+ },
+ "L2-0356": {
+  "en": "tael (unit of weight, 50 g)",
+  "vi": "lạng (đơn vị cân, 50 g)"
+ },
+ "L2-0357": {
+  "en": "bright; shiny; to shine",
+  "vi": "sáng; sáng sủa; chiếu sáng"
+ },
+ "L2-0358": {
+  "en": "(measure word: vehicles)",
+  "vi": "(lượng từ: chiếc – xe cộ)"
+ },
+ "L2-0359": {
+  "en": "below zero (temperature)",
+  "vi": "dưới 0 độ; âm (độ)"
+ },
+ "L2-0360": {
+  "en": "to stay; to keep; to leave (a message etc.)",
+  "vi": "ở lại; giữ lại; để lại"
+ },
+ "L2-0361": {
+  "en": "to leave (behind); to stay (on); to keep",
+  "vi": "để lại; ở lại; giữ lại"
+ },
+ "L2-0362": {
+  "en": "international student; student abroad",
+  "vi": "du học sinh; sinh viên nước ngoài"
+ },
+ "L2-0363": {
+  "en": "to flow; to run (tears etc.); to spread",
+  "vi": "chảy; trôi; lan truyền"
+ },
+ "L2-0364": {
+  "en": "fluent",
+  "vi": "lưu loát; trôi chảy"
+ },
+ "L2-0365": {
+  "en": "popular; fashionable; to spread (disease)",
+  "vi": "thịnh hành; phổ biến; lây lan (bệnh)"
+ },
+ "L2-0366": {
+  "en": "roadside; side of the road; kerb",
+  "vi": "lề đường; ven đường; bên đường"
+ },
+ "L2-0367": {
+  "en": "traveller; passenger; tourist",
+  "vi": "hành khách; du khách; khách du lịch"
+ },
+ "L2-0368": {
+  "en": "to travel; trip; journey",
+  "vi": "du lịch; đi du lịch; chuyến đi"
+ },
+ "L2-0369": {
+  "en": "to travel; to tour; tourism",
+  "vi": "du lịch; đi du lịch; đi chơi xa"
+ },
+ "L2-0370": {
+  "en": "green",
+  "vi": "xanh lá; xanh lục"
+ },
+ "L2-0371": {
+  "en": "green (colour); eco-friendly",
+  "vi": "màu xanh lá; xanh (thân thiện môi trường)"
+ },
+ "L2-0372": {
+  "en": "to sell",
+  "vi": "bán"
+ },
+ "L2-0373": {
+  "en": "full; filled; all over (the whole)",
+  "vi": "đầy; kín; khắp (cả)"
+ },
+ "L2-0374": {
+  "en": "satisfied; pleased; content",
+  "vi": "hài lòng; vừa ý; vừa lòng"
+ },
+ "L2-0375": {
+  "en": "cat",
+  "vi": "mèo; con mèo"
+ },
+ "L2-0376": {
+  "en": "metre (m); (uncooked) rice",
+  "vi": "mét (m); gạo"
+ },
+ "L2-0377": {
+  "en": "side; surface; (measure word: flags, mirrors)",
+  "vi": "mặt; phía; (lượng từ: lá cờ, tấm gương)"
+ },
+ "L2-0378": {
+  "en": "noodles; flour",
+  "vi": "mì; bột mì"
+ },
+ "L2-0379": {
+  "en": "in front of; in the presence of",
+  "vi": "trước mặt; phía trước"
+ },
+ "L2-0380": {
+  "en": "name; (measure word: people); place (e.g. 1st)",
+  "vi": "tên; (lượng từ: người); hạng (vd hạng nhất)"
+ },
+ "L2-0381": {
+  "en": "name (of a thing or organisation)",
+  "vi": "tên; tên gọi"
+ },
+ "L2-0382": {
+  "en": "list of names; name list",
+  "vi": "danh sách (tên)"
+ },
+ "L2-0383": {
+  "en": "star; celebrity",
+  "vi": "ngôi sao; người nổi tiếng"
+ },
+ "L2-0384": {
+  "en": "purpose; aim; goal",
+  "vi": "mục đích; mục tiêu"
+ },
+ "L2-0385": {
+  "en": "to take out; to bring out; to come up with",
+  "vi": "lấy ra; đưa ra; bỏ ra (tiền, thời gian)"
+ },
+ "L2-0386": {
+  "en": "to get; to obtain; to receive",
+  "vi": "lấy được; nhận được; có được"
+ },
+ "L2-0387": {
+  "en": "then; in that case",
+  "vi": "vậy thì; thế thì"
+ },
+ "L2-0388": {
+  "en": "at that time; back then",
+  "vi": "lúc đó; hồi đó; khi ấy"
+ },
+ "L2-0389": {
+  "en": "so; like that; then (in that case)",
+  "vi": "như vậy; đến vậy; vậy thì"
+ },
+ "L2-0390": {
+  "en": "at that time; back then",
+  "vi": "lúc đó; hồi đó"
+ },
+ "L2-0391": {
+  "en": "like that; that kind of; so",
+  "vi": "như vậy; kiểu đó; đến thế"
+ },
+ "L2-0392": {
+  "en": "the south; southern region",
+  "vi": "phía nam; miền nam"
+ },
+ "L2-0393": {
+  "en": "sad; upset; to have a hard time",
+  "vi": "buồn; đau lòng; khó khăn (cuộc sống)"
+ },
+ "L2-0394": {
+  "en": "ugly; unsightly",
+  "vi": "xấu; khó coi"
+ },
+ "L2-0395": {
+  "en": "uncomfortable; unwell; hard to bear",
+  "vi": "khó chịu; mệt (trong người); khổ sở"
+ },
+ "L2-0396": {
+  "en": "difficult problem; tough question",
+  "vi": "vấn đề khó; câu hỏi khó"
+ },
+ "L2-0397": {
+  "en": "unpleasant to hear; harsh; offensive",
+  "vi": "khó nghe; chói tai; thô tục"
+ },
+ "L2-0398": {
+  "en": "can; to be able to; to be capable of",
+  "vi": "có thể; có khả năng"
+ },
+ "L2-0399": {
+  "en": "grade; year (in school)",
+  "vi": "lớp (ở trường); năm (đại học)"
+ },
+ "L2-0400": {
+  "en": "young",
+  "vi": "trẻ; trẻ tuổi"
+ },
+ "L2-0401": {
+  "en": "bird",
+  "vi": "chim; con chim"
+ },
+ "L2-0402": {
+  "en": "to do; to make; to mess with",
+  "vi": "làm; xử lý; nghịch (đồ)"
+ },
+ "L2-0403": {
+  "en": "hard-working; to try hard; effort",
+  "vi": "chăm chỉ; cố gắng; nỗ lực"
+ },
+ "L2-0404": {
+  "en": "to climb; to crawl",
+  "vi": "leo; trèo; bò"
+ },
+ "L2-0405": {
+  "en": "to climb a mountain; to go hiking",
+  "vi": "leo núi"
+ },
+ "L2-0406": {
+  "en": "to be afraid of; to fear; to worry (that)",
+  "vi": "sợ; e rằng; lo"
+ },
+ "L2-0407": {
+  "en": "row; line; (measure word: rows)",
+  "vi": "hàng; dãy; (lượng từ: hàng, dãy)"
+ },
+ "L2-0408": {
+  "en": "to queue; to line up",
+  "vi": "xếp hàng"
+ },
+ "L2-0409": {
+  "en": "volleyball",
+  "vi": "bóng chuyền"
+ },
+ "L2-0410": {
+  "en": "to touch; to bump into; to run into (sb)",
+  "vi": "chạm (vào); đụng; tình cờ gặp"
+ },
+ "L2-0411": {
+  "en": "to run into; to come across; to hit",
+  "vi": "gặp; gặp phải; đụng phải"
+ },
+ "L2-0412": {
+  "en": "to run into; to bump into (sb)",
+  "vi": "tình cờ gặp; gặp"
+ },
+ "L2-0413": {
+  "en": "(measure word: articles, essays)",
+  "vi": "(lượng từ: bài văn, bài báo)"
+ },
+ "L2-0414": {
+  "en": "cheap; inexpensive; petty advantage",
+  "vi": "rẻ; món lợi nhỏ"
+ },
+ "L2-0415": {
+  "en": "(measure word: slices, pieces, tablets)",
+  "vi": "(lượng từ: lát, miếng, viên)"
+ },
+ "L2-0416": {
+  "en": "pretty; beautiful",
+  "vi": "đẹp; xinh đẹp"
+ },
+ "L2-0417": {
+  "en": "flat; level; tied (in a game)",
+  "vi": "phẳng; bằng phẳng; hòa (tỉ số)"
+ },
+ "L2-0418": {
+  "en": "safe and sound; peaceful",
+  "vi": "bình an; an toàn; yên ổn"
+ },
+ "L2-0419": {
+  "en": "usually; ordinary; common",
+  "vi": "thường ngày; bình thường; thông thường"
+ },
+ "L2-0420": {
+  "en": "equal; equality",
+  "vi": "bình đẳng"
+ },
+ "L2-0421": {
+  "en": "usually; normally; in ordinary times",
+  "vi": "ngày thường; bình thường; thường thì"
+ },
+ "L2-0422": {
+  "en": "bottle; (measure word: bottles of)",
+  "vi": "chai; lọ; (lượng từ: chai)"
+ },
+ "L2-0423": {
+  "en": "bottle",
+  "vi": "chai; lọ; bình"
+ },
+ "L2-0424": {
+  "en": "ordinary; common; average",
+  "vi": "bình thường; phổ thông; thông thường"
+ },
+ "L2-0425": {
+  "en": "Mandarin; standard Chinese",
+  "vi": "tiếng phổ thông (Trung Quốc); Quan thoại"
+ },
+ "L2-0426": {
+  "en": "other; others; else",
+  "vi": "khác; những … khác; còn lại"
+ },
+ "L2-0427": {
+  "en": "among them; of which; in it",
+  "vi": "trong đó; trong số đó"
+ },
+ "L2-0428": {
+  "en": "to ride (a bike, horse)",
+  "vi": "đạp (xe); đi (xe máy); cưỡi (ngựa)"
+ },
+ "L2-0429": {
+  "en": "to ride a bike",
+  "vi": "đạp xe; đi xe (đạp, máy)"
+ },
+ "L2-0430": {
+  "en": "to take off (of a plane)",
+  "vi": "cất cánh"
+ },
+ "L2-0431": {
+  "en": "air; gas; to make angry",
+  "vi": "không khí; hơi; làm tức giận"
+ },
+ "L2-0432": {
+  "en": "air temperature; temperature",
+  "vi": "nhiệt độ (không khí)"
+ },
+ "L2-0433": {
+  "en": "thousand",
+  "vi": "nghìn; ngàn"
+ },
+ "L2-0434": {
+  "en": "kilogram",
+  "vi": "ki-lô-gam (kg); cân; ký"
+ },
+ "L2-0435": {
+  "en": "the year before last",
+  "vi": "năm kia"
+ },
+ "L2-0436": {
+  "en": "wall",
+  "vi": "tường; bức tường"
+ },
+ "L2-0437": {
+  "en": "youth; young people; young person",
+  "vi": "thanh niên; giới trẻ"
+ },
+ "L2-0438": {
+  "en": "teenager; adolescent; youth",
+  "vi": "thanh thiếu niên; tuổi mới lớn"
+ },
+ "L2-0439": {
+  "en": "light (not heavy); gentle; soft",
+  "vi": "nhẹ; nhẹ nhàng; khẽ"
+ },
+ "L2-0440": {
+  "en": "clear; distinct; to be clear about",
+  "vi": "rõ ràng; rõ; hiểu rõ"
+ },
+ "L2-0441": {
+  "en": "sunny; clear (weather)",
+  "vi": "nắng; quang đãng (trời)"
+ },
+ "L2-0442": {
+  "en": "sunny day; clear sky",
+  "vi": "ngày nắng; trời nắng; trời quang"
+ },
+ "L2-0443": {
+  "en": "to treat (sb to a meal); to host a dinner",
+  "vi": "mời (ăn); bao; đãi khách"
+ },
+ "L2-0444": {
+  "en": "to request; to ask (for); a request",
+  "vi": "đề nghị; yêu cầu; lời thỉnh cầu"
+ },
+ "L2-0445": {
+  "en": "autumn; fall",
+  "vi": "mùa thu"
+ },
+ "L2-0446": {
+  "en": "to ask for; to beg; to seek",
+  "vi": "xin; cầu xin; tìm (kiếm)"
+ },
+ "L2-0447": {
+  "en": "(sports) court; field; pitch",
+  "vi": "sân bóng; sân thể thao"
+ },
+ "L2-0448": {
+  "en": "(sports) team; ball team",
+  "vi": "đội bóng"
+ },
+ "L2-0449": {
+  "en": "sneakers; sports shoes",
+  "vi": "giày thể thao"
+ },
+ "L2-0450": {
+  "en": "to take; to get; to withdraw (money)",
+  "vi": "lấy; rút (tiền); nhận"
+ },
+ "L2-0451": {
+  "en": "to obtain; to achieve; to gain",
+  "vi": "đạt được; giành được; có được"
+ },
+ "L2-0452": {
+  "en": "all; entirely; whole",
+  "vi": "đều; hết; toàn bộ"
+ },
+ "L2-0453": {
+  "en": "all; the whole; entire",
+  "vi": "toàn bộ; tất cả"
+ },
+ "L2-0454": {
+  "en": "the whole country; nationwide",
+  "vi": "cả nước; toàn quốc"
+ },
+ "L2-0455": {
+  "en": "the whole family",
+  "vi": "cả nhà; cả gia đình"
+ },
+ "L2-0456": {
+  "en": "the whole year; all year round",
+  "vi": "cả năm; quanh năm"
+ },
+ "L2-0457": {
+  "en": "the whole body; all over",
+  "vi": "cả người; toàn thân"
+ },
+ "L2-0458": {
+  "en": "all; everyone; the whole (group)",
+  "vi": "toàn thể; tất cả mọi người"
+ },
+ "L2-0459": {
+  "en": "then; after that; afterwards",
+  "vi": "sau đó; rồi"
+ },
+ "L2-0460": {
+  "en": "to let; to make (sb do sth); by (passive)",
+  "vi": "để; bảo; khiến (ai làm gì)"
+ },
+ "L2-0461": {
+  "en": "warm; enthusiastic; passion",
+  "vi": "nhiệt tình; niềm nở; nhiệt huyết"
+ },
+ "L2-0462": {
+  "en": "population; number of people",
+  "vi": "dân số; nhân khẩu"
+ },
+ "L2-0463": {
+  "en": "people",
+  "vi": "mọi người; người ta"
+ },
+ "L2-0464": {
+  "en": "number of people",
+  "vi": "số người"
+ },
+ "L2-0465": {
+  "en": "to think; to believe; to consider",
+  "vi": "cho rằng; nghĩ; cho là"
+ },
+ "L2-0466": {
+  "en": "daily newspaper; daily",
+  "vi": "nhật báo; báo hằng ngày"
+ },
+ "L2-0467": {
+  "en": "day; date; life (days)",
+  "vi": "ngày; ngày tháng; cuộc sống"
+ },
+ "L2-0468": {
+  "en": "if; in case",
+  "vi": "nếu; nếu như"
+ },
+ "L2-0469": {
+  "en": "entrance; way in",
+  "vi": "lối vào; cửa vào"
+ },
+ "L2-0470": {
+  "en": "to discuss; to talk over; to consult",
+  "vi": "bàn bạc; trao đổi; hỏi ý kiến"
+ },
+ "L2-0471": {
+  "en": "businessman; merchant; trader",
+  "vi": "thương nhân; người buôn bán; doanh nhân"
+ },
+ "L2-0472": {
+  "en": "last week",
+  "vi": "tuần trước"
+ },
+ "L2-0473": {
+  "en": "minority; a few; small number",
+  "vi": "số ít; thiểu số"
+ },
+ "L2-0474": {
+  "en": "teenager; youngster; youth",
+  "vi": "thiếu niên; tuổi thiếu niên"
+ },
+ "L2-0475": {
+  "en": "by one's side; nearby; on hand",
+  "vi": "bên cạnh; bên mình"
+ },
+ "L2-0476": {
+  "en": "what kind (of)?; what … like?",
+  "vi": "như thế nào?; loại gì?; kiểu gì?"
+ },
+ "L2-0477": {
+  "en": "to give birth; to be born; to grow",
+  "vi": "sinh (con); sinh ra; mọc (lên)"
+ },
+ "L2-0478": {
+  "en": "new word (vocabulary)",
+  "vi": "từ mới"
+ },
+ "L2-0479": {
+  "en": "life; to live",
+  "vi": "cuộc sống; sống; sinh hoạt"
+ },
+ "L2-0480": {
+  "en": "sound; voice",
+  "vi": "tiếng; âm thanh; giọng nói"
+ },
+ "L2-0481": {
+  "en": "province",
+  "vi": "tỉnh"
+ },
+ "L2-0482": {
+  "en": "to save (money, time); to leave out",
+  "vi": "tiết kiệm; đỡ tốn; bỏ bớt"
+ },
+ "L2-0483": {
+  "en": "very; extremely; fully",
+  "vi": "rất; vô cùng; hết sức"
+ },
+ "L2-0484": {
+  "en": "reality; actual; realistic",
+  "vi": "thực tế; thực sự; thiết thực"
+ },
+ "L2-0485": {
+  "en": "to intern; internship; to practise",
+  "vi": "thực tập; kỳ thực tập"
+ },
+ "L2-0486": {
+  "en": "to realise (a dream); to achieve",
+  "vi": "thực hiện; đạt được; thành hiện thực"
+ },
+ "L2-0487": {
+  "en": "really; truly; indeed",
+  "vi": "thật sự; quả thật; thật là"
+ },
+ "L2-0488": {
+  "en": "honest; dependable; solid (of work)",
+  "vi": "thật thà; chân thật; chắc chắn"
+ },
+ "L2-0489": {
+  "en": "food",
+  "vi": "thức ăn; đồ ăn; thực phẩm"
+ },
+ "L2-0490": {
+  "en": "to use; to make use of",
+  "vi": "sử dụng; dùng"
+ },
+ "L2-0491": {
+  "en": "city; municipality; market",
+  "vi": "thành phố; chợ"
+ },
+ "L2-0492": {
+  "en": "mayor",
+  "vi": "thị trưởng"
+ },
+ "L2-0493": {
+  "en": "thing; matter; affair",
+  "vi": "việc; chuyện; sự việc"
+ },
+ "L2-0494": {
+  "en": "to receive; to collect; to put away",
+  "vi": "nhận; thu; cất (dọn)"
+ },
+ "L2-0495": {
+  "en": "to receive; to get",
+  "vi": "nhận được"
+ },
+ "L2-0496": {
+  "en": "income; earnings; to take in",
+  "vi": "thu nhập; thu vào"
+ },
+ "L2-0497": {
+  "en": "wristwatch; watch",
+  "vi": "đồng hồ đeo tay"
+ },
+ "L2-0498": {
+  "en": "to receive (help, praise); to suffer (harm)",
+  "vi": "nhận được; được (khen…); bị (phạt…)"
+ },
+ "L2-0499": {
+  "en": "comfortable; feeling well",
+  "vi": "thoải mái; dễ chịu; khỏe (trong người)"
+ },
+ "L2-0500": {
+  "en": "ripe; cooked; familiar (with)",
+  "vi": "chín; quen; thạo"
+ },
+ "L2-0501": {
+  "en": "to count; to rank as (the best etc.); to list",
+  "vi": "đếm; được coi là (nhất); kể ra"
+ },
+ "L2-0502": {
+  "en": "number; digit; digital",
+  "vi": "con số; chữ số; kỹ thuật số"
+ },
+ "L2-0503": {
+  "en": "level (of skill); standard",
+  "vi": "trình độ; mức độ; tiêu chuẩn"
+ },
+ "L2-0504": {
+  "en": "smooth; going well; without a hitch",
+  "vi": "thuận lợi; suôn sẻ"
+ },
+ "L2-0505": {
+  "en": "to explain; to show (that); instructions",
+  "vi": "giải thích; cho thấy; bản hướng dẫn"
+ },
+ "L2-0506": {
+  "en": "driver",
+  "vi": "tài xế; lái xe"
+ },
+ "L2-0507": {
+  "en": "to deliver to; to take (sb) to",
+  "vi": "giao đến; đưa đến; gửi đến"
+ },
+ "L2-0508": {
+  "en": "to give (as a gift) to",
+  "vi": "tặng (cho); biếu"
+ },
+ "L2-0509": {
+  "en": "to calculate; to count as; to consider",
+  "vi": "tính; coi như; được xem là"
+ },
+ "L2-0510": {
+  "en": "although; even though",
+  "vi": "mặc dù; tuy; dù"
+ },
+ "L2-0511": {
+  "en": "as you like; casual; careless",
+  "vi": "tùy ý; gì cũng được; tùy tiện"
+ },
+ "L2-0512": {
+  "en": "at any time; whenever",
+  "vi": "bất cứ lúc nào; mọi lúc"
+ },
+ "L2-0513": {
+  "en": "so; therefore; that's why",
+  "vi": "vì vậy; cho nên; nên"
+ },
+ "L2-0514": {
+  "en": "all; every",
+  "vi": "tất cả; mọi"
+ },
+ "L2-0515": {
+  "en": "it",
+  "vi": "nó"
+ },
+ "L2-0516": {
+  "en": "they; them (things, animals)",
+  "vi": "chúng; chúng nó (đồ vật, con vật)"
+ },
+ "L2-0517": {
+  "en": "wife; Mrs.; madam",
+  "vi": "vợ; bà (gọi phụ nữ có chồng)"
+ },
+ "L2-0518": {
+  "en": "sun; sunshine",
+  "vi": "mặt trời; ánh nắng"
+ },
+ "L2-0519": {
+  "en": "attitude; manner",
+  "vi": "thái độ"
+ },
+ "L2-0520": {
+  "en": "to discuss; to talk over",
+  "vi": "thảo luận; bàn bạc"
+ },
+ "L2-0521": {
+  "en": "(measure word: sets, suits, apartments)",
+  "vi": "(lượng từ: bộ quần áo, bộ sách, căn hộ)"
+ },
+ "L2-0522": {
+  "en": "special; especially; very",
+  "vi": "đặc biệt; rất; nhất là"
+ },
+ "L2-0523": {
+  "en": "feature; characteristic; trait",
+  "vi": "đặc điểm; nét đặc trưng"
+ },
+ "L2-0524": {
+  "en": "to hurt; to ache; to dote on",
+  "vi": "đau; nhức; thương (cưng chiều)"
+ },
+ "L2-0525": {
+  "en": "to carry (in the hand); to lift; to mention",
+  "vi": "xách; nhấc lên; nhắc đến"
+ },
+ "L2-0526": {
+  "en": "to put forward; to raise; to propose",
+  "vi": "đưa ra; đề xuất; nêu ra"
+ },
+ "L2-0527": {
+  "en": "to mention; to bring up",
+  "vi": "nhắc đến; đề cập; nói đến"
+ },
+ "L2-0528": {
+  "en": "to raise; to improve; to increase",
+  "vi": "nâng cao; tăng; cải thiện"
+ },
+ "L2-0529": {
+  "en": "question (in an exam); problem; topic",
+  "vi": "câu hỏi (bài tập); đề bài; chủ đề"
+ },
+ "L2-0530": {
+  "en": "sports; physical education (PE)",
+  "vi": "thể thao; (môn) thể dục"
+ },
+ "L2-0531": {
+  "en": "stadium; sports ground",
+  "vi": "sân vận động"
+ },
+ "L2-0532": {
+  "en": "gym; gymnasium; indoor stadium",
+  "vi": "nhà thi đấu; nhà thể thao"
+ },
+ "L2-0533": {
+  "en": "in the sky; the heavens",
+  "vi": "trên trời; bầu trời"
+ },
+ "L2-0534": {
+  "en": "(measure word: roads, rivers, fish, trousers)",
+  "vi": "(lượng từ vật dài: đường, sông, cá, quần)"
+ },
+ "L2-0535": {
+  "en": "condition; requirement; terms",
+  "vi": "điều kiện; hoàn cảnh; yêu cầu"
+ },
+ "L2-0536": {
+  "en": "to listen to a lecture; to attend class",
+  "vi": "nghe giảng; nghe bài giảng"
+ },
+ "L2-0537": {
+  "en": "to hear (that); I heard; they say",
+  "vi": "nghe nói; nghe đồn"
+ },
+ "L2-0538": {
+  "en": "to stop; to park (a car)",
+  "vi": "dừng; ngừng; đỗ (xe)"
+ },
+ "L2-0539": {
+  "en": "to park (a car); to stop (a vehicle)",
+  "vi": "đỗ xe; đậu xe; dừng xe"
+ },
+ "L2-0540": {
+  "en": "car park; parking lot",
+  "vi": "bãi đỗ xe; bãi gửi xe"
+ },
+ "L2-0541": {
+  "en": "quite; very; rather",
+  "vi": "khá; rất; lắm"
+ },
+ "L2-0542": {
+  "en": "pretty good; quite good",
+  "vi": "khá tốt; tốt lắm; khá ổn"
+ },
+ "L2-0543": {
+  "en": "to go through; to connect; open (not blocked)",
+  "vi": "thông; dẫn tới; kết nối được"
+ },
+ "L2-0544": {
+  "en": "through; by means of; to pass (a test)",
+  "vi": "thông qua; qua; vượt qua (kỳ thi)"
+ },
+ "L2-0545": {
+  "en": "to notify; to inform; notice",
+  "vi": "thông báo; báo cho biết"
+ },
+ "L2-0546": {
+  "en": "at the same time; meanwhile; also",
+  "vi": "đồng thời; cùng lúc"
+ },
+ "L2-0547": {
+  "en": "colleague; co-worker",
+  "vi": "đồng nghiệp"
+ },
+ "L2-0548": {
+  "en": "the same; similarly; likewise",
+  "vi": "giống nhau; tương tự; cũng vậy"
+ },
+ "L2-0549": {
+  "en": "head; (measure word: cattle, pigs)",
+  "vi": "đầu; (lượng từ: con – trâu, bò, lợn)"
+ },
+ "L2-0550": {
+  "en": "(suffix in place words: inside, outside, front)",
+  "vi": "(hậu tố chỉ vị trí: bên trong, bên ngoài)"
+ },
+ "L2-0551": {
+  "en": "hair (on the head)",
+  "vi": "tóc"
+ },
+ "L2-0552": {
+  "en": "picture; image; photo",
+  "vi": "hình ảnh; ảnh; tranh"
+ },
+ "L2-0553": {
+  "en": "to push; to put off; to nominate",
+  "vi": "đẩy; lùi (thời gian); đề cử"
+ },
+ "L2-0554": {
+  "en": "leg",
+  "vi": "chân; cẳng chân"
+ },
+ "L2-0555": {
+  "en": "other parts of the country; out of town",
+  "vi": "nơi khác; tỉnh khác; ngoại tỉnh"
+ },
+ "L2-0556": {
+  "en": "takeaway; food delivery; to deliver food",
+  "vi": "đồ ăn mang về; đồ ăn giao tận nhà"
+ },
+ "L2-0557": {
+  "en": "to finish; to be over; to run out",
+  "vi": "xong; hết; kết thúc"
+ },
+ "L2-0558": {
+  "en": "to complete; to finish; to accomplish",
+  "vi": "hoàn thành; làm xong"
+ },
+ "L2-0559": {
+  "en": "completely; totally; complete",
+  "vi": "hoàn toàn; đầy đủ; trọn vẹn"
+ },
+ "L2-0560": {
+  "en": "good night",
+  "vi": "chúc ngủ ngon"
+ },
+ "L2-0561": {
+  "en": "evening newspaper",
+  "vi": "báo chiều"
+ },
+ "L2-0562": {
+  "en": "dinner; supper",
+  "vi": "bữa tối; cơm tối"
+ },
+ "L2-0563": {
+  "en": "evening party; evening show; gala",
+  "vi": "buổi tiệc tối; dạ hội; đêm văn nghệ"
+ },
+ "L2-0564": {
+  "en": "bowl",
+  "vi": "bát; chén"
+ },
+ "L2-0565": {
+  "en": "ten thousand; a great many",
+  "vi": "mười nghìn; vạn"
+ },
+ "L2-0566": {
+  "en": "the internet; net; network",
+  "vi": "mạng (internet); lưới"
+ },
+ "L2-0567": {
+  "en": "tennis; tennis ball",
+  "vi": "quần vợt; bóng tennis"
+ },
+ "L2-0568": {
+  "en": "website",
+  "vi": "trang web; website"
+ },
+ "L2-0569": {
+  "en": "towards; to (a direction); bound for",
+  "vi": "về phía; hướng về; đi (đến)"
+ },
+ "L2-0570": {
+  "en": "for; for the sake of; because of",
+  "vi": "vì; cho (ai); để"
+ },
+ "L2-0571": {
+  "en": "why?; for what reason?",
+  "vi": "tại sao?; vì sao?; sao?"
+ },
+ "L2-0572": {
+  "en": "(measure word: people, polite)",
+  "vi": "vị (lượng từ lịch sự chỉ người)"
+ },
+ "L2-0573": {
+  "en": "taste; flavour; smell",
+  "vi": "mùi vị; vị; mùi"
+ },
+ "L2-0574": {
+  "en": "hello (on the phone); hey",
+  "vi": "a lô (khi gọi điện); này"
+ },
+ "L2-0575": {
+  "en": "temperature",
+  "vi": "nhiệt độ"
+ },
+ "L2-0576": {
+  "en": "to smell; to sniff",
+  "vi": "ngửi; ngửi thấy"
+ },
+ "L2-0577": {
+  "en": "to ask the way; to ask for directions",
+  "vi": "hỏi đường"
+ },
+ "L2-0578": {
+  "en": "question; problem; issue",
+  "vi": "câu hỏi; vấn đề; sự cố"
+ },
+ "L2-0579": {
+  "en": "lunch",
+  "vi": "bữa trưa; cơm trưa"
+ },
+ "L2-0580": {
+  "en": "afternoon nap; to nap after lunch",
+  "vi": "ngủ trưa; giấc ngủ trưa"
+ },
+ "L2-0581": {
+  "en": "northwest",
+  "vi": "tây bắc; phía tây bắc"
+ },
+ "L2-0582": {
+  "en": "Western food; Western meal",
+  "vi": "món Âu; đồ ăn Tây"
+ },
+ "L2-0583": {
+  "en": "the West; Western countries",
+  "vi": "phương Tây; phía tây"
+ },
+ "L2-0584": {
+  "en": "southwest",
+  "vi": "tây nam; phía tây nam"
+ },
+ "L2-0585": {
+  "en": "Western medicine; Western-trained doctor",
+  "vi": "Tây y; bác sĩ Tây y"
+ },
+ "L2-0586": {
+  "en": "habit; custom; to be used to",
+  "vi": "thói quen; quen (với); tập quán"
+ },
+ "L2-0587": {
+  "en": "washing machine",
+  "vi": "máy giặt"
+ },
+ "L2-0588": {
+  "en": "to take a bath; to shower",
+  "vi": "tắm"
+ },
+ "L2-0589": {
+  "en": "(measure word: times, for brief actions)",
+  "vi": "(lượng từ: cái, lần – số lần động tác)"
+ },
+ "L2-0590": {
+  "en": "to snow",
+  "vi": "tuyết rơi; có tuyết"
+ },
+ "L2-0591": {
+  "en": "next week",
+  "vi": "tuần sau; tuần tới"
+ },
+ "L2-0592": {
+  "en": "summer",
+  "vi": "mùa hè"
+ },
+ "L2-0593": {
+  "en": "the same; identical",
+  "vi": "giống nhau; như nhau"
+ },
+ "L2-0594": {
+  "en": "to believe; to trust; to believe in",
+  "vi": "tin; tin tưởng"
+ },
+ "L2-0595": {
+  "en": "loud; to ring; to sound",
+  "vi": "to (tiếng); reo (chuông); vang"
+ },
+ "L2-0596": {
+  "en": "to think of; to expect",
+  "vi": "nghĩ đến; nghĩ ra; ngờ tới"
+ },
+ "L2-0597": {
+  "en": "idea; opinion; way of thinking",
+  "vi": "suy nghĩ; ý tưởng; cách nghĩ"
+ },
+ "L2-0598": {
+  "en": "to remember; to recall; to think of",
+  "vi": "nhớ ra; nhớ lại"
+ },
+ "L2-0599": {
+  "en": "towards; to (sb); to face",
+  "vi": "về phía; hướng về; với (ai)"
+ },
+ "L2-0600": {
+  "en": "camera",
+  "vi": "máy ảnh"
+ },
+ "L2-0601": {
+  "en": "to look like; to be like; such as",
+  "vi": "giống; giống như; chẳng hạn như"
+ },
+ "L2-0602": {
+  "en": "Little … (before a surname, for younger people)",
+  "vi": "Tiểu … (trước họ, gọi thân mật người trẻ)"
+ },
+ "L2-0603": {
+  "en": "in a low voice; quietly",
+  "vi": "nhỏ tiếng; nói khẽ"
+ },
+ "L2-0604": {
+  "en": "in one's childhood; as a child",
+  "vi": "hồi nhỏ; lúc nhỏ; thời thơ ấu"
+ },
+ "L2-0605": {
+  "en": "novel; fiction",
+  "vi": "tiểu thuyết; truyện"
+ },
+ "L2-0606": {
+  "en": "careful; to be careful; to watch out",
+  "vi": "cẩn thận; coi chừng"
+ },
+ "L2-0607": {
+  "en": "group; small team",
+  "vi": "nhóm; tổ"
+ },
+ "L2-0608": {
+  "en": "campus; school grounds",
+  "vi": "khuôn viên trường; sân trường"
+ },
+ "L2-0609": {
+  "en": "principal; headmaster; (university) president",
+  "vi": "hiệu trưởng"
+ },
+ "L2-0610": {
+  "en": "to laugh at; to make fun of; joke",
+  "vi": "cười nhạo; chê cười; truyện cười"
+ },
+ "L2-0611": {
+  "en": "joke; funny story",
+  "vi": "chuyện cười; truyện cười"
+ },
+ "L2-0612": {
+  "en": "shoe; shoes",
+  "vi": "giày; giày dép"
+ },
+ "L2-0613": {
+  "en": "in one's heart; in one's mind",
+  "vi": "trong lòng; trong đầu"
+ },
+ "L2-0614": {
+  "en": "mood; frame of mind",
+  "vi": "tâm trạng"
+ },
+ "L2-0615": {
+  "en": "in one's heart; in one's mind",
+  "vi": "trong lòng; trong tim"
+ },
+ "L2-0616": {
+  "en": "news",
+  "vi": "tin tức; thời sự"
+ },
+ "L2-0617": {
+  "en": "letter; mail",
+  "vi": "thư; lá thư"
+ },
+ "L2-0618": {
+  "en": "signal",
+  "vi": "tín hiệu; sóng (điện thoại)"
+ },
+ "L2-0619": {
+  "en": "information; message; news",
+  "vi": "thông tin; tin nhắn; tin tức"
+ },
+ "L2-0620": {
+  "en": "confidence; faith",
+  "vi": "niềm tin; lòng tin; sự tự tin"
+ },
+ "L2-0621": {
+  "en": "credit card",
+  "vi": "thẻ tín dụng"
+ },
+ "L2-0622": {
+  "en": "star (in the sky)",
+  "vi": "ngôi sao; sao"
+ },
+ "L2-0623": {
+  "en": "to act; action; to move about",
+  "vi": "hành động; đi lại"
+ },
+ "L2-0624": {
+  "en": "pedestrian; passer-by",
+  "vi": "người đi bộ; người đi đường"
+ },
+ "L2-0625": {
+  "en": "behaviour; conduct; action",
+  "vi": "hành vi; cách cư xử; hành động"
+ },
+ "L2-0626": {
+  "en": "surname; family name; to be surnamed",
+  "vi": "họ; mang họ"
+ },
+ "L2-0627": {
+  "en": "full name; name",
+  "vi": "họ tên; họ và tên"
+ },
+ "L2-0628": {
+  "en": "to take a holiday; to be on leave",
+  "vi": "nghỉ phép; đi nghỉ"
+ },
+ "L2-0629": {
+  "en": "many; a lot of; much",
+  "vi": "nhiều; rất nhiều"
+ },
+ "L2-0630": {
+  "en": "to choose; to pick; to elect",
+  "vi": "chọn; lựa chọn; bầu"
+ },
+ "L2-0631": {
+  "en": "semester; term",
+  "vi": "học kỳ"
+ },
+ "L2-0632": {
+  "en": "snow",
+  "vi": "tuyết"
+ },
+ "L2-0633": {
+  "en": "colour",
+  "vi": "màu; màu sắc"
+ },
+ "L2-0634": {
+  "en": "eye; (measure word: a look, a glance)",
+  "vi": "mắt; (lượng từ: cái nhìn, cái liếc)"
+ },
+ "L2-0635": {
+  "en": "eye; eyes",
+  "vi": "mắt; đôi mắt"
+ },
+ "L2-0636": {
+  "en": "to raise; to keep (pets); to support (family)",
+  "vi": "nuôi (con, thú cưng); nuôi dưỡng; dưỡng (sức)"
+ },
+ "L2-0637": {
+  "en": "appearance; look; manner",
+  "vi": "dáng vẻ; kiểu dáng; vẻ bề ngoài"
+ },
+ "L2-0638": {
+  "en": "to require; to ask; requirement",
+  "vi": "yêu cầu; đòi hỏi"
+ },
+ "L2-0639": {
+  "en": "medicine; drug",
+  "vi": "thuốc"
+ },
+ "L2-0640": {
+  "en": "pharmacy; chemist's; drugstore",
+  "vi": "hiệu thuốc; nhà thuốc"
+ },
+ "L2-0641": {
+  "en": "pill; tablet",
+  "vi": "viên thuốc; thuốc viên"
+ },
+ "L2-0642": {
+  "en": "liquid medicine; lotion",
+  "vi": "thuốc nước; dung dịch thuốc"
+ },
+ "L2-0643": {
+  "en": "perhaps; maybe",
+  "vi": "có lẽ; có thể"
+ },
+ "L2-0644": {
+  "en": "night; evening",
+  "vi": "đêm; ban đêm"
+ },
+ "L2-0645": {
+  "en": "at night; during the night",
+  "vi": "ban đêm; trong đêm"
+ },
+ "L2-0646": {
+  "en": "a part (of); a portion; some",
+  "vi": "một phần; một bộ phận"
+ },
+ "L2-0647": {
+  "en": "definitely; must; a certain (degree)",
+  "vi": "nhất định; chắc chắn; nhất thiết"
+ },
+ "L2-0648": {
+  "en": "altogether; in total",
+  "vi": "tổng cộng; tất cả"
+ },
+ "L2-0649": {
+  "en": "a moment; a little while; in a moment",
+  "vi": "một lát; một lúc; lát nữa"
+ },
+ "L2-0650": {
+  "en": "have a safe trip; bon voyage",
+  "vi": "thượng lộ bình an; đi đường bình an"
+ },
+ "L2-0651": {
+  "en": "have a good trip; bon voyage",
+  "vi": "thượng lộ bình an; thuận buồm xuôi gió"
+ },
+ "L2-0652": {
+  "en": "already",
+  "vi": "đã; rồi"
+ },
+ "L2-0653": {
+  "en": "after; later; in the future",
+  "vi": "sau khi; sau này; về sau"
+ },
+ "L2-0654": {
+  "en": "before; formerly; ago",
+  "vi": "trước đây; trước khi; trước"
+ },
+ "L2-0655": {
+  "en": "above; … and over; the above",
+  "vi": "trở lên; trên; những điều trên"
+ },
+ "L2-0656": {
+  "en": "besides; apart from; outside",
+  "vi": "ngoài; ngoài ra; bên ngoài"
+ },
+ "L2-0657": {
+  "en": "to think (mistakenly); to assume",
+  "vi": "tưởng; cứ tưởng; cho rằng"
+ },
+ "L2-0658": {
+  "en": "below; … and under; the following",
+  "vi": "trở xuống; dưới; sau đây"
+ },
+ "L2-0659": {
+  "en": "chair",
+  "vi": "ghế; cái ghế"
+ },
+ "L2-0660": {
+  "en": "ordinary; so-so; generally",
+  "vi": "bình thường; tàm tạm; thường (thì)"
+ },
+ "L2-0661": {
+  "en": "a little bit; a tiny bit",
+  "vi": "một chút; một ít; chút xíu"
+ },
+ "L2-0662": {
+  "en": "all one's life; lifetime",
+  "vi": "cả đời; suốt đời"
+ },
+ "L2-0663": {
+  "en": "all along; always; straight (ahead)",
+  "vi": "vẫn luôn; suốt; (đi) thẳng"
+ },
+ "L2-0664": {
+  "en": "hundred million",
+  "vi": "trăm triệu"
+ },
+ "L2-0665": {
+  "en": "opinion; suggestion; complaint",
+  "vi": "ý kiến; góp ý; phàn nàn"
+ },
+ "L2-0666": {
+  "en": "meaning; idea; intention",
+  "vi": "nghĩa; ý; ý định"
+ },
+ "L2-0667": {
+  "en": "because; because of",
+  "vi": "vì; bởi vì; do"
+ },
+ "L2-0668": {
+  "en": "cloudy; overcast; shady",
+  "vi": "âm u; nhiều mây; râm"
+ },
+ "L2-0669": {
+  "en": "cloudy day; overcast sky",
+  "vi": "trời âm u; ngày nhiều mây"
+ },
+ "L2-0670": {
+  "en": "syllable",
+  "vi": "âm tiết"
+ },
+ "L2-0671": {
+  "en": "music",
+  "vi": "âm nhạc; nhạc"
+ },
+ "L2-0672": {
+  "en": "concert",
+  "vi": "buổi hòa nhạc; đêm nhạc"
+ },
+ "L2-0673": {
+  "en": "bank",
+  "vi": "ngân hàng"
+ },
+ "L2-0674": {
+  "en": "bank card",
+  "vi": "thẻ ngân hàng; thẻ ATM"
+ },
+ "L2-0675": {
+  "en": "should; ought to; probably",
+  "vi": "nên; phải; chắc (là)"
+ },
+ "L2-0676": {
+  "en": "English (language)",
+  "vi": "tiếng Anh"
+ },
+ "L2-0677": {
+  "en": "English (language)",
+  "vi": "tiếng Anh"
+ },
+ "L2-0678": {
+  "en": "film; movie",
+  "vi": "bộ phim; phim"
+ },
+ "L2-0679": {
+  "en": "influence; effect; to affect",
+  "vi": "ảnh hưởng; tác động"
+ },
+ "L2-0680": {
+  "en": "forever; always",
+  "vi": "mãi mãi; vĩnh viễn; luôn luôn"
+ },
+ "L2-0681": {
+  "en": "oil; grease; petrol",
+  "vi": "dầu; mỡ; xăng"
+ },
+ "L2-0682": {
+  "en": "tourist; visitor",
+  "vi": "khách du lịch; du khách"
+ },
+ "L2-0683": {
+  "en": "friendly; amicable",
+  "vi": "thân thiện; hữu nghị"
+ },
+ "L2-0684": {
+  "en": "to have free time; to be free",
+  "vi": "rảnh; có thời gian rảnh"
+ },
+ "L2-0685": {
+  "en": "someone; somebody; occupied (toilet)",
+  "vi": "có người; ai đó"
+ },
+ "L2-0686": {
+  "en": "a bit; somewhat (often negative)",
+  "vi": "hơi; có hơi (thường với ý tiêu cực)"
+ },
+ "L2-0687": {
+  "en": "interesting; fun; meaningful",
+  "vi": "thú vị; hay; có ý nghĩa"
+ },
+ "L2-0688": {
+  "en": "again; both … and …; also",
+  "vi": "lại (lần nữa); vừa … vừa …"
+ },
+ "L2-0689": {
+  "en": "fish",
+  "vi": "cá; con cá"
+ },
+ "L2-0690": {
+  "en": "language",
+  "vi": "ngôn ngữ; tiếng"
+ },
+ "L2-0691": {
+  "en": "originally; formerly; so it turns out",
+  "vi": "ban đầu; vốn dĩ; hóa ra"
+ },
+ "L2-0692": {
+  "en": "reason; cause",
+  "vi": "nguyên nhân; lý do"
+ },
+ "L2-0693": {
+  "en": "courtyard; yard; institute (hospital etc.)",
+  "vi": "sân (nhà); viện (học viện, bệnh viện)"
+ },
+ "L2-0694": {
+  "en": "director (hospital, institute); dean",
+  "vi": "giám đốc (bệnh viện); viện trưởng; trưởng khoa"
+ },
+ "L2-0695": {
+  "en": "courtyard; yard; garden",
+  "vi": "sân (nhà); sân vườn"
+ },
+ "L2-0696": {
+  "en": "to be willing; to want to",
+  "vi": "sẵn lòng; muốn; bằng lòng"
+ },
+ "L2-0697": {
+  "en": "month",
+  "vi": "tháng"
+ },
+ "L2-0698": {
+  "en": "the moon",
+  "vi": "mặt trăng; trăng"
+ },
+ "L2-0699": {
+  "en": "the more … the more …",
+  "vi": "càng … càng …"
+ },
+ "L2-0700": {
+  "en": "more and more; increasingly",
+  "vi": "càng ngày càng; ngày càng"
+ },
+ "L2-0701": {
+  "en": "cloud",
+  "vi": "mây; đám mây"
+ },
+ "L2-0702": {
+  "en": "sports; exercise; to work out",
+  "vi": "thể thao; tập thể dục; vận động"
+ },
+ "L2-0703": {
+  "en": "we (you and I); I (dialect)",
+  "vi": "chúng ta; mình (ta)"
+ },
+ "L2-0704": {
+  "en": "we; us (you and I)",
+  "vi": "chúng ta; chúng mình"
+ },
+ "L2-0705": {
+  "en": "dirty; filthy",
+  "vi": "bẩn; dơ"
+ },
+ "L2-0706": {
+  "en": "breakfast",
+  "vi": "bữa sáng; ăn sáng"
+ },
+ "L2-0707": {
+  "en": "early morning; morning",
+  "vi": "sáng sớm; buổi sáng"
+ },
+ "L2-0708": {
+  "en": "long ago; already (long since)",
+  "vi": "từ lâu đã; sớm đã"
+ },
+ "L2-0709": {
+  "en": "what to do?; what should I do?",
+  "vi": "làm sao bây giờ?; phải làm sao?"
+ },
+ "L2-0710": {
+  "en": "how about?; how is it?; how",
+  "vi": "thế nào?; ra sao?; được không?"
+ },
+ "L2-0711": {
+  "en": "how; in what way; what kind of",
+  "vi": "như thế nào; bằng cách nào; ra sao"
+ },
+ "L2-0712": {
+  "en": "to occupy; to take up; to account for (%)",
+  "vi": "chiếm; giữ (chỗ)"
+ },
+ "L2-0713": {
+  "en": "to stand; to stop (halt)",
+  "vi": "đứng; dừng lại"
+ },
+ "L2-0714": {
+  "en": "to stop; to halt; to stand still",
+  "vi": "đứng lại; dừng lại"
+ },
+ "L2-0715": {
+  "en": "to grow; to grow up; to look (in appearance)",
+  "vi": "mọc; lớn lên; trông (ngoại hình)"
+ },
+ "L2-0716": {
+  "en": "to grow up",
+  "vi": "lớn lên; trưởng thành"
+ },
+ "L2-0717": {
+  "en": "to find; to find out; to search out",
+  "vi": "tìm ra; tìm thấy"
+ },
+ "L2-0718": {
+  "en": "to take care of; to look after",
+  "vi": "chăm sóc; trông nom; quan tâm"
+ },
+ "L2-0719": {
+  "en": "photo; photograph; picture",
+  "vi": "ảnh; tấm ảnh; hình"
+ },
+ "L2-0720": {
+  "en": "to take a photo",
+  "vi": "chụp ảnh; chụp hình"
+ },
+ "L2-0721": {
+  "en": "so; this (much); like this",
+  "vi": "như thế này; đến thế; vậy"
+ },
+ "L2-0722": {
+  "en": "at this moment; now; just then",
+  "vi": "lúc này; bây giờ; ngay lúc đó"
+ },
+ "L2-0723": {
+  "en": "like this; this way; such",
+  "vi": "như thế này; như vậy; cách này"
+ },
+ "L2-0724": {
+  "en": "real; true; genuine",
+  "vi": "thật sự; đích thực; chân chính"
+ },
+ "L2-0725": {
+  "en": "normal; regular",
+  "vi": "bình thường"
+ },
+ "L2-0726": {
+  "en": "just right; just in time; to happen to",
+  "vi": "vừa đúng; vừa vặn; vừa hay"
+ },
+ "L2-0727": {
+  "en": "correct; right; proper",
+  "vi": "đúng; chính xác; đúng đắn"
+ },
+ "L2-0728": {
+  "en": "is exactly; is precisely; that's right",
+  "vi": "chính là; đúng là"
+ },
+ "L2-0729": {
+  "en": "direct; directly; straightforward",
+  "vi": "trực tiếp; thẳng"
+ },
+ "L2-0730": {
+  "en": "only; just; merely",
+  "vi": "chỉ; chỉ có"
+ },
+ "L2-0731": {
+  "en": "can only; to have no choice but",
+  "vi": "chỉ có thể; đành phải"
+ },
+ "L2-0732": {
+  "en": "as long as; provided that; if only",
+  "vi": "chỉ cần; miễn là"
+ },
+ "L2-0733": {
+  "en": "paper",
+  "vi": "giấy"
+ },
+ "L2-0734": {
+  "en": "Chinese food; Chinese meal; lunch",
+  "vi": "món ăn Trung Hoa; bữa trưa"
+ },
+ "L2-0735": {
+  "en": "intermediate; middle level",
+  "vi": "trung cấp; bậc trung"
+ },
+ "L2-0736": {
+  "en": "middle age",
+  "vi": "trung niên; tuổi trung niên"
+ },
+ "L2-0737": {
+  "en": "primary and secondary schools",
+  "vi": "tiểu học và trung học; trường phổ thông"
+ },
+ "L2-0738": {
+  "en": "centre; heart; core",
+  "vi": "trung tâm; giữa; cốt lõi"
+ },
+ "L2-0739": {
+  "en": "traditional Chinese medicine; TCM doctor",
+  "vi": "Đông y; thầy thuốc Đông y"
+ },
+ "L2-0740": {
+  "en": "key point; focus; with emphasis",
+  "vi": "trọng tâm; trọng điểm; điểm chính"
+ },
+ "L2-0741": {
+  "en": "to value; to take seriously",
+  "vi": "coi trọng; chú trọng; xem trọng"
+ },
+ "L2-0742": {
+  "en": "week; lap (round); circle",
+  "vi": "tuần; vòng"
+ },
+ "L2-0743": {
+  "en": "weekend",
+  "vi": "cuối tuần"
+ },
+ "L2-0744": {
+  "en": "anniversary",
+  "vi": "ngày kỷ niệm (tròn … năm)"
+ },
+ "L2-0745": {
+  "en": "host; owner; master",
+  "vi": "chủ nhà; chủ; người chủ"
+ },
+ "L2-0746": {
+  "en": "main; major; mainly",
+  "vi": "chủ yếu; chính"
+ },
+ "L2-0747": {
+  "en": "housing; accommodation",
+  "vi": "nhà ở"
+ },
+ "L2-0748": {
+  "en": "to be in hospital; to be hospitalised",
+  "vi": "nằm viện; nhập viện"
+ },
+ "L2-0749": {
+  "en": "to pack (load); to install; to pretend",
+  "vi": "đựng; lắp đặt; giả vờ"
+ },
+ "L2-0750": {
+  "en": "accurate; exact; precise",
+  "vi": "chính xác; chuẩn xác; đúng"
+ },
+ "L2-0751": {
+  "en": "oneself; one's own; by oneself",
+  "vi": "tự mình; bản thân; của mình"
+ },
+ "L2-0752": {
+  "en": "bicycle; bike",
+  "vi": "xe đạp"
+ },
+ "L2-0753": {
+  "en": "freedom; free",
+  "vi": "tự do"
+ },
+ "L2-0754": {
+  "en": "dictionary (of characters)",
+  "vi": "từ điển; tự điển (tra chữ)"
+ },
+ "L2-0755": {
+  "en": "to walk past; to pass by",
+  "vi": "đi qua; đi ngang qua"
+ },
+ "L2-0756": {
+  "en": "to walk into; to enter",
+  "vi": "đi vào; bước vào"
+ },
+ "L2-0757": {
+  "en": "to go away; to walk away; to step aside",
+  "vi": "tránh ra; đi chỗ khác; bỏ đi"
+ },
+ "L2-0758": {
+  "en": "to rent; to hire; to rent out",
+  "vi": "thuê; cho thuê"
+ },
+ "L2-0759": {
+  "en": "group; team; to form (a group)",
+  "vi": "nhóm; tổ; lập (nhóm)"
+ },
+ "L2-0760": {
+  "en": "to form; to make up; to consist of",
+  "vi": "tạo thành; hợp thành; gồm"
+ },
+ "L2-0761": {
+  "en": "group leader; team leader",
+  "vi": "tổ trưởng; trưởng nhóm"
+ },
+ "L2-0762": {
+  "en": "mouth",
+  "vi": "miệng; mồm"
+ },
+ "L2-0763": {
+  "en": "recently; lately; these days",
+  "vi": "dạo này; gần đây; mới đây"
+ },
+ "L2-0764": {
+  "en": "writer; author",
+  "vi": "nhà văn; tác giả"
+ },
+ "L2-0765": {
+  "en": "essay; composition (school)",
+  "vi": "bài văn; tập làm văn"
+ },
+ "L2-0766": {
+  "en": "homework; assignment; task",
+  "vi": "bài tập (về nhà); công việc"
+ },
+ "L2-0767": {
+  "en": "effect; function; role",
+  "vi": "tác dụng; vai trò; chức năng"
+ },
+ "L2-0768": {
+  "en": "(measure word: buildings, mountains, bridges)",
+  "vi": "(lượng từ: tòa nhà, ngọn núi, cây cầu)"
+ },
+ "L2-0769": {
+  "en": "seat; place",
+  "vi": "chỗ ngồi; ghế"
+ },
+ "L2-0770": {
+  "en": "to achieve; to manage to do; to accomplish",
+  "vi": "làm được; đạt được"
+ },
+ "L2-0771": {
+  "en": "way of doing sth; method; practice",
+  "vi": "cách làm; phương pháp; cách xử lý"
+ },
+ "L2-0772": {
+  "en": "to cook; to prepare a meal",
+  "vi": "nấu cơm; nấu ăn"
+ },
+ "S-0001": {
+  "en": "Vietnam",
+  "vi": "Việt Nam"
+ },
+ "S-0002": {
+  "en": "United States; USA",
+  "vi": "Mỹ; Hoa Kỳ"
+ },
+ "S-0003": {
+  "en": "Japan",
+  "vi": "Nhật Bản"
+ },
+ "S-0004": {
+  "en": "South Korea",
+  "vi": "Hàn Quốc"
+ },
+ "S-0005": {
+  "en": "United Kingdom; Britain",
+  "vi": "Anh; Vương quốc Anh"
+ },
+ "S-0006": {
+  "en": "Australia",
+  "vi": "Úc"
+ },
+ "S-0007": {
+  "en": "France",
+  "vi": "Pháp"
+ },
+ "S-0008": {
+  "en": "Germany",
+  "vi": "Đức"
+ },
+ "S-0009": {
+  "en": "Thailand",
+  "vi": "Thái Lan"
+ },
+ "S-0010": {
+  "en": "Singapore",
+  "vi": "Singapore"
+ },
+ "S-0011": {
+  "en": "Canada",
+  "vi": "Canada"
+ },
+ "S-0012": {
+  "en": "Malaysia",
+  "vi": "Malaysia"
+ },
+ "S-0013": {
+  "en": "India",
+  "vi": "Ấn Độ"
+ },
+ "S-0014": {
+  "en": "Indonesia",
+  "vi": "Indonesia"
+ },
+ "S-0015": {
+  "en": "New Zealand",
+  "vi": "New Zealand"
+ },
+ "S-0016": {
+  "en": "Chinese person",
+  "vi": "người Trung Quốc"
+ },
+ "S-0017": {
+  "en": "Vietnamese person",
+  "vi": "người Việt Nam"
+ },
+ "S-0018": {
+  "en": "American (person)",
+  "vi": "người Mỹ"
+ },
+ "S-0019": {
+  "en": "Japanese person",
+  "vi": "người Nhật"
+ },
+ "S-0020": {
+  "en": "Korean (person)",
+  "vi": "người Hàn Quốc"
+ },
+ "S-0021": {
+  "en": "British person",
+  "vi": "người Anh"
+ },
+ "S-0022": {
+  "en": "Australian (person)",
+  "vi": "người Úc"
+ },
+ "S-0023": {
+  "en": "French person",
+  "vi": "người Pháp"
+ },
+ "S-0024": {
+  "en": "German (person)",
+  "vi": "người Đức"
+ },
+ "S-0025": {
+  "en": "Chinese (language); Mandarin",
+  "vi": "tiếng Trung; tiếng Hán"
+ },
+ "S-0026": {
+  "en": "Chinese (language)",
+  "vi": "tiếng Trung; tiếng Hoa"
+ },
+ "S-0027": {
+  "en": "English (language)",
+  "vi": "tiếng Anh"
+ },
+ "S-0028": {
+  "en": "English (language)",
+  "vi": "tiếng Anh"
+ },
+ "S-0029": {
+  "en": "Vietnamese (language)",
+  "vi": "tiếng Việt"
+ },
+ "S-0030": {
+  "en": "Japanese (language)",
+  "vi": "tiếng Nhật"
+ },
+ "S-0031": {
+  "en": "Japanese (language)",
+  "vi": "tiếng Nhật"
+ },
+ "S-0032": {
+  "en": "Korean (language)",
+  "vi": "tiếng Hàn"
+ },
+ "S-0033": {
+  "en": "French (language)",
+  "vi": "tiếng Pháp"
+ },
+ "S-0034": {
+  "en": "German (language)",
+  "vi": "tiếng Đức"
+ },
+ "S-0035": {
+  "en": "Beijing",
+  "vi": "Bắc Kinh"
+ },
+ "S-0036": {
+  "en": "Shanghai",
+  "vi": "Thượng Hải"
+ },
+ "S-0037": {
+  "en": "Hong Kong",
+  "vi": "Hồng Kông"
+ },
+ "S-0038": {
+  "en": "Taiwan",
+  "vi": "Đài Loan"
+ },
+ "S-0039": {
+  "en": "Hanoi",
+  "vi": "Hà Nội"
+ },
+ "S-0040": {
+  "en": "Sydney",
+  "vi": "Sydney"
+ },
+ "S-0041": {
+  "en": "Melbourne",
+  "vi": "Melbourne"
+ }
+}
