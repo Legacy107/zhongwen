@@ -38,7 +38,7 @@ interface Deck {
 
 /** Builds SRS rows for any deck word that doesn't have them yet. */
 async function ensureCards(words: Word[], deviceId: string): Promise<void> {
-  const existing = new Set((await db.cards.toArray()).map((c) => c.id));
+  const existing = new Set((await db.cards.toCollection().primaryKeys()) as string[]);
   const missing: StoredCard[] = [];
   const now = new Date();
   for (const w of words) {
@@ -84,6 +84,7 @@ export function ReviewSessionView() {
   const [finished, setFinished] = useState<{ ms: number; goal: GoalProgress; crossed: boolean } | null>(null);
   const [nextDue, setNextDue] = useState<Date | null>(null);
   const [capped, setCapped] = useState(false);
+  const [firstTime, setFirstTime] = useState(false);
   const sound = useSound();
   const startedAt = useRef<number>(0);
   const goalBefore = useRef<GoalProgress | null>(null);
@@ -138,6 +139,9 @@ export function ReviewSessionView() {
 
   useEffect(() => {
     let cancelled = false;
+    // The very first session writes a card for every word in the deck, which
+    // takes a few seconds on a phone; say so rather than look stuck.
+    void db.cards.count().then((n) => !cancelled && n === 0 && setFirstTime(true));
     load(false)
       .then((loaded) => !cancelled && begin(loaded))
       .catch((e) => !cancelled && setError(e instanceof Error ? e.message : "Failed to load deck"));
@@ -203,7 +207,7 @@ export function ReviewSessionView() {
   );
 
   if (error) return <ErrorState message={error} />;
-  if (!deck) return <Loading label="Shuffling your cards…" />;
+  if (!deck) return <Loading label={firstTime ? "Setting up your deck. This happens once…" : "Shuffling your cards…"} />;
 
   if (finished || !current || !word || !intervals) {
     const accuracy = graded.count ? Math.round((graded.passed / graded.count) * 100) : 0;
