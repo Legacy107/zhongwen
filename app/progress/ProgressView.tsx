@@ -1,16 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { loadReaderShards, loadWords, READER_LEVELS } from "@/lib/data";
 import { db } from "@/lib/db/local";
 import {
+  characterTargets,
+  charactersOf,
   computeRetention,
   countKnownWords,
   levelTargets,
   projectTarget,
+  type CharacterTarget,
   type LevelTarget,
   type Projection,
   type RetentionStats,
 } from "@/lib/progress";
+import { planReading, wordStatuses } from "@/lib/reader";
 import { State } from "@/lib/srs";
 
 interface Meta {
@@ -19,6 +24,10 @@ interface Meta {
 
 interface Snapshot {
   knownWords: number;
+  knownChars: number;
+  studiedChars: number;
+  charTargets: CharacterTarget[];
+  reading: { readable: number; onePlus: number; total: number };
   learning: number;
   sentencesKnown: number;
   targets: LevelTarget[];
@@ -28,13 +37,21 @@ interface Snapshot {
 }
 
 async function readSnapshot(): Promise<Snapshot> {
-  const [cards, reviews, meta] = await Promise.all([
+  const [cards, reviews, meta, words, corpus] = await Promise.all([
     db.cards.toArray(),
     db.reviews.toArray(),
     fetch("/data/meta.json").then((r) => r.json() as Promise<Meta>),
+    loadWords(),
+    loadReaderShards(READER_LEVELS),
   ]);
 
   const knownWords = countKnownWords(cards);
+  const status = wordStatuses(cards);
+  const wordsWith = (pred: (s: string) => boolean) =>
+    [...status].filter(([, s]) => pred(s)).flatMap(([id]) => (words.get(id) ? [words.get(id)!] : []));
+  const knownChars = charactersOf(wordsWith((s) => s === "known")).size;
+  const studiedChars = charactersOf(wordsWith((s) => s !== "new")).size;
+  const plan = planReading(corpus, status);
   const learning = new Set(
     cards.filter((c) => c.cardType !== "sentence" && c.state === State.Learning).map((c) => c.wordId),
   ).size;
@@ -51,6 +68,10 @@ async function readSnapshot(): Promise<Snapshot> {
 
   return {
     knownWords,
+    knownChars,
+    studiedChars,
+    charTargets: characterTargets(words.values()),
+    reading: { readable: plan.easy.length, onePlus: plan.onePlus.length, total: corpus.length },
     learning,
     sentencesKnown,
     targets,
@@ -123,6 +144,49 @@ export function ProgressView() {
         })}
         <p className="text-xs text-neutral-500">
           A word counts once all three of its cards have graduated to review.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-3 rounded-2xl bg-neutral-900/60 p-4">
+        <div className="flex items-baseline justify-between">
+          <span className="text-sm text-neutral-400">Characters known</span>
+          <span className="text-2xl font-semibold tabular-nums">{snap.knownChars}</span>
+        </div>
+        {snap.charTargets.slice(0, 4).map((t) => {
+          const pct = Math.min(100, (snap.knownChars / t.chars) * 100);
+          const met = snap.knownChars >= t.chars;
+          return (
+            <div key={t.level} className="flex flex-col gap-1">
+              <div className="flex items-baseline justify-between text-xs">
+                <span className={met ? "text-emerald-400" : "text-neutral-500"}>{t.label}</span>
+                <span className="tabular-nums text-neutral-600">
+                  {snap.knownChars} / {t.chars}
+                </span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-neutral-800">
+                <div
+                  className={`h-full rounded-full ${met ? "bg-emerald-500" : "bg-neutral-600"}`}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+        <p className="text-xs text-neutral-500">
+          Distinct characters across your known words, against the characters each level&apos;s
+          vocabulary uses. {snap.studiedChars} characters seen in words you have started.
+        </p>
+      </section>
+
+      <section className="rounded-2xl bg-neutral-900/60 p-4">
+        <h2 className="mb-1 text-sm font-medium text-neutral-300">Reading</h2>
+        <Row
+          label="Sentences you can read now"
+          value={`${snap.reading.readable.toLocaleString()} of ${snap.reading.total.toLocaleString()}`}
+        />
+        <Row label="One new word away" value={snap.reading.onePlus.toLocaleString()} />
+        <p className="mt-2 text-xs text-neutral-500">
+          Against the Tatoeba reading corpus, counting words you have started as readable.
         </p>
       </section>
 

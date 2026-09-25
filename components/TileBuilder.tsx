@@ -171,7 +171,7 @@ export function TileBuilder({
               <div>
                 <p className="font-medium">{sentence.hanzi}</p>
                 <p className="mt-1 text-neutral-400">{sentence.pinyin}</p>
-                <p className="mt-1 text-neutral-500">{sentence.viGloss}</p>
+                {sentence.viGloss && <p className="mt-1 text-neutral-500">{sentence.viGloss}</p>}
               </div>
               <button
                 type="button"

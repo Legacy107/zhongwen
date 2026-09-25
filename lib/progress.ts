@@ -115,3 +115,38 @@ export function countKnownWords(
   }
   return known;
 }
+
+export interface CharacterTarget {
+  level: string;
+  label: string;
+  /** Distinct characters across the words of this level and every level below. */
+  chars: number;
+}
+
+/** Distinct hanzi across a set of words. */
+export function charactersOf(words: Iterable<{ chars: string[] }>): Set<string> {
+  const out = new Set<string>();
+  for (const w of words) for (const c of w.chars) out.add(c);
+  return out;
+}
+
+/**
+ * Character targets from the deck's own vocabulary: the characters a reader
+ * needs for the words of each HSK level. Characters and words are different
+ * measures in Chinese (知道 is one word, two characters, and 道 reappears in
+ * 道理 and 知道 alike), so the two are tracked separately.
+ */
+export function characterTargets(words: Iterable<{ level: string; chars: string[] }>): CharacterTarget[] {
+  const list = [...words];
+  const order = ['1', '2', '3', '4', '5', '6'];
+  const out: CharacterTarget[] = [];
+  const seen = new Set<string>();
+  for (const level of order) {
+    for (const w of list) {
+      const l = w.level === 'S' ? '1' : w.level;
+      if (l === level) for (const c of w.chars) seen.add(c);
+    }
+    out.push({ level, label: `HSK ${level}`, chars: seen.size });
+  }
+  return out;
+}

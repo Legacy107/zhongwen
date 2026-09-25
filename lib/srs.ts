@@ -178,6 +178,16 @@ export function sortForReview(cards: ReviewCard[], now = new Date()): ReviewCard
     });
 }
 
+export interface QueueOptions<T> {
+  sessionSize?: number;
+  newPerSession?: number;
+  /**
+   * Order for new cards, lower first. Without one they come in creation
+   * order, which for the deck is HSK list order: alphabetical by pinyin.
+   */
+  rankNew?: (card: T) => number;
+}
+
 /**
  * The actual session queue: every due review, plus a bounded number of new cards.
  *
@@ -188,10 +198,14 @@ export function sortForReview(cards: ReviewCard[], now = new Date()): ReviewCard
 export function buildQueue<T extends ReviewCard>(
   cards: T[],
   now = new Date(),
-  { sessionSize = SESSION_SIZE, newPerSession = NEW_PER_SESSION } = {},
+  { sessionSize = SESSION_SIZE, newPerSession = NEW_PER_SESSION, rankNew }: QueueOptions<T> = {},
 ): T[] {
   const sorted = sortForReview(cards, now) as T[];
   const due = sorted.filter((c) => c.state !== State.New);
   const fresh = sorted.filter((c) => c.state === State.New);
+  if (rankNew) {
+    const rank = new Map(fresh.map((c) => [c.id, rankNew(c)]));
+    fresh.sort((a, b) => rank.get(a.id)! - rank.get(b.id)!);
+  }
   return [...due, ...fresh.slice(0, newPerSession)].slice(0, sessionSize);
 }

@@ -225,6 +225,15 @@ export function HomeDashboard() {
       </Link>
 
       <Link
+        href="/read"
+        onClick={unlockAudio}
+        className="flex items-center justify-between rounded-2xl border border-neutral-800 bg-neutral-900/60 px-5 py-4 active:bg-neutral-800"
+      >
+        <span className="font-medium">Read</span>
+        <span className="text-xs text-neutral-500">real sentences, tap any word</span>
+      </Link>
+
+      <Link
         href="/tones"
         onClick={unlockAudio}
         className="flex items-center justify-between rounded-2xl border border-neutral-800 bg-neutral-900/60 px-5 py-4 active:bg-neutral-800"

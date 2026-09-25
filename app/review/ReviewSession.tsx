@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReviewCard } from "@/components/ReviewCard";
+import { loadFalseFriends, loadWordFrequency, loadWords } from "@/lib/data";
 import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId, uuid } from "@/lib/device";
 import type { FalseFriend, Word } from "@/lib/hanviet";
+import { newCardRanker } from "@/lib/intake";
+import { loadMinedWords } from "@/lib/mining";
 import {
   buildQueue,
   cardId,
@@ -27,16 +30,8 @@ interface Deck {
 }
 
 async function loadDeck(): Promise<Deck> {
-  const [words, falseFriends] = await Promise.all([
-    fetch("/data/words.json").then((r) => r.json() as Promise<Word[]>),
-    fetch("/data/false-friends.json")
-      .then((r) => r.json() as Promise<FalseFriend[]>)
-      .catch(() => [] as FalseFriend[]),
-  ]);
-  return {
-    words: new Map(words.map((w) => [w.id, w])),
-    falseFriends: new Map(falseFriends.map((f) => [f.simplified, f])),
-  };
+  const [words, falseFriends] = await Promise.all([loadWords(), loadFalseFriends()]);
+  return { words, falseFriends };
 }
 
 /** Builds SRS rows for any deck word that doesn't have them yet. */
@@ -75,9 +70,12 @@ export function ReviewSession() {
         // Sentence cards live in the same table but are drilled on /build,
         // and ReviewCard cannot render one.
         const all = (await db.cards.toArray()).filter((c) => c.cardType !== "sentence");
+        const [frequency, mined] = await Promise.all([loadWordFrequency(), loadMinedWords()]);
         if (cancelled) return;
         setDeck(d);
-        setQueue(buildQueue(all) as StoredCard[]);
+        setQueue(
+          buildQueue(all, new Date(), { rankNew: newCardRanker(d.words, frequency, mined) }),
+        );
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : "Failed to load deck");
       }

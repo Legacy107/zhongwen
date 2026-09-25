@@ -7,6 +7,8 @@ import { TileBuilder, type TileResult } from "@/components/TileBuilder";
 import { db, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId, uuid } from "@/lib/device";
+import { loadPracticeSentences } from "@/lib/data";
+import { loadSavedSentences, toPracticeSentence } from "@/lib/mining";
 import { buildGapFill, type GapFill, type Sentence } from "@/lib/sentences";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
 import { warmUpSpeech } from "@/lib/speak";
@@ -22,24 +24,22 @@ import { useAutoSpeak } from "@/lib/useAutoSpeak";
  * cleanly recede. Without this the session was a random draw that stored
  * nothing, so nothing was actually being learned.
  */
-const SOURCES = ["/data/sentences.json", "/data/sentences-fixture.json"];
-
 /** Sentences per session, and how many unseen ones may enter it. */
 const SESSION_SIZE = 12;
 const NEW_PER_SESSION = 6;
 
-async function loadSentences(): Promise<Sentence[]> {
-  for (const url of SOURCES) {
-    try {
-      const r = await fetch(url);
-      if (!r.ok) continue;
-      const data = (await r.json()) as Sentence[];
-      if (data.length) return data;
-    } catch {
-      // Try the next source.
-    }
-  }
-  throw new Error("No sentence set found. Run yarn sentences:generate.");
+/**
+ * The generated set plus sentences saved from reading. Saved ones are the
+ * learner's own picks, each met in context with one new word, so they are
+ * taken in before the generated set's unseen sentences.
+ */
+async function loadSentences(): Promise<{ sentences: Sentence[]; saved: Set<string> }> {
+  const [generated, saved] = await Promise.all([loadPracticeSentences(), loadSavedSentences()]);
+  const fromReading = saved.map(toPracticeSentence);
+  return {
+    sentences: [...fromReading, ...generated],
+    saved: new Set(fromReading.map((s) => s.id)),
+  };
 }
 
 /** Creates SRS rows for sentences that don't have one yet. */
@@ -69,7 +69,7 @@ export function BuildSession() {
     let cancelled = false;
     (async () => {
       try {
-        const sentences = await loadSentences();
+        const { sentences, saved } = await loadSentences();
         if (cancelled) return;
         const deviceId = getDeviceId();
         await ensureCards(sentences, deviceId);
@@ -80,7 +80,8 @@ export function BuildSession() {
           buildQueue(cards, new Date(), {
             sessionSize: SESSION_SIZE,
             newPerSession: NEW_PER_SESSION,
-          }) as StoredCard[],
+            rankNew: (c) => (saved.has(c.wordId) ? 0 : 1),
+          }),
         );
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : "Failed to load sentences");

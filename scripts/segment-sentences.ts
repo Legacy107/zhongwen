@@ -121,7 +121,7 @@ export function sentencePinyin(hanzi: string): string {
  * 儿子 ("érzi") starts with it, and 女儿 ("nǚ'ér") has a genuine break. Kept
  * small and explicit: erhua is otherwise entirely positional.
  */
-const NON_ERHUA_WORDS = new Set(["儿子", "儿童", "儿女", "女儿"]);
+export const NON_ERHUA_WORDS = new Set(["儿子", "儿童", "儿女", "女儿"]);
 
 /**
  * Nationality / language morphemes that form head-last compounds in Chinese

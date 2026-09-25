@@ -76,3 +76,22 @@ test('a met target projects zero remaining', () => {
   start.setDate(start.getDate() - 30);
   assert.equal(projectTarget(600, 500, start, now).remaining, 0);
 });
+
+test('characters are counted once across words', async () => {
+  const { charactersOf } = await import('./progress');
+  const chars = charactersOf([{ chars: ['知', '道'] }, { chars: ['道', '理'] }]);
+  assert.deepEqual([...chars].sort(), ['理', '知', '道'].sort());
+});
+
+test('character targets accumulate by level, folding the supplement into HSK 1', async () => {
+  const { characterTargets } = await import('./progress');
+  const targets = characterTargets([
+    { level: '1', chars: ['你', '好'] },
+    { level: 'S', chars: ['越', '南'] },
+    { level: '2', chars: ['好', '像'] },
+  ]);
+  assert.deepEqual(
+    targets.slice(0, 3).map((t) => t.chars),
+    [4, 5, 5],
+  );
+});
