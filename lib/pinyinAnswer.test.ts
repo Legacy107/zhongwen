@@ -23,10 +23,22 @@ test('wrong tones are flagged, not passed', () => {
 });
 
 test('neutral tones never count against an answer', () => {
-  assert.equal(checkPinyin('peng2you', 'péngyou', [2, 5]), 'correct');
-  assert.equal(checkPinyin('peng2you5', 'péngyou', [2, 5]), 'correct');
-  assert.equal(checkPinyin('péngyǒu', 'péngyou', [2, 5]), 'correct', 'citation tone on a neutral syllable');
-  assert.equal(checkPinyin('peng3you3', 'péngyou', [2, 5]), 'tones');
+  assert.equal(checkPinyin('peng2you', 'péngyou', 'peng2 you5'), 'correct');
+  assert.equal(checkPinyin('peng2you5', 'péngyou', 'peng2 you5'), 'correct');
+  assert.equal(checkPinyin('péngyǒu', 'péngyou', 'peng2 you5'), 'correct', 'citation tone on a neutral syllable');
+  assert.equal(checkPinyin('peng3you3', 'péngyou', 'peng2 you5'), 'tones');
+});
+
+test('each tone is checked against its own syllable', () => {
+  // Letters then a tap on a tone key: the digit belongs to the last syllable.
+  assert.equal(checkPinyin('laoshi1', 'lǎoshī', 'lao3 shi1'), 'correct');
+  assert.equal(checkPinyin('laoshi3', 'lǎoshī', 'lao3 shi1'), 'tones');
+  assert.equal(checkPinyin('lao3shi', 'lǎoshī', 'lao3 shi1'), 'correct');
+  assert.equal(checkPinyin('lao3shi1', 'lǎoshī', 'lao3 shi1'), 'correct');
+  assert.equal(checkPinyin('láoshī', 'lǎoshī', 'lao3 shi1'), 'tones');
+  assert.equal(checkPinyin('laoshī', 'lǎoshī', 'lao3 shi1'), 'correct');
+  assert.equal(checkPinyin('xian1', "Xī'ān", 'Xi1 an1'), 'correct', 'the digit after n belongs to an');
+  assert.equal(checkPinyin('lü4', 'lǜ', 'lu:4'), 'correct');
 });
 
 test('tones on only some syllables are read left to right', () => {

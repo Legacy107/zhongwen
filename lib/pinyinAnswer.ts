@@ -45,35 +45,82 @@ export function pinyinTones(s: string): number[] {
 
 export type PinyinVerdict = 'correct' | 'tones' | 'wrong';
 
+export interface Syllable {
+  letters: string;
+  /** 1-4, or 5 for neutral. */
+  tone: number;
+}
+
+/** "lao3 shi1" -> [{ letters: "lao", tone: 3 }, { letters: "shi", tone: 1 }]. No digit, or 0, is neutral. */
+export function syllablesFromNumeric(numeric: string): Syllable[] {
+  return numeric
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((syl) => {
+      const m = syl.match(/([0-5])$/);
+      const n = m ? Number(m[1]) : 5;
+      return { letters: pinyinLetters(syl), tone: n === 0 ? 5 : n };
+    });
+}
+
+/**
+ * The tones an answer gives, each placed on the syllable it belongs to: a tone
+ * mark on the syllable of the vowel it sits on, a digit on the syllable just
+ * before it. So "laoshi1" is a tone for shi, not for lao, which is also what
+ * typing the letters and then tapping a tone key produces. Null when the
+ * answer's letters do not line up with the syllables.
+ */
+function placeTones(answer: string, syllables: Syllable[]): Array<number | undefined> | null {
+  const ends: number[] = [];
+  let total = 0;
+  for (const s of syllables) ends.push((total += s.letters.length));
+  const placed: Array<number | undefined> = syllables.map(() => undefined);
+  const chars = [...answer.normalize('NFD').toLowerCase()];
+  let letters = 0;
+  for (let i = 0; i < chars.length; i++) {
+    const ch = chars[i];
+    if (/[a-z]/.test(ch)) {
+      letters++;
+      if (ch === 'u' && chars[i + 1] === ':') i++; // u: is one letter, ü
+      continue;
+    }
+    const tone = MARK_TONES[ch] ?? (/[0-5]/.test(ch) ? (ch === '0' ? 5 : Number(ch)) : undefined);
+    if (tone === undefined || letters === 0) continue;
+    const at = ends.findIndex((end) => letters - 1 < end);
+    if (at === -1) return null;
+    placed[at] = tone;
+  }
+  return letters === total ? placed : null;
+}
+
 /**
  * - "correct": letters match, and any tones given match too.
- * - "tones":   letters match but the tones given do not.
+ * - "tones":   letters match but a tone given is wrong.
  * - "wrong":   the letters themselves differ.
  *
- * Neutral tones are ignored when comparing, since learners rarely mark them
- * and HSK itself is inconsistent about them (朋友 péngyou vs péngyǒu).
- *
- * `syllableTones` (the deck's per-syllable tones, 5 for neutral) lines the
- * answer up syllable by syllable when every syllable was given a tone, so the
- * citation tone on a neutral syllable (péngyǒu) is not counted as a mistake.
+ * Tones are optional, and neutral syllables never count against an answer:
+ * learners rarely mark them and HSK itself is inconsistent (朋友 péngyou vs
+ * péngyǒu). With `syllables` (the deck's numeric pinyin, "lao3 shi1") each
+ * tone is checked against its own syllable; without, the tones given are
+ * read left to right.
  */
-export function checkPinyin(
-  answer: string,
-  expected: string,
-  syllableTones?: number[],
-): PinyinVerdict {
-  if (!answer.trim() || pinyinLetters(answer) !== pinyinLetters(expected)) return 'wrong';
-  const given = pinyinTones(answer);
-  if (given.every((t) => t === 5)) return 'correct';
+export function checkPinyin(answer: string, expected: string, syllables?: string | Syllable[]): PinyinVerdict {
+  const letters = pinyinLetters(expected);
+  if (!answer.trim() || pinyinLetters(answer) !== letters) return 'wrong';
 
-  if (syllableTones && given.length === syllableTones.length) {
-    const ok = given.every((t, i) => syllableTones[i] === 5 || t === 5 || t === syllableTones[i]);
-    return ok ? 'correct' : 'tones';
+  const syl = typeof syllables === 'string' ? syllablesFromNumeric(syllables) : syllables;
+  if (syl?.length && syl.map((s) => s.letters).join('') === letters) {
+    const placed = placeTones(answer, syl);
+    if (placed) {
+      const wrong = placed.some((t, i) => t !== undefined && t !== 5 && syl[i].tone !== 5 && t !== syl[i].tone);
+      return wrong ? 'tones' : 'correct';
+    }
   }
-  // Tones on only some syllables can't be aligned exactly. Learners mark the
-  // ones they know left to right, so read them as a prefix.
-  const want = (syllableTones ?? pinyinTones(expected)).filter((t) => t !== 5);
-  const got = given.filter((t) => t !== 5);
-  if (got.length > want.length) return 'tones';
-  return got.every((t, i) => t === want[i]) ? 'correct' : 'tones';
+
+  const given = pinyinTones(answer).filter((t) => t !== 5);
+  if (given.length === 0) return 'correct';
+  const want = (syl?.map((s) => s.tone) ?? pinyinTones(expected)).filter((t) => t !== 5);
+  if (given.length > want.length) return 'tones';
+  return given.every((t, i) => t === want[i]) ? 'correct' : 'tones';
 }
