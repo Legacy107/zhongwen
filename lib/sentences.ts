@@ -202,3 +202,37 @@ export function buildGapFill(
     isMeasureWord: measure,
   };
 }
+
+/**
+ * Wrong tiles for the word bank, so building a sentence means choosing words
+ * as well as ordering them.
+ *
+ * Drawn from other sentences at the same level, so they are words the learner
+ * is meeting anyway, and never a word the sentence itself uses (a distractor
+ * that also fits would be marked wrong for a valid answer). Tiles of the same
+ * length as the sentence's own are preferred, so size gives nothing away.
+ */
+export function pickDistractors(
+  sentence: Sentence,
+  pool: Sentence[],
+  count: number,
+  random: () => number = Math.random,
+): SentenceTile[] {
+  const own = new Set(sentence.tiles.map((t) => t.text));
+  const lengths = new Set(sentence.tiles.map((t) => [...t.text].length));
+  const seen = new Set<string>();
+  const candidates: SentenceTile[] = [];
+  for (const s of pool) {
+    if (s.id === sentence.id || s.level !== sentence.level) continue;
+    for (const t of s.tiles) {
+      if (own.has(t.text) || seen.has(t.text) || !t.pinyin) continue;
+      // A tile containing one of the sentence's own words could still fit.
+      if ([...own].some((o) => t.text.includes(o) || o.includes(t.text))) continue;
+      seen.add(t.text);
+      candidates.push(t);
+    }
+  }
+  const scored = candidates.map((t) => ({ t, r: random() + (lengths.has([...t.text].length) ? 0 : 1) }));
+  scored.sort((a, b) => a.r - b.r);
+  return scored.slice(0, count).map((s) => s.t);
+}

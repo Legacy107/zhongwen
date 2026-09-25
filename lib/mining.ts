@@ -59,10 +59,14 @@ export async function loadMinedWords(): Promise<Map<string, MinedWord>> {
 
 export async function loadSavedSentences(): Promise<ReaderSentence[]> {
   const rows = await db.settings.where('key').startsWith(SAVED_SENTENCE).toArray();
-  return rows
-    .map((row) => row.value as ReaderSentenceWire | null)
-    .filter((v): v is ReaderSentenceWire => Boolean(v?.id && v.tk))
-    .map(parseSentence);
+  return (
+    rows
+      .map((row) => row.value as ReaderSentenceWire | null)
+      .filter((v): v is ReaderSentenceWire => Boolean(v?.id && v.tk))
+      .map(parseSentence)
+      // Saved before the tile minimum existed; still too short to be worth building.
+      .filter((s) => toPracticeSentence(s).tiles.length >= MIN_TILES)
+  );
 }
 
 /**

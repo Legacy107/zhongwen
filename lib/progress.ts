@@ -150,3 +150,54 @@ export function characterTargets(words: Iterable<{ level: string; chars: string[
   }
   return out;
 }
+
+export interface LevelCount {
+  level: string;
+  label: string;
+  total: number;
+  known: number;
+}
+
+const LEVEL_ORDER = ['1', '2', '3', '4', '5', '6'];
+const levelOf = (level: string) => (level === 'S' ? '1' : level);
+
+/**
+ * Words known per HSK level, each level on its own. Cumulative bars ("HSK 6:
+ * 4 / 5,456") read as progress in HSK 6 when every known word is from HSK 1.
+ */
+export function wordsByLevel(
+  words: Iterable<{ id: string; level: string }>,
+  isKnown: (id: string) => boolean,
+): LevelCount[] {
+  const out = new Map(LEVEL_ORDER.map((l) => [l, { level: l, label: `HSK ${l}`, total: 0, known: 0 }]));
+  for (const w of words) {
+    const e = out.get(levelOf(w.level));
+    if (!e) continue;
+    e.total++;
+    if (isKnown(w.id)) e.known++;
+  }
+  return [...out.values()];
+}
+
+/**
+ * Characters per HSK level, counting each character at the first level whose
+ * vocabulary uses it, against the characters of the words known.
+ */
+export function charactersByLevel(
+  words: Iterable<{ level: string; chars: string[] }>,
+  knownChars: Set<string>,
+): LevelCount[] {
+  const list = [...words];
+  const seen = new Set<string>();
+  return LEVEL_ORDER.map((level) => {
+    const fresh = new Set<string>();
+    for (const w of list) {
+      if (levelOf(w.level) !== level) continue;
+      for (const c of w.chars) if (!seen.has(c)) fresh.add(c);
+    }
+    for (const c of fresh) seen.add(c);
+    let known = 0;
+    for (const c of fresh) if (knownChars.has(c)) known++;
+    return { level, label: `HSK ${level}`, total: fresh.size, known };
+  });
+}

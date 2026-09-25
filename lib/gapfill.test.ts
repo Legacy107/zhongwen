@@ -98,3 +98,16 @@ test('particle readings are the grammatical ones, not citation forms', () => {
   assert.equal(GAP_READINGS['着'], 'zhe');
   assert.equal(GAP_READINGS['地'], 'de');
 });
+
+test('distractor tiles never repeat or overlap the sentence’s own words', async () => {
+  const { pickDistractors } = await import('./sentences');
+  const mk = (id: string, words: string[], level = '1') =>
+    ({ id, level, tiles: words.map((text) => ({ text, pinyin: 'x', wordId: null })) }) as unknown as import('./sentences').Sentence;
+  const target = mk('a', ['我', '是', '学生']);
+  const pool = [target, mk('b', ['你', '是', '老师']), mk('c', ['他', '学', '中文']), mk('d', ['猫', '狗'], '2')];
+  const picked = pickDistractors(target, pool, 5, () => 0.5).map((t) => t.text);
+  assert.ok(!picked.includes('是'), 'the sentence’s own word');
+  assert.ok(!picked.includes('学'), 'part of 学生 could still fit');
+  assert.ok(!picked.includes('猫'), 'another level');
+  assert.deepEqual([...picked].sort(), ['中文', '他', '你', '老师'].sort());
+});

@@ -95,3 +95,16 @@ test('character targets accumulate by level, folding the supplement into HSK 1',
     [4, 5, 5],
   );
 });
+
+test('levels are counted on their own, not cumulatively', async () => {
+  const { wordsByLevel, charactersByLevel } = await import('./progress');
+  const words = [
+    { id: 'a', level: '1', chars: ['你', '好'] },
+    { id: 'b', level: 'S', chars: ['越'] },
+    { id: 'c', level: '2', chars: ['好', '像'] },
+  ];
+  const byWord = wordsByLevel(words, (id) => id === 'a');
+  assert.deepEqual(byWord.slice(0, 2).map((l) => [l.total, l.known]), [[2, 1], [1, 0]]);
+  const byChar = charactersByLevel(words, new Set(['你', '好']));
+  assert.deepEqual(byChar.slice(0, 2).map((l) => [l.total, l.known]), [[3, 2], [1, 0]], '好 counts at HSK 1 only');
+});
