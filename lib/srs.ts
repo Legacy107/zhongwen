@@ -162,9 +162,13 @@ export function isDue(card: ReviewCard, now = new Date()): boolean {
  *  cap the queue would be 16k long and the daily count meaningless. */
 export const SESSION_SIZE = 40;
 
-/** New cards admitted per session, counted inside SESSION_SIZE. Keeping intake
- *  bounded is what stops a big deck turning into an unclearable backlog. */
-export const NEW_PER_SESSION = 10;
+/**
+ * New cards admitted per session, counted inside SESSION_SIZE. Keeping intake
+ * bounded is what stops a big deck turning into an unclearable backlog. With
+ * one new card per word per session (see buildQueue), this is also the number
+ * of new words a session introduces.
+ */
+export const NEW_PER_SESSION = 8;
 
 /** Due cards first (most overdue leads), then new cards. */
 export function sortForReview(cards: ReviewCard[], now = new Date()): ReviewCard[] {
@@ -186,6 +190,8 @@ export interface QueueOptions<T> {
    * order, which for the deck is HSK list order: alphabetical by pinyin.
    */
   rankNew?: (card: T) => number;
+  /** Cards between two cards of the same word, where the queue allows it. */
+  siblingGap?: number;
 }
 
 /**
@@ -194,18 +200,55 @@ export interface QueueOptions<T> {
  * `sortForReview` alone admits the whole unstarted deck, which makes "due"
  * counts read as tens of thousands. Callers should use this instead so the
  * number on the home screen is the number of cards a session will contain.
+ *
+ * A word's cards are siblings: seeing 小心 as a Hán-Việt card, then a
+ * recognition card, then a typing card in a row is one exposure drilled
+ * three times, with the answer on screen for the second and third. So a
+ * session introduces at most one new card per word (and none for a word
+ * already due), leaving the rest for later sessions, and siblings that are
+ * due together are spread apart.
  */
 export function buildQueue<T extends ReviewCard>(
   cards: T[],
   now = new Date(),
-  { sessionSize = SESSION_SIZE, newPerSession = NEW_PER_SESSION, rankNew }: QueueOptions<T> = {},
+  {
+    sessionSize = SESSION_SIZE,
+    newPerSession = NEW_PER_SESSION,
+    rankNew,
+    siblingGap = 4,
+  }: QueueOptions<T> = {},
 ): T[] {
   const sorted = sortForReview(cards, now) as T[];
-  const due = sorted.filter((c) => c.state !== State.New);
+  const due = sorted.filter((c) => c.state !== State.New).slice(0, sessionSize);
   const fresh = sorted.filter((c) => c.state === State.New);
   if (rankNew) {
     const rank = new Map(fresh.map((c) => [c.id, rankNew(c)]));
     fresh.sort((a, b) => rank.get(a.id)! - rank.get(b.id)!);
   }
-  return [...due, ...fresh.slice(0, newPerSession)].slice(0, sessionSize);
+
+  const words = new Set(due.map((c) => c.wordId));
+  const picked: T[] = [];
+  for (const c of fresh) {
+    if (picked.length >= newPerSession || due.length + picked.length >= sessionSize) break;
+    if (words.has(c.wordId)) continue;
+    words.add(c.wordId);
+    picked.push(c);
+  }
+  return spreadSiblings([...due, ...picked], siblingGap);
+}
+
+/**
+ * Reorders so no two cards of one word sit within `gap` of each other, when
+ * the mix allows it. Greedy and stable: each slot takes the earliest card
+ * whose word has not appeared in the last `gap` slots, else the earliest card.
+ */
+export function spreadSiblings<T extends { wordId: string }>(queue: T[], gap: number): T[] {
+  const rest = [...queue];
+  const out: T[] = [];
+  while (rest.length) {
+    const recent = new Set(out.slice(-gap).map((c) => c.wordId));
+    const i = rest.findIndex((c) => !recent.has(c.wordId));
+    out.push(rest.splice(i === -1 ? 0 : i, 1)[0]);
+  }
+  return out;
 }

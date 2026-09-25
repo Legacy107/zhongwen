@@ -7,14 +7,38 @@
  *      是 come before 熊猫. The HSK list itself is alphabetical by pinyin, which
  *      taught 爱, 八, 爸爸, 吧 in that order for no reason but spelling.
  *
- * A word's three card types stay together (Hán-Việt guess first, as the plan
- * intends: predicting the pinyin before seeing it is the point of the card).
+ * A word's first card depends on what the learner can bring to it. For a
+ * cognate, the Hán-Việt guess comes first: predicting the pinyin from a word
+ * they already know is the point of the card. Otherwise the recognition card
+ * comes first, which introduces the word before any test of it.
  */
-import type { Word } from './hanviet';
+import type { FalseFriend, Word } from './hanviet';
 import type { MinedWord } from './mining';
 
 const LEVEL_RANK: Record<string, number> = { S: 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6 };
-const TYPE_ORDER: Record<string, number> = { hanviet: 0, recognition: 0.1, typing: 0.2, sentence: 0.3 };
+const COGNATE_FIRST: Record<string, number> = { hanviet: 0, recognition: 0.1, typing: 0.2 };
+const MEANING_FIRST: Record<string, number> = { recognition: 0, hanviet: 0.1, typing: 0.2 };
+
+/**
+ * Whether the Hán-Việt card can teach anything for this word. Not for a false
+ * friend (the reading points at the wrong meaning), not for a word whose every
+ * syllable is neutral (的 đích → de: the tone rule has nothing to predict), and
+ * not without a reading at all, where the card would only repeat the typing card.
+ */
+export function hanvietDrillable(word: Word, falseFriends: Map<string, FalseFriend>): boolean {
+  return Boolean(word.hanviet) && !falseFriends.has(word.simplified) && word.toneNumbers.some((t) => t !== 5);
+}
+
+/** Cards worth putting in a session. Excluded cards stay stored, untouched. */
+export function drillable(
+  card: { wordId: string; cardType: string },
+  words: Map<string, Word>,
+  falseFriends: Map<string, FalseFriend>,
+): boolean {
+  if (card.cardType !== 'hanviet') return true;
+  const word = words.get(card.wordId);
+  return word ? hanvietDrillable(word, falseFriends) : false;
+}
 
 export function newCardRanker(
   words: Map<string, Word>,
@@ -30,7 +54,9 @@ export function newCardRanker(
   const frequencyRank = new Map(byFrequency.map((id, i) => [id, i]));
 
   return (card) => {
-    const type = TYPE_ORDER[card.cardType] ?? 0.5;
+    const word = words.get(card.wordId);
+    const order = word && word.cognateMatch !== 'none' ? COGNATE_FIRST : MEANING_FIRST;
+    const type = order[card.cardType] ?? 0.5;
     const m = minedOrder.get(card.wordId);
     if (m !== undefined) return m + type;
     const level = LEVEL_RANK[words.get(card.wordId)?.level ?? '6'] ?? 6;
@@ -56,4 +82,27 @@ export function frontierLevel(
     if (total > 0 && started / total < 0.9) return level;
   }
   return '6';
+}
+
+/**
+ * New words per day. Every new card becomes a stream of reviews for weeks, so
+ * uncapped intake on an enthusiastic day turns into a backlog that makes the
+ * next week miserable, the classic way SRS users burn out. The session end
+ * screen offers more anyway, as an explicit choice.
+ */
+export const DAILY_NEW_LIMIT = 20;
+
+/** New cards taken in today: reviews logged against a card that was still New. */
+export async function newIntroducedToday(now = new Date()): Promise<number> {
+  const { db } = await import('./db/local');
+  const midnight = new Date(now);
+  midnight.setHours(0, 0, 0, 0);
+  const today = await db.reviews.where('reviewedAt').aboveOrEqual(midnight).toArray();
+  return today.filter((r) => r.state === 0).length;
+}
+
+/** New cards the next session may take in. */
+export function newAllowance(introducedToday: number, perSession: number, extra = false): number {
+  if (extra) return perSession;
+  return Math.max(0, Math.min(perSession, DAILY_NEW_LIMIT - introducedToday));
 }

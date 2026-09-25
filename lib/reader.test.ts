@@ -179,3 +179,31 @@ test('shipped corpus: pinyin is read in context, not in isolation', () => {
   assert.ok(reading('了').has('le'));
   assert.ok(!reading('谁').has('shuí'), '谁 uses the HSK reading shéi');
 });
+
+test('Hán-Việt cards only where the reading can predict something', async () => {
+  const { drillable, hanvietDrillable } = await import('./intake');
+  const word = (over: Partial<Word>) =>
+    ({ id: 'x', simplified: '学', hanviet: 'học', toneNumbers: [2], cognateMatch: 'exact', ...over }) as Word;
+  const ff = new Map([['小心', {} as import('./hanviet').FalseFriend]]);
+  assert.equal(hanvietDrillable(word({}), ff), true);
+  assert.equal(hanvietDrillable(word({ simplified: '小心' }), ff), false, 'false friend');
+  assert.equal(hanvietDrillable(word({ simplified: '的', toneNumbers: [5] }), ff), false, 'neutral particle');
+  assert.equal(hanvietDrillable(word({ hanviet: null }), ff), false, 'no reading');
+  const words = new Map([['x', word({ hanviet: null })]]);
+  assert.equal(drillable({ wordId: 'x', cardType: 'hanviet' }, words, ff), false);
+  assert.equal(drillable({ wordId: 'x', cardType: 'typing' }, words, ff), true);
+});
+
+test('a cognate starts with its Hán-Việt card, anything else with recognition', () => {
+  const words = new Map<string, Word>([
+    ['c', { id: 'c', level: '1', cognateMatch: 'exact' } as Word],
+    ['n', { id: 'n', level: '1', cognateMatch: 'none' } as Word],
+  ]);
+  const rank = newCardRanker(words, {}, new Map());
+  const first = (id: string) =>
+    (['hanviet', 'recognition', 'typing'] as const)
+      .map((t) => ({ t, r: rank({ wordId: id, cardType: t }) }))
+      .sort((a, b) => a.r - b.r)[0].t;
+  assert.equal(first('c'), 'hanviet');
+  assert.equal(first('n'), 'recognition');
+});
