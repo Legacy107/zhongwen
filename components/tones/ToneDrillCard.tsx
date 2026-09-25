@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { speak } from "@/lib/speak";
 import { SpeakButton } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
 import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
@@ -21,10 +22,11 @@ const CONTOUR: Record<number, [number, number][]> = {
     [0, 3],
     [1, 5],
   ],
+  // Low and flat, dipping slightly: not the textbook fall-and-rise.
   3: [
-    [0, 2],
-    [0.5, 1.2],
-    [1, 1.4],
+    [0, 1.9],
+    [0.3, 1.1],
+    [1, 1.1],
   ],
   4: [
     [0, 5],
@@ -39,7 +41,7 @@ function Contour({ tone }: { tone: number }) {
   const y = (level: number) => 44 - (level - 1) * 9;
   const d =
     pts.length === 3
-      ? `M${x(pts[0][0])},${y(pts[0][1])} Q${x(pts[1][0])},${y(pts[1][1]) + 6} ${x(pts[2][0])},${y(pts[2][1])}`
+      ? `M${x(pts[0][0])},${y(pts[0][1])} Q${x(pts[1][0])},${y(pts[1][1])} ${x(pts[2][0])},${y(pts[2][1])}`
       : `M${pts.map(([t, l]) => `${x(t)},${y(l)}`).join(" L")}`;
   return (
     <svg viewBox="0 0 48 50" className="h-12 w-11" aria-hidden>
@@ -75,6 +77,7 @@ export function ToneDrillCard({ drill, autoPlay = false, onAnswer, onPlayAudio }
   const [selected, setSelected] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
   const [peek, setPeek] = useState(false);
+  const [why, setWhy] = useState(false);
   const done = useRef(false);
   const answerKey = drill.answer.join();
   const correct = selected === answerKey;
@@ -191,20 +194,46 @@ export function ToneDrillCard({ drill, autoPlay = false, onAnswer, onPlayAudio }
           }
         >
           {checked && (
-            <div className="flex flex-col gap-1 text-sm font-semibold">
-              <p className="text-xs font-extrabold uppercase tracking-wider opacity-80">{CONTRAST_LABEL[drill.contrast]}</p>
-              {!correct && drill.foil && (
-                <p className="text-base font-bold">
-                  <span lang="zh-Hans">{drill.word.simplified}</span> is {drill.word.pinyin}, but{" "}
-                  <span lang="zh-Hans">{drill.foil.simplified}</span> is {drill.foil.pinyin}
+            <div className="flex flex-col gap-2 text-sm font-semibold text-ink">
+              {drill.foil ? (
+                // The pair, each playable: the contrast is only learned by ear.
+                <div className="flex flex-wrap gap-2">
+                  {[drill.word, drill.foil].map((w) => (
+                    <button
+                      key={w.id}
+                      type="button"
+                      onClick={() => speak(w.simplified, 0.8)}
+                      className="flex items-center gap-2 rounded-xl bg-surface/80 px-3 py-1.5"
+                    >
+                      <Icon name="speaker" size={16} />
+                      <span lang="zh-Hans" className="text-lg">
+                        {w.simplified}
+                      </span>
+                      <span className="font-bold">{w.pinyin}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-bold">
+                  <span lang="zh-Hans">{drill.word.simplified}</span> {drill.word.pinyin}: tone{" "}
+                  {drill.answer.join(" + ")}
                 </p>
               )}
-              <p>{CONTRAST_NOTE[drill.contrast]}</p>
-              <p className="opacity-80">
-                {drill.answer
-                  .map((t) => (TONE_ANCHOR[t] ? `Tone ${t}, ${TONE_ANCHOR[t].name}: ${TONE_ANCHOR[t].hint}` : "Neutral"))
-                  .join(" · ")}
-              </p>
+              {why ? (
+                <div className="flex flex-col gap-1 text-ink-2">
+                  <p>{CONTRAST_NOTE[drill.contrast]}</p>
+                  {/* Each tone once, even for a drill of two falling tones. */}
+                  {[...new Set(drill.answer)].filter((t) => TONE_ANCHOR[t]).map((t) => (
+                    <p key={t}>
+                      Tone {t}, {TONE_ANCHOR[t].name}: {TONE_ANCHOR[t].hint}
+                    </p>
+                  ))}
+                </div>
+              ) : (
+                <button type="button" onClick={() => setWhy(true)} className="self-start text-sm font-extrabold text-blue-ink">
+                  Why? {CONTRAST_LABEL[drill.contrast]}
+                </button>
+              )}
             </div>
           )}
         </ActionBar>

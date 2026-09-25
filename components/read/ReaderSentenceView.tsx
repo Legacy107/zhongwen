@@ -62,8 +62,10 @@ export function ReaderSentenceView({ sentence, status, mined, showPinyin, select
       {sentence.tokens.map((token, i) => {
         const tappable = Boolean(token.wordId || token.free);
         if (!tappable) {
+          // Closing marks hug the word before them, opening marks the word after.
+          const hug = /^[。，！？、；：”’）》…]/.test(token.text) ? "-ml-1.5" : /^[“‘（《]/.test(token.text) ? "-mr-1.5" : "";
           return (
-            <span key={i} className="flex flex-col items-center">
+            <span key={i} className={`flex flex-col items-center ${hug}`}>
               {showPinyin && <span className="text-sm leading-tight text-transparent">·</span>}
               <span className="text-4xl leading-tight text-ink-3">{token.text}</span>
             </span>

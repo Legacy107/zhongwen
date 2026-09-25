@@ -6,6 +6,7 @@ import { CognateHint } from "@/components/review/CognateHint";
 import { SpeakButton } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
 import { glossEn, glossVi } from "@/lib/gloss";
+import { toneChangeNote } from "@/lib/pinyinFormat";
 import type { FalseFriend, Word } from "@/lib/hanviet";
 import type { ReaderToken, WordStatus } from "@/lib/reader";
 import { speak } from "@/lib/speak";
@@ -115,6 +116,12 @@ export function WordSheet({ token, word, status, mined, falseFriend, onMine, onC
                     </span>
                   )}
                 </div>
+                {(() => {
+                  // Same word, same letters, different tones: say why, rather
+                  // than leave two pinyin spellings unexplained.
+                  const note = word.simplified === token.text ? toneChangeNote(token.text, token.pinyin, word.pinyin) : null;
+                  return note ? <p className="rounded-xl bg-surface-2 px-3 py-2 text-sm font-semibold text-ink-2">{note}</p> : null;
+                })()}
                 {glossEn(word) && <p className="text-lg font-semibold text-ink">{glossEn(word)}</p>}
                 {glossVi(word) && <p className="text-ink-2">🇻🇳 {glossVi(word)}</p>}
                 <CognateHint word={word} falseFriend={falseFriend} showVi={false} />

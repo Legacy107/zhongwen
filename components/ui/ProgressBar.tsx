@@ -5,6 +5,8 @@ import { motion } from "motion/react";
 interface ProgressBarProps {
   /** 0..1 */
   value: number;
+  /** 0..1, drawn lighter beyond `value`: e.g. words started but not yet known. */
+  secondary?: number;
   /** Tailwind background class for the fill. */
   color?: string;
   height?: number;
@@ -17,8 +19,9 @@ interface ProgressBarProps {
  * which is what makes it read as a physical, glossy object rather than a
  * thin line. The fill springs to its new width.
  */
-export function ProgressBar({ value, color = "bg-green", height = 16, className = "", label }: ProgressBarProps) {
+export function ProgressBar({ value, secondary, color = "bg-green", height = 16, className = "", label }: ProgressBarProps) {
   const pct = Math.max(0, Math.min(1, value)) * 100;
+  const extra = secondary ? Math.max(0, Math.min(1, value + secondary)) * 100 : 0;
   return (
     <div
       role="progressbar"
@@ -29,6 +32,15 @@ export function ProgressBar({ value, color = "bg-green", height = 16, className 
       className={`relative overflow-hidden rounded-full bg-surface-3 ${className}`}
       style={{ height }}
     >
+      {extra > pct && (
+        <motion.div
+          className={`absolute inset-y-0 left-0 rounded-full ${color} opacity-35`}
+          initial={false}
+          animate={{ width: `${extra}%` }}
+          transition={{ type: "spring", stiffness: 140, damping: 22 }}
+          style={{ minWidth: height }}
+        />
+      )}
       <motion.div
         className={`absolute inset-y-0 left-0 rounded-full ${color}`}
         initial={false}

@@ -47,7 +47,7 @@ export function ReadHub() {
     <div className="flex flex-col pb-28">
       <PageHeader title="Read" />
       <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4">
-        <section className="overflow-hidden rounded-3xl border-2 border-blue-lip/40 bg-blue text-white shadow-[0_4px_0_var(--blue-lip)]">
+        <section className="overflow-hidden rounded-3xl bg-hero text-white shadow-[0_4px_0_var(--hero-lip)]">
           <div className="flex items-center gap-3 p-5 pb-3">
             <div className="min-w-0 flex-1">
               <p className="text-xs font-extrabold uppercase tracking-wider text-white/80">Real sentences</p>
@@ -59,11 +59,11 @@ export function ReadHub() {
             <Mascot mood="happy" size={84} className="shrink-0" />
           </div>
           <div className="grid grid-cols-2 gap-px bg-white/20">
-            <div className="bg-blue px-5 py-3">
+            <div className="bg-hero px-5 py-3">
               <p className="text-2xl font-extrabold tabular-nums">{plan.onePlus.length.toLocaleString()}</p>
               <p className="text-xs font-bold text-white/80">with one new word</p>
             </div>
-            <div className="bg-blue px-5 py-3">
+            <div className="bg-hero px-5 py-3">
               <p className="text-2xl font-extrabold tabular-nums">{plan.easy.length.toLocaleString()}</p>
               <p className="text-xs font-bold text-white/80">you can read now</p>
             </div>
@@ -102,7 +102,7 @@ export function ReadHub() {
                       aria-label={`Play ${w.simplified}`}
                       className="flex min-w-0 flex-1 items-center gap-3 text-left"
                     >
-                      <span lang="zh-Hans" className="min-w-12 whitespace-nowrap text-center text-3xl text-ink">
+                      <span lang="zh-Hans" className="min-w-12 shrink-0 whitespace-nowrap text-center text-3xl text-ink">
                         {w.simplified}
                       </span>
                       <span className="flex min-w-0 flex-col">

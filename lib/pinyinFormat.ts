@@ -50,3 +50,27 @@ function markSyllable(letters: string, tone: string): string {
 export function numericToMarks(input: string): string {
   return input.replace(/([a-zü:]+?)([0-5])/gi, (_, letters: string, tone: string) => markSyllable(letters, tone));
 }
+
+const bare = (p: string) =>
+  p
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\s']/g, '')
+    .toLowerCase();
+
+/**
+ * Why a word reads differently in a sentence than in the dictionary, or null
+ * when it does not. 不 and 一 change tone by what follows (不用 búyòng, 一个
+ * yí gè); anything else is a neutral tone or a reading chosen by context.
+ */
+export function toneChangeNote(text: string, contextPinyin: string, dictionaryPinyin: string): string | null {
+  const said = contextPinyin.normalize('NFC').replace(/[\s']/g, '').toLowerCase();
+  const listed = dictionaryPinyin.normalize('NFC').replace(/[\s']/g, '').toLowerCase();
+  if (said === listed) return null;
+  if (bare(said) !== bare(listed)) return `Dictionary form: ${dictionaryPinyin}.`;
+  if (text.includes('不') && said.includes('bú'))
+    return `Said ${contextPinyin} here: 不 bù becomes bú before a fourth tone. The dictionary writes ${dictionaryPinyin}.`;
+  if (text.includes('一') && (said.includes('yí') || said.includes('yì')))
+    return `Said ${contextPinyin} here: 一 yī becomes yí before a fourth tone and yì before the others. The dictionary writes ${dictionaryPinyin}.`;
+  return `Said ${contextPinyin} in this sentence; the dictionary writes ${dictionaryPinyin}.`;
+}

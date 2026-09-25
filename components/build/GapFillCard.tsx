@@ -70,9 +70,7 @@ export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, o
                 transition={{ type: "spring", stiffness: 600, damping: 26 }}
                 className={`min-w-14 rounded-xl border-2 border-dashed px-2 text-center text-3xl leading-tight ${
                   checked
-                    ? correct
-                      ? "border-green bg-green-soft text-green-ink"
-                      : "border-red bg-red-soft text-red-ink"
+                    ? "border-green bg-green-soft text-green-ink"
                     : filled
                       ? "border-blue bg-blue-soft text-blue-ink"
                       : "border-line-strong text-transparent"

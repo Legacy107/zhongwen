@@ -5,11 +5,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ErrorState, Loading, TopBarToggle } from "@/components/ui/Controls";
 import { formatDuration, SessionComplete } from "@/components/ui/SessionComplete";
 import { SessionShell } from "@/components/ui/SessionShell";
-import { loadPracticeSentences } from "@/lib/data";
+import { loadFalseFriends, loadPracticeSentences, loadWords } from "@/lib/data";
 import { db, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId, uuid } from "@/lib/device";
+import { glossEn } from "@/lib/gloss";
 import { goalProgress, type GoalProgress } from "@/lib/goal";
+import type { Word } from "@/lib/hanviet";
+import { drillableCards } from "@/lib/intake";
+import { wordStatuses } from "@/lib/reader";
 import { loadSavedSentences, toPracticeSentence } from "@/lib/mining";
 import { buildGapFill, pickDistractors, type GapFill, type Sentence } from "@/lib/sentences";
 import { playCombo } from "@/lib/sound";
@@ -61,6 +65,7 @@ async function ensureCards(sentences: Sentence[], deviceId: string): Promise<voi
 
 export function BuildSessionView() {
   const [byId, setById] = useState<Map<string, Sentence> | null>(null);
+  const [words, setWords] = useState<Map<string, Word> | null>(null);
   const [queue, setQueue] = useState<StoredCard[]>([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -79,17 +84,34 @@ export function BuildSessionView() {
     let cancelled = false;
     (async () => {
       try {
-        const { sentences, saved } = await loadSentences();
+        const [{ sentences, saved }, deck, falseFriends] = await Promise.all([
+          loadSentences(),
+          loadWords(),
+          loadFalseFriends(),
+        ]);
         await ensureCards(sentences, getDeviceId());
-        const cards = (await db.cards.toArray()).filter((c) => c.cardType === "sentence");
+        const all = await db.cards.toArray();
+        const cards = all.filter((c) => c.cardType === "sentence");
+        const status = wordStatuses(drillableCards(all, deck, falseFriends));
         goalBefore.current = await goalProgress();
         if (cancelled) return;
+        // New sentences in the order they can be built: saved from reading
+        // first, then the fewest words not yet studied, then the shortest. A
+        // first session full of 手机, 桌子 and 医院 is guesswork, not practice.
+        const sentenceById = new Map(sentences.map((s) => [s.id, s]));
+        const unstudied = (s: Sentence) =>
+          s.tiles.filter((t) => t.wordId && (status.get(t.wordId) ?? "new") === "new").length;
         const q = buildQueue(cards, new Date(), {
           sessionSize: SESSION_SIZE,
           newPerSession: NEW_PER_SESSION,
-          rankNew: (c) => (saved.has(c.wordId) ? 0 : 1),
+          rankNew: (c) => {
+            const s = sentenceById.get(c.wordId);
+            if (!s) return 1e9;
+            return (saved.has(c.wordId) ? 0 : 10_000) + unstudied(s) * 100 + s.tiles.length;
+          },
         });
-        setById(new Map(sentences.map((s) => [s.id, s])));
+        setWords(deck);
+        setById(sentenceById);
         setQueue(q);
         setTotal(q.length);
         startedAt.current = Date.now();
@@ -176,7 +198,7 @@ export function BuildSessionView() {
         subtitle={
           count > 0
             ? score.wrong > 0
-              ? `${score.wrong} to try again tomorrow.`
+              ? `${score.wrong} will come back for another try.`
               : "Every one right first time."
             : "No sentences are due. Read something to save new ones."
         }
@@ -247,6 +269,10 @@ export function BuildSessionView() {
           ) : (
             <TileBuilder
               sentence={sentence}
+              glossFor={(wordId) => {
+                const w = words?.get(wordId);
+                return w ? glossEn(w, 1) : undefined;
+              }}
               distractors={distractors}
               speech={sound.speech}
               showPinyin={showPinyin}

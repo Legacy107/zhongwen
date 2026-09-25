@@ -18,7 +18,7 @@ export function SpeakButton({
   size?: "lg" | "md" | "sm";
   label?: string;
 }) {
-  const dims = size === "lg" ? "size-16" : size === "md" ? "size-12" : "size-10";
+  const dims = size === "lg" ? "size-16" : size === "md" ? "size-12" : "size-11";
   const icon = size === "lg" ? 32 : size === "md" ? 24 : 20;
   return (
     <button type="button" onClick={onClick} aria-label={label} className={`btn btn-info btn-icon ${dims}`}>
@@ -101,7 +101,7 @@ export function Segmented<T extends string>({
             aria-checked={active}
             onClick={() => onChange(o.value)}
             className={`relative flex-1 rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
-              active ? "text-blue" : "text-ink-2"
+              active ? "text-blue-ink" : "text-ink-2"
             }`}
           >
             {active && (

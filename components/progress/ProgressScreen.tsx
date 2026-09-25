@@ -5,9 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 import { ErrorState, Loading, PageHeader, Segmented } from "@/components/ui/Controls";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { ProgressBar } from "@/components/ui/ProgressBar";
-import { loadWords } from "@/lib/data";
+import { loadFalseFriends, loadWords } from "@/lib/data";
 import { db } from "@/lib/db/local";
 import { goalProgress } from "@/lib/goal";
+import { drillableCards } from "@/lib/intake";
 import {
   charactersByLevel,
   charactersOf,
@@ -32,6 +33,8 @@ interface Meta {
 
 interface Snapshot {
   knownWords: number;
+  /** Started but not yet known. */
+  learningWords: number;
   startedWords: number;
   knownChars: number;
   studiedChars: number;
@@ -55,30 +58,37 @@ interface Reading {
 }
 
 async function readSnapshot(): Promise<Snapshot> {
-  const [cards, reviews, meta, words, goal] = await Promise.all([
+  const [allCards, reviews, meta, words, falseFriends, goal] = await Promise.all([
     db.cards.toArray(),
     db.reviews.toArray(),
     fetch("/data/meta.json").then((r) => r.json() as Promise<Meta>),
     loadWords(),
+    loadFalseFriends(),
     goalProgress(),
   ]);
 
+  // Judged on the cards that are actually drilled: a Hán-Việt card never shown
+  // (的, 老师) would otherwise stop its word from ever counting as known.
+  const cards = drillableCards(allCards, words, falseFriends);
   const knownWords = countKnownWords(cards);
   const status = wordStatuses(cards);
   const wordsWith = (pred: (s: string) => boolean) =>
     [...status].filter(([, s]) => pred(s)).flatMap(([id]) => (words.get(id) ? [words.get(id)!] : []));
   const knownCharSet = charactersOf(wordsWith((s) => s === "known"));
+  const seenCharSet = charactersOf(wordsWith((s) => s !== "new"));
   const wordTargets = levelTargets(meta.counts.wordsByLevel);
   const nextTarget = wordTargets.find((t) => t.words > knownWords) ?? null;
   const first = reviews.reduce<Date | null>((min, r) => (min === null || r.reviewedAt < min ? r.reviewedAt : min), null);
 
+  const startedWords = wordsWith((s) => s !== "new").length;
   return {
     knownWords,
-    startedWords: wordsWith((s) => s !== "new").length,
+    learningWords: startedWords - knownWords,
+    startedWords,
     knownChars: knownCharSet.size,
-    studiedChars: charactersOf(wordsWith((s) => s !== "new")).size,
-    wordLevels: wordsByLevel(words.values(), (id) => status.get(id) === "known"),
-    charLevels: charactersByLevel(words.values(), knownCharSet),
+    studiedChars: seenCharSet.size,
+    wordLevels: wordsByLevel(words.values(), (id) => status.get(id) ?? "new"),
+    charLevels: charactersByLevel(words.values(), knownCharSet, seenCharSet),
     nextTarget,
     projection: projectTarget(knownWords, nextTarget?.words ?? knownWords, first),
     retention: computeRetention(reviews),
@@ -106,11 +116,14 @@ function StatCard({
   icon,
   value,
   label,
+  note,
   color,
 }: {
   icon: IconName;
   value: number;
   label: string;
+  /** A second line, e.g. how many are still being learned. */
+  note?: string;
   color: "green" | "gold" | "orange";
 }) {
   const text = { green: "text-green", gold: "text-gold", orange: "text-orange" }[color];
@@ -121,6 +134,7 @@ function StatCard({
       </span>
       <span className="text-2xl font-extrabold tabular-nums text-ink">{value.toLocaleString()}</span>
       <span className="text-xs font-bold text-ink-3">{label}</span>
+      {note && <span className="text-xs font-extrabold text-blue-ink">{note}</span>}
     </div>
   );
 }
@@ -204,8 +218,20 @@ export function ProgressScreen() {
       <PageHeader title="Progress" />
       <div className="mx-auto flex w-full max-w-xl flex-col gap-5 px-4">
         <section className="grid grid-cols-3 gap-3">
-          <StatCard icon="book" value={snap.knownWords} label="words known" color="green" />
-          <StatCard icon="sparkles" value={snap.knownChars} label="characters" color="gold" />
+          <StatCard
+            icon="book"
+            value={snap.knownWords}
+            label="words known"
+            note={snap.learningWords ? `+${snap.learningWords} learning` : undefined}
+            color="green"
+          />
+          <StatCard
+            icon="sparkles"
+            value={snap.knownChars}
+            label="characters known"
+            note={snap.studiedChars > snap.knownChars ? `+${snap.studiedChars - snap.knownChars} seen` : undefined}
+            color="gold"
+          />
           <StatCard icon="flame" value={snap.streak} label={`day streak · best ${snap.longest}`} color="orange" />
         </section>
 
@@ -239,10 +265,16 @@ export function ProgressScreen() {
                     {l.label} {met && "✓"}
                   </span>
                   <span className="font-bold tabular-nums text-ink-3">
+                    {l.learning > 0 && <span className="text-blue-ink">+{l.learning} learning · </span>}
                     {l.known.toLocaleString()} / {l.total.toLocaleString()}
                   </span>
                 </div>
-                <ProgressBar value={l.total ? l.known / l.total : 0} height={12} color={met ? "bg-green" : "bg-blue"} />
+                <ProgressBar
+                  value={l.total ? l.known / l.total : 0}
+                  secondary={l.total ? l.learning / l.total : 0}
+                  height={12}
+                  color={met ? "bg-green" : "bg-blue"}
+                />
               </motion.div>
             );
           })}

@@ -44,3 +44,11 @@ test('tone digits become tone marks on the right vowel', () => {
   assert.equal(numericToMarks('peng2you'), 'péngyou');
   assert.equal(numericToMarks('nihao'), 'nihao', 'no digits, no change');
 });
+
+test('tone changes are explained, identical readings are not', async () => {
+  const { toneChangeNote } = await import('./pinyinFormat');
+  assert.equal(toneChangeNote('好', 'hǎo', 'hǎo'), null);
+  assert.match(toneChangeNote('不用', 'búyòng', 'bùyòng') ?? '', /bú before a fourth tone/);
+  assert.match(toneChangeNote('一个', 'yígè', 'yīgè') ?? '', /yí before a fourth tone/);
+  assert.match(toneChangeNote('还', 'huán', 'hái') ?? '', /Dictionary form/);
+});

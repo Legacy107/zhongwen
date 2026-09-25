@@ -46,6 +46,8 @@ function TileFace({ tile, showPinyin }: { tile: SentenceTile; showPinyin: boolea
 
 interface TileBuilderProps {
   sentence: Sentence;
+  /** Short meaning for a tile's word, shown while the tile is held down. */
+  glossFor?: (wordId: string) => string | undefined;
   /** Wrong tiles mixed into the bank. */
   distractors?: SentenceTile[];
   /** Speak each tile as it is tapped, and the sentence once checked. */
@@ -60,7 +62,14 @@ interface TileBuilderProps {
  * never reflows under the thumb. Tiles fly between the two through a shared
  * layout id.
  */
-export function TileBuilder({ sentence, distractors = [], speech = true, showPinyin = true, onDone }: TileBuilderProps) {
+export function TileBuilder({
+  sentence,
+  glossFor,
+  distractors = [],
+  speech = true,
+  showPinyin = true,
+  onDone,
+}: TileBuilderProps) {
   // Slots are built once per sentence and are the single source of identity
   // for both areas; the parent remounts on sentence change, so initialising
   // from useState is safe.
@@ -72,14 +81,50 @@ export function TileBuilder({ sentence, distractors = [], speech = true, showPin
   );
   const [placed, setPlaced] = useState<string[]>([]);
   const [checked, setChecked] = useState<TileResult | null>(null);
+  const [peek, setPeek] = useState<string | null>(null);
   const done = useRef(false);
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Set when a press became a hold, so the release does not also place the tile.
+  const held = useRef(false);
 
   const byKey = useMemo(() => new Map(bank.map((s) => [s.key, s])), [bank]);
   const target = useMemo(() => sentence.tiles.map((t) => t.text), [sentence]);
   const answer = placed.map((k) => byKey.get(k)!.tile.text);
 
+  /**
+   * Press and hold a tile to see what it means: the tiles are the words a
+   * learner is least sure of, and there was no way to ask.
+   */
+  const holdProps = (slot: Slot) => ({
+    onPointerDown: () => {
+      held.current = false;
+      if (holdTimer.current) clearTimeout(holdTimer.current);
+      holdTimer.current = setTimeout(() => {
+        held.current = true;
+        setPeek(slot.key);
+      }, 420);
+    },
+    onPointerUp: () => {
+      if (holdTimer.current) clearTimeout(holdTimer.current);
+      if (held.current) setTimeout(() => setPeek(null), 900);
+    },
+    onPointerLeave: () => {
+      if (holdTimer.current) clearTimeout(holdTimer.current);
+    },
+    onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
+  });
+
+  // The held tile's meaning, shown in the line under the bank: a bubble over
+  // the tile ran off the screen edge for tiles near it.
+  const peeked = peek ? byKey.get(peek) : undefined;
+  const peekGloss = peeked?.tile.wordId ? (glossFor?.(peeked.tile.wordId) ?? null) : null;
+
   const pick = useCallback(
     (slot: Slot) => {
+      if (held.current) {
+        held.current = false;
+        return;
+      }
       if (checked) return;
       // A fast double tap must not place the same tile twice.
       setPlaced((p) => (p.includes(slot.key) ? p : [...p, slot.key]));
@@ -93,6 +138,10 @@ export function TileBuilder({ sentence, distractors = [], speech = true, showPin
 
   const unpick = useCallback(
     (slot: Slot) => {
+      if (held.current) {
+        held.current = false;
+        return;
+      }
       if (checked) return;
       playTileRemove();
       setPlaced((p) => p.filter((k) => k !== slot.key));
@@ -138,8 +187,10 @@ export function TileBuilder({ sentence, distractors = [], speech = true, showPin
         <motion.div
           animate={checked === "wrong" ? { x: [0, -10, 10, -7, 7, -3, 0] } : { x: 0 }}
           transition={{ duration: 0.42 }}
-          className="flex min-h-[8.5rem] flex-wrap content-start gap-x-2 gap-y-[10px] pt-[5px]"
+          className="flex flex-wrap content-start gap-x-2 gap-y-[10px] pt-[5px]"
           style={{
+            // Two rows of ruled lines, each just under a row of tiles.
+            minHeight: (showPinyin ? 72 : 62) * 2 + 2,
             backgroundImage: `repeating-linear-gradient(to bottom, transparent 0, transparent ${showPinyin ? 70 : 60}px, var(--line) ${showPinyin ? 70 : 60}px, var(--line) ${showPinyin ? 72 : 62}px)`,
           }}
           aria-label="Your answer"
@@ -151,6 +202,7 @@ export function TileBuilder({ sentence, distractors = [], speech = true, showPin
                 key={key}
                 layoutId={key}
                 type="button"
+                {...holdProps(slot)}
                 onClick={() => unpick(slot)}
                 transition={TILE_SPRING}
                 animate={
@@ -184,6 +236,7 @@ export function TileBuilder({ sentence, distractors = [], speech = true, showPin
                 key={slot.key}
                 layoutId={slot.key}
                 type="button"
+                {...holdProps(slot)}
                 onClick={() => pick(slot)}
                 disabled={checked !== null}
                 transition={TILE_SPRING}
@@ -195,6 +248,17 @@ export function TileBuilder({ sentence, distractors = [], speech = true, showPin
           )}
         </div>
       </LayoutGroup>
+      {glossFor && checked === null && (
+        <p className="-mt-2 flex min-h-8 items-center justify-center text-center" aria-live="polite">
+          {peeked && peekGloss ? (
+            <span className="rounded-xl bg-ink px-3 py-1.5 text-sm font-bold text-bg">
+              <span lang="zh-Hans">{peeked.tile.text}</span> · {peekGloss}
+            </span>
+          ) : (
+            <span className="text-xs font-bold text-ink-3">Press and hold a tile to see what it means.</span>
+          )}
+        </p>
+      )}
 
       <SessionFooter>
         <ActionBar

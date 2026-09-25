@@ -130,6 +130,8 @@ export function ReadSessionView() {
   const sentence = session[index];
   const unknown = unknownWords(sentence, library.status);
   const target = unknown[0] ? library.words.get(unknown[0]) : undefined;
+  // The new word as it is said in this sentence, matching the pinyin above it.
+  const targetPinyin = target ? (sentence.tokens.find((t) => t.wordId === target.id)?.pinyin ?? target.pinyin) : "";
   const sheetWord = sheet?.token.wordId ? library.words.get(sheet.token.wordId) : undefined;
 
   return (
@@ -234,7 +236,7 @@ export function ReadSessionView() {
                   <span lang="zh-Hans" className="text-2xl">
                     {target.simplified}
                   </span>{" "}
-                  <span className="font-bold">{target.pinyin}</span>
+                  <span className="font-bold">{targetPinyin}</span>
                 </p>
                 <p className="truncate text-sm text-ink-2">{glossEn(target, 1)}</p>
               </div>
