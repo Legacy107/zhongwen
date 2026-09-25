@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Mascot } from "@/components/ui/Mascot";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -65,8 +65,9 @@ async function readHome(): Promise<HomeData> {
   };
 }
 
-function greeting(now = new Date()): { vi: string; zh: string; pinyin: string } {
-  const h = now.getHours();
+/** Hour -1 is the server render, which cannot know the learner's clock. */
+function greeting(h: number): { vi: string; zh: string; pinyin: string } {
+  if (h < 0) return { vi: "Xin chào", zh: "你好", pinyin: "nǐ hǎo" };
   if (h < 11) return { vi: "Chào buổi sáng", zh: "早上好", pinyin: "zǎoshang hǎo" };
   if (h < 13) return { vi: "Chào buổi trưa", zh: "中午好", pinyin: "zhōngwǔ hǎo" };
   if (h < 18) return { vi: "Chào buổi chiều", zh: "下午好", pinyin: "xiàwǔ hǎo" };
@@ -278,7 +279,14 @@ export function LearnHome() {
     };
   }, []);
 
-  const hello = greeting();
+  // The page is prerendered at build time, so the hour comes from the
+  // client only: a build-time greeting would not match on hydration.
+  const hour = useSyncExternalStore(
+    () => () => {},
+    () => new Date().getHours(),
+    () => -1,
+  );
+  const hello = greeting(hour);
 
   if (error) return <p className="p-6 text-center font-bold text-red-ink">{error}</p>;
 
