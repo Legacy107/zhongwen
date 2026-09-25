@@ -87,3 +87,22 @@ test('a session never repeats a drill', () => {
   const session = drawSession(drills, 12);
   assert.equal(new Set(session.map((d) => d.id)).size, session.length);
 });
+
+test('the right answer is not always the first option', async () => {
+  const { buildToneDrills, drawSession } = await import('./tones');
+  const words = JSON.parse(
+    (await import('node:fs')).readFileSync(new URL('../data/words.json', import.meta.url), 'utf8'),
+  ) as import('./hanviet').Word[];
+  const pool = words.filter((w) => w.level === '1' || w.level === '2');
+  const drills = buildToneDrills(pool);
+  const firstIsAnswer = { yes: 0, no: 0 };
+  for (let i = 0; i < 40; i++) {
+    for (const d of drawSession(drills, 12)) {
+      if (d.options[0].join() === d.answer.join()) firstIsAnswer.yes++;
+      else firstIsAnswer.no++;
+      assert.ok(d.options.some((o) => o.join() === d.answer.join()), 'answer is among the options');
+    }
+  }
+  const share = firstIsAnswer.yes / (firstIsAnswer.yes + firstIsAnswer.no);
+  assert.ok(share > 0.35 && share < 0.65, `answer first ${(share * 100).toFixed(0)}% of the time`);
+});

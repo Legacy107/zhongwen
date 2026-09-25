@@ -38,17 +38,17 @@ export const CONTRAST_NOTE: Record<ToneContrast, string> = {
   't1-t4':
     'Tone 1 is high and level, like Vietnamese ngang but higher and longer. Tone 4 falls sharply, like sắc reversed. These two are the most common Vietnamese-speaker confusion.',
   't4-t4':
-    'Both syllables fall. The second one tends to drift up toward tone 1 - keep it falling.',
+    'Both syllables fall. The second one tends to drift up toward tone 1, so keep it falling.',
   't3-sandhi':
     'Two third tones in a row: the first becomes tone 2. 水果 is said "shuí guǒ", never "shuǐ guǒ".',
   't2-t3':
-    'Tone 2 rises from mid. Tone 3 stays low and flat here - the textbook dip only appears in isolation.',
+    'Tone 2 rises from mid. Tone 3 stays low and flat here; the textbook dip only appears in isolation.',
 };
 
 /** Vietnamese anchors for each Mandarin tone. */
 export const TONE_ANCHOR: Record<number, { name: string; hint: string }> = {
   1: { name: 'high level', hint: 'like ngang, but higher and held longer' },
-  2: { name: 'rising', hint: 'like sắc - rises from mid' },
+  2: { name: 'rising', hint: 'like sắc, rising from mid' },
   3: { name: 'low', hint: 'stays low and flat; not the textbook dip' },
   4: { name: 'sharp fall', hint: 'falls hard from high to low' },
 };
@@ -210,8 +210,22 @@ export function drawSession(
     if (!list?.length) continue;
     const at = cursor.get(contrast) ?? 0;
     if (at >= list.length) continue; // exhausted; other contrasts still fill
-    out.push(list[at]);
+    out.push({ ...list[at], options: shuffled(list[at].options, random) });
     cursor.set(contrast, at + 1);
+  }
+  return out;
+}
+
+/**
+ * Option order is randomised per draw. Built in a fixed order, the right
+ * answer sat first in three of the four contrasts, and a session could be
+ * passed by tapping the left button without listening.
+ */
+function shuffled<T>(items: T[], random: () => number): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
   }
   return out;
 }
