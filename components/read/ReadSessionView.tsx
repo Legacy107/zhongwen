@@ -40,6 +40,8 @@ export function ReadSessionView() {
   const [showPinyin, setShowPinyin] = useStoredToggle("chinese.readerPinyin", true);
   const sound = useSound();
   const startedAt = useRef(0);
+  // The sentence last advanced from, so a double tap cannot skip one.
+  const advanced = useRef(-1);
 
   useEffect(() => warmUpSpeech(), []);
 
@@ -52,6 +54,7 @@ export function ReadSessionView() {
     setRevealed(false);
     setAdded([]);
     setFinishedMs(null);
+    advanced.current = -1;
     startedAt.current = Date.now();
   }, []);
 
@@ -79,6 +82,8 @@ export function ReadSessionView() {
   }, []);
 
   const next = useCallback(() => {
+    if (advanced.current === index) return;
+    advanced.current = index;
     setSheet(null);
     setRevealed(false);
     void recordActivity("read");

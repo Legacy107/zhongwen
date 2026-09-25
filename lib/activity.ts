@@ -16,10 +16,16 @@ export type ActivityKind = 'tones' | 'read';
 
 type Counts = Partial<Record<ActivityKind, number>>;
 
-export async function recordActivity(kind: ActivityKind, n = 1, now = new Date()): Promise<void> {
-  const key = `${PREFIX}${dayKey(now)}:${getDeviceId()}`;
-  const current = ((await db.settings.get(key))?.value as Counts | undefined) ?? {};
-  await putSetting(key, { ...current, [kind]: (current[kind] ?? 0) + n });
+/** Writes run one at a time: two read-then-write increments racing would lose one. */
+let queue: Promise<void> = Promise.resolve();
+
+export function recordActivity(kind: ActivityKind, n = 1, now = new Date()): Promise<void> {
+  queue = queue.then(async () => {
+    const key = `${PREFIX}${dayKey(now)}:${getDeviceId()}`;
+    const current = ((await db.settings.get(key))?.value as Counts | undefined) ?? {};
+    await putSetting(key, { ...current, [kind]: (current[kind] ?? 0) + n });
+  }).catch(() => {});
+  return queue;
 }
 
 /** Activity per local day (YYYY-MM-DD), summed across devices and kinds. */
