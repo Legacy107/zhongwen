@@ -6,7 +6,7 @@ import { GapFillCard } from "@/components/GapFillCard";
 import { TileBuilder, type TileResult } from "@/components/TileBuilder";
 import { db, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
-import { getDeviceId } from "@/lib/device";
+import { getDeviceId, uuid } from "@/lib/device";
 import { buildGapFill, type GapFill, type Sentence } from "@/lib/sentences";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
 import { buildQueue, cardId, grade, newCard, Rating } from "@/lib/srs";
@@ -111,7 +111,7 @@ export function BuildSession() {
       await saveGradedCard(
         { ...graded.card, updatedAt: now, deviceId },
         {
-          id: crypto.randomUUID(),
+          id: uuid(),
           cardId: graded.review.cardId,
           rating: graded.review.rating,
           reviewedAt: now,

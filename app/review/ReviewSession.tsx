@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReviewCard } from "@/components/ReviewCard";
 import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
-import { getDeviceId } from "@/lib/device";
+import { getDeviceId, uuid } from "@/lib/device";
 import type { FalseFriend, Word } from "@/lib/hanviet";
 import {
   buildQueue,
@@ -99,7 +99,7 @@ export function ReviewSession() {
       await saveGradedCard(
         { ...result.card, updatedAt: now, deviceId },
         {
-          id: crypto.randomUUID(),
+          id: uuid(),
           cardId: result.review.cardId,
           rating: result.review.rating,
           reviewedAt: now,
