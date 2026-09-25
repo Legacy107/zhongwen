@@ -123,8 +123,12 @@ export function ReviewCard({
     if (typed) inputRef.current?.focus();
   }, [typed]);
 
+  // Deferred and cancelled on cleanup: dev-mode Strict Mode runs every effect
+  // twice on mount, and speaking straight from it said each new word twice.
   useEffect(() => {
-    if (intro && speech) speak(word.simplified);
+    if (!intro || !speech) return;
+    const t = setTimeout(() => speak(word.simplified), 150);
+    return () => clearTimeout(t);
   }, [intro, speech, word.simplified]);
 
   const reveal = useCallback(
