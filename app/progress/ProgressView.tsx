@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/db/local";
 import {
@@ -96,12 +95,6 @@ export function ProgressView() {
 
   return (
     <div className="flex w-full max-w-md flex-col gap-5">
-      <header className="flex items-baseline justify-between">
-        <h1 className="text-xl font-semibold">Progress</h1>
-        <Link href="/" className="text-sm text-neutral-500 underline">
-          Home
-        </Link>
-      </header>
 
       <section className="flex flex-col gap-3 rounded-2xl bg-neutral-900/60 p-4">
         <div className="flex items-baseline justify-between">

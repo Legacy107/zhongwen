@@ -1,5 +1,6 @@
 import { SerwistProvider } from "@serwist/turbopack/react";
 import type { Metadata, Viewport } from "next";
+import { AppNav } from "@/components/AppNav";
 import { SyncProvider } from "@/components/SyncProvider";
 import "./globals.css";
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-dvh bg-neutral-950 text-neutral-100 flex flex-col">
         <SerwistProvider swUrl="/serwist/sw.js">
           <SyncProvider />
+          <AppNav />
           {children}
         </SerwistProvider>
       </body>
