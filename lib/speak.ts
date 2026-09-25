@@ -69,6 +69,24 @@ export function warmUpSpeech(): void {
   if (isSpeechSupported()) ensureVoiceList();
 }
 
+let unlocked = false;
+
+/**
+ * iOS lets a page speak only once speech has been started from a user
+ * gesture. Speaking a silent utterance on the first touch anywhere unlocks
+ * it for the life of the page, so audio that plays on arrival (a new word, the
+ * first tone drill) is heard rather than silently dropped. Call from a
+ * pointerdown handler.
+ */
+export function unlockSpeech(): void {
+  if (unlocked || !isSpeechSupported()) return;
+  unlocked = true;
+  ensureVoiceList();
+  const u = new SpeechSynthesisUtterance(" ");
+  u.volume = 0;
+  speechSynthesis.speak(u);
+}
+
 export function speak(text: string, rate = 0.9): void {
   if (!isSpeechSupported()) return;
   ensureVoiceList();

@@ -2,17 +2,20 @@
 
 import { useEffect } from "react";
 import { unlockAudio } from "@/lib/sound";
-import { warmUpSpeech } from "@/lib/speak";
+import { unlockSpeech, warmUpSpeech } from "@/lib/speak";
 
 /**
- * iOS starts an AudioContext only inside a user gesture, and loads speech
- * voices lazily. One listener on the first touch anywhere does both, so no
- * individual button has to remember to.
+ * iOS starts an AudioContext only inside a user gesture, and allows speech
+ * only after a first utterance from one. One listener on the first touch
+ * anywhere does both, so no individual button has to remember to.
  */
 export function AudioUnlock() {
   useEffect(() => {
     warmUpSpeech();
-    const unlock = () => unlockAudio();
+    const unlock = () => {
+      unlockAudio();
+      unlockSpeech();
+    };
     window.addEventListener("pointerdown", unlock, { passive: true });
     window.addEventListener("keydown", unlock);
     return () => {
