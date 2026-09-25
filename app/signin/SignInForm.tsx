@@ -1,7 +1,12 @@
 "use client";
 
+import { motion } from "motion/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { PageHeader, Switch } from "@/components/ui/Controls";
+import { Icon } from "@/components/ui/Icon";
+import { Mascot } from "@/components/ui/Mascot";
 import { sync } from "@/lib/sync";
 
 /**
@@ -14,6 +19,8 @@ export function SignInForm() {
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [show, setShow] = useState(false);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -28,63 +35,81 @@ export function SignInForm() {
       if (res.ok) {
         // Push what queued up while signed out, rather than waiting for the timer.
         void sync();
-        router.replace("/");
+        router.replace("/settings");
         return;
       }
       if (res.status === 429) {
         const { retryAfter } = (await res.json()) as { retryAfter: number };
         setError(`Too many attempts. Try again in ${Math.ceil(retryAfter / 60)} min.`);
       } else if (res.status === 401) {
-        setError("Wrong passphrase.");
+        setError("That passphrase isn't right.");
       } else {
         setError("Could not sign in. Try again.");
       }
     } catch {
       setError("Can't reach the server. Check your connection.");
     }
+    setAttempt((n) => n + 1);
     setBusy(false);
   };
 
   return (
-    <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">Sign in to sync</h1>
-        <p className="text-sm text-neutral-400">
-          Keeps your progress the same on every device. You can study without it.
-        </p>
-      </div>
+    <div className="flex min-h-dvh flex-col">
+      <PageHeader title="Sign in" back="/settings" />
+      <form onSubmit={onSubmit} className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-5 px-5 pt-4">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <Mascot mood="happy" size={110} />
+          <h2 className="text-2xl font-extrabold text-ink">Sync your progress</h2>
+          <p className="text-ink-2">Keeps every device on the same cards and streak. You can study without it.</p>
+        </div>
 
-      <input
-        type="password"
-        autoComplete="current-password"
-        autoFocus
-        required
-        value={passphrase}
-        onChange={(e) => setPassphrase(e.target.value)}
-        placeholder="Passphrase"
-        aria-label="Passphrase"
-        className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-base outline-none focus:border-emerald-600"
-      />
+        <motion.div
+          key={attempt}
+          animate={attempt > 0 ? { x: [0, -10, 10, -6, 6, 0] } : undefined}
+          transition={{ duration: 0.35 }}
+          className="relative"
+        >
+          <input
+            type={show ? "text" : "password"}
+            autoComplete="current-password"
+            autoFocus
+            required
+            value={passphrase}
+            onChange={(e) => setPassphrase(e.target.value)}
+            placeholder="Passphrase"
+            aria-label="Passphrase"
+            aria-invalid={error ? true : undefined}
+            className="field pr-14"
+          />
+          <button
+            type="button"
+            onClick={() => setShow(!show)}
+            aria-label={show ? "Hide passphrase" : "Show passphrase"}
+            className="absolute right-1.5 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-xl text-ink-3 active:bg-surface-3"
+          >
+            <Icon name={show ? "eyeOff" : "eye"} size={22} />
+          </button>
+        </motion.div>
 
-      <label className="flex items-center gap-3 text-sm text-neutral-300">
-        <input
-          type="checkbox"
-          checked={remember}
-          onChange={(e) => setRemember(e.target.checked)}
-          className="h-4 w-4 accent-emerald-600"
-        />
-        Remember me for 30 days
-      </label>
+        <div className="flex min-h-12 items-center justify-between gap-3">
+          <span className="font-bold text-ink">Remember me for 30 days</span>
+          <Switch label="Remember me for 30 days" on={remember} onChange={setRemember} />
+        </div>
 
-      {error && <p className="text-sm text-rose-400">{error}</p>}
+        {error && (
+          <p role="alert" className="flex items-center gap-2 rounded-xl bg-red-soft px-4 py-3 font-bold text-red-ink">
+            <Icon name="alert" size={20} />
+            {error}
+          </p>
+        )}
 
-      <button
-        type="submit"
-        disabled={busy || passphrase.length === 0}
-        className="rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white active:bg-emerald-700 disabled:opacity-50"
-      >
-        {busy ? "Signing in…" : "Sign in"}
-      </button>
-    </form>
+        <button type="submit" disabled={busy || passphrase.length === 0} className="btn btn-primary btn-block">
+          {busy ? "Signing in…" : "Sign in"}
+        </button>
+        <Link href="/settings" className="btn btn-ghost btn-block">
+          Not now
+        </Link>
+      </form>
+    </div>
   );
 }

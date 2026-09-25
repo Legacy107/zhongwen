@@ -1,15 +1,313 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+ * Design tokens. Every colour is a light-dark() pair, so the palette follows
+ * the system appearance, and `data-theme` on <html> (set before first paint by
+ * the script in layout.tsx) pins it to one side from Settings.
+ *
+ * Accent hues are shared by both themes; only surfaces, lines and ink swap.
+ * `*-lip` is the darker shade under a raised surface (the 3D button edge),
+ * `*-soft` a tinted background, `*-ink` readable text on that background.
+ */
+:root {
+  color-scheme: light dark;
+
+  --bg: light-dark(#ffffff, #111b21);
+  --surface: light-dark(#ffffff, #16232a);
+  --surface-2: light-dark(#f7f7f7, #1d2d35);
+  --surface-3: light-dark(#e9e9e9, #2b3d46);
+  --line: light-dark(#e5e5e5, #33454e);
+  --line-strong: light-dark(#cfcfcf, #45595f);
+  --ink: light-dark(#3c3c3c, #eef4f7);
+  --ink-2: light-dark(#5b5b5b, #a9b8c0);
+  /* 4.5:1 on --bg in both themes: helper text must stay readable. */
+  --ink-3: light-dark(#737373, #8195a0);
+
+  /* Vivid fills (bars, rings, nodes). Button faces use the deeper --primary,
+   * which holds 3.3:1 under a bold white label. */
+  --green: #58cc02;
+  --green-lip: light-dark(#46a302, #3f9202);
+  --green-soft: light-dark(#e2f7d3, #1b3317);
+  --green-ink: light-dark(#2c7a0e, #86dd5c);
+  --primary: #3aa10f;
+  --primary-lip: light-dark(#2c800a, #287309);
+
+  --red: #ff4e50;
+  --red-lip: light-dark(#d93a3c, #c7303b);
+  --red-soft: light-dark(#ffe3e3, #3a1c22);
+  --red-ink: light-dark(#c42a2d, #ff8b8d);
+
+  --blue: #1cb0f6;
+  --blue-lip: light-dark(#1899d6, #1180b3);
+  --blue-soft: light-dark(#ddf3fd, #11304a);
+  --blue-ink: light-dark(#0a6d9f, #6fcdf6);
+  --info: #1791cc;
+  --info-lip: light-dark(#0f6fa0, #0d6391);
+
+  --gold: #ffb400;
+  --gold-lip: light-dark(#d99200, #c48400);
+  --gold-soft: light-dark(#fff3cf, #362c10);
+  --gold-ink: light-dark(#946000, #ffce52);
+
+  --orange: #ff8a1e;
+  --orange-lip: light-dark(#df6d05, #c9620a);
+  --orange-soft: light-dark(#ffecd9, #3a2614);
+  --orange-ink: light-dark(#a84e00, #ffac5e);
+
+  --purple: #b06cf7;
+  --purple-lip: light-dark(#8d4dd4, #7c44bd);
+  --purple-soft: light-dark(#f2e6ff, #2c2244);
+  --purple-ink: light-dark(#7a3cc4, #d0a8ff);
 }
 
-/* The app is dark-only by design: reviews happen at night as often as not, and a
- * single palette keeps the hanzi/pinyin contrast ratios predictable. Colours live
- * on the body element in layout.tsx rather than in variables here. */
-html {
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
   color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+
+  --color-green: var(--green);
+  --color-green-lip: var(--green-lip);
+  --color-green-soft: var(--green-soft);
+  --color-green-ink: var(--green-ink);
+  --color-primary: var(--primary);
+  --color-primary-lip: var(--primary-lip);
+  --color-red: var(--red);
+  --color-red-lip: var(--red-lip);
+  --color-red-soft: var(--red-soft);
+  --color-red-ink: var(--red-ink);
+  --color-blue: var(--blue);
+  --color-blue-lip: var(--blue-lip);
+  --color-blue-soft: var(--blue-soft);
+  --color-blue-ink: var(--blue-ink);
+  --color-info: var(--info);
+  --color-info-lip: var(--info-lip);
+  --color-gold: var(--gold);
+  --color-gold-lip: var(--gold-lip);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-ink: var(--gold-ink);
+  --color-orange: var(--orange);
+  --color-orange-lip: var(--orange-lip);
+  --color-orange-soft: var(--orange-soft);
+  --color-orange-ink: var(--orange-ink);
+  --color-purple: var(--purple);
+  --color-purple-lip: var(--purple-lip);
+  --color-purple-soft: var(--purple-soft);
+  --color-purple-ink: var(--purple-ink);
+
+  /*
+   * Baloo 2 for Latin, Vietnamese and pinyin: one of the few rounded faces
+   * with every tone-marked vowel (ǐ ǒ ǖ ǘ ǚ ǜ included), so pinyin never falls
+   * back mid-word. Hanzi fall through to the platform's simplified-Chinese
+   * face, listed explicitly so Japanese glyph forms are never picked.
+   */
+  --font-sans: var(--font-baloo), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC",
+    "Source Han Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-hanzi: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC",
+    "Microsoft YaHei", sans-serif;
+}
+
+html {
   /* Stop iOS inflating text in the installed PWA, which breaks the tile layouts. */
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  /* No double-tap zoom stealing fast taps, while pinch zoom still works. */
+  touch-action: manipulation;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+:lang(zh-Hans) {
+  font-family: var(--font-hanzi);
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+@layer components {
+  /*
+   * The chunky button: a raised face sitting on a darker lip, which it
+   * presses down into. Variants only swap the three colour variables.
+   */
+  .btn {
+    --btn-bg: var(--primary);
+    --btn-lip: var(--primary-lip);
+    --btn-fg: #fff;
+    --btn-border: transparent;
+    --btn-depth: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    min-width: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: 1rem;
+    border: 2px solid var(--btn-border);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    box-shadow: 0 var(--btn-depth) 0 var(--btn-lip);
+    font-weight: 800;
+    font-size: 1.0625rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    user-select: none;
+    touch-action: manipulation;
+    transition:
+      transform 70ms ease-out,
+      box-shadow 70ms ease-out,
+      filter 150ms,
+      background-color 150ms;
+  }
+  .btn:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(var(--btn-depth));
+    box-shadow: 0 0 0 var(--btn-lip);
+  }
+  .btn:disabled {
+    --btn-bg: var(--surface-3);
+    --btn-lip: var(--line);
+    --btn-fg: var(--ink-3);
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    --btn-bg: var(--surface);
+    --btn-fg: var(--blue-ink);
+    --btn-border: var(--line);
+    --btn-lip: var(--line);
+  }
+  .btn-danger {
+    --btn-bg: var(--red);
+    --btn-lip: var(--red-lip);
+  }
+  .btn-info {
+    --btn-bg: var(--info);
+    --btn-lip: var(--info-lip);
+  }
+  .btn-gold {
+    --btn-bg: var(--gold);
+    --btn-lip: var(--gold-lip);
+    --btn-fg: #4a2f00;
+  }
+  .btn-purple {
+    --btn-bg: var(--purple);
+    --btn-lip: var(--purple-lip);
+  }
+  .btn-ghost {
+    --btn-bg: transparent;
+    --btn-lip: transparent;
+    --btn-fg: var(--blue-ink);
+    --btn-depth: 0px;
+  }
+  .btn-sm {
+    --btn-depth: 3px;
+    /* Still a 44px target: compact, never cramped. */
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    border-radius: 0.85rem;
+    font-size: 0.875rem;
+  }
+  .btn-block {
+    width: 100%;
+  }
+  .btn-icon {
+    padding: 0;
+    border-radius: 1rem;
+  }
+
+  /* Word tiles and choice cards: white, outlined, sitting on a grey lip. */
+  .tile {
+    --tile-line: var(--line);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--tile-line);
+    border-radius: 0.9rem;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 3px 0 var(--tile-line);
+    user-select: none;
+    touch-action: manipulation;
+    transition:
+      transform 70ms ease-out,
+      box-shadow 70ms ease-out,
+      background-color 150ms,
+      border-color 150ms;
+  }
+  .tile:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 var(--tile-line);
+  }
+  .tile-selected {
+    --tile-line: var(--blue);
+    background: var(--blue-soft);
+    color: var(--blue-ink);
+  }
+  .tile-correct {
+    --tile-line: var(--green);
+    background: var(--green-soft);
+    color: var(--green-ink);
+  }
+  .tile-wrong {
+    --tile-line: var(--red);
+    background: var(--red-soft);
+    color: var(--red-ink);
+  }
+
+  .card {
+    border: 2px solid var(--line);
+    border-radius: 1.25rem;
+    background: var(--surface);
+  }
+  .card-raised {
+    box-shadow: 0 4px 0 var(--line);
+  }
+
+  .field {
+    width: 100%;
+    border: 2px solid var(--line);
+    border-radius: 1rem;
+    background: var(--surface-2);
+    color: var(--ink);
+    padding: 0.85rem 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 150ms;
+  }
+  .field::placeholder {
+    color: var(--ink-3);
+  }
+  .field:focus {
+    border-color: var(--blue);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .tile {
+    transition: none;
+  }
 }

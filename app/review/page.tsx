@@ -1,11 +1,7 @@
-import { ReviewSession } from "./ReviewSession";
+import { ReviewSessionView } from "@/components/review/ReviewSessionView";
 
 export const metadata = { title: "Review — HánViệt" };
 
 export default function ReviewPage() {
-  return (
-    <main className="flex flex-1 flex-col items-center justify-center p-5">
-      <ReviewSession />
-    </main>
-  );
+  return <ReviewSessionView />;
 }

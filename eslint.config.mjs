@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Downloaded sources and scratch output from the data scripts (gitignored).
+    "scripts/.cache/**",
+    // Generated service worker.
+    "public/sw*",
   ]),
 ]);
 
