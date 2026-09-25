@@ -17,7 +17,7 @@ import {
   type CardType,
 } from "@/lib/srs";
 import { playCorrect, playFanfare, playWrong, unlockAudio } from "@/lib/sfx";
-import { speak } from "@/lib/speak";
+import { speak, warmUpSpeech } from "@/lib/speak";
 
 type Grade = Parameters<typeof grade>[1];
 
@@ -59,6 +59,9 @@ export function ReviewSession() {
   const [queue, setQueue] = useState<StoredCard[]>([]);
   const [done, setDone] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
+  // Voices load asynchronously; start now so the first tap has a good one.
+  useEffect(() => warmUpSpeech(), []);
 
   useEffect(() => {
     let cancelled = false;

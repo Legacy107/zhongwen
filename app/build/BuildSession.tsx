@@ -9,6 +9,7 @@ import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId, uuid } from "@/lib/device";
 import { buildGapFill, type GapFill, type Sentence } from "@/lib/sentences";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
+import { warmUpSpeech } from "@/lib/speak";
 import { buildQueue, cardId, grade, newCard, Rating } from "@/lib/srs";
 import { useAutoSpeak } from "@/lib/useAutoSpeak";
 
@@ -60,6 +61,9 @@ export function BuildSession() {
   const [done, setDone] = useState(0);
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
   const [autoSpeak, setAutoSpeak] = useAutoSpeak();
+
+  // Voices load asynchronously; start now so the first tap has a good one.
+  useEffect(() => warmUpSpeech(), []);
 
   useEffect(() => {
     let cancelled = false;

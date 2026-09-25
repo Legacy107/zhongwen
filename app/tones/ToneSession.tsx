@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ToneDrillCard } from "@/components/ToneDrillCard";
 import type { Word } from "@/lib/hanviet";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
-import { speak } from "@/lib/speak";
+import { speak, warmUpSpeech } from "@/lib/speak";
 import { buildToneDrills, drawSession, type ToneDrill } from "@/lib/tones";
 
 const SESSION_SIZE = 12;
@@ -22,6 +22,9 @@ export function ToneSession() {
   const [error, setError] = useState<string | null>(null);
   const [i, setI] = useState(0);
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
+
+  // Voices load asynchronously; start now so the first tap has a good one.
+  useEffect(() => warmUpSpeech(), []);
 
   useEffect(() => {
     let cancelled = false;
