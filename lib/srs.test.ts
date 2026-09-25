@@ -50,3 +50,22 @@ test('spreading never drops or duplicates cards, even when it cannot keep the ga
   const q = spreadSiblings(['a', 'a', 'a', 'b'].map((wordId, id) => ({ wordId, id })), 4);
   assert.deepEqual(q.map((c) => c.id).sort(), [0, 1, 2, 3]);
 });
+
+test('a word reviewed in the last 12 hours gets no new sibling, so the next session brings new words', () => {
+  const seen = { ...newCard('a', 'hanviet', now), state: State.Review, reps: 1, lastReview: new Date(now.getTime() - 3_600_000), due: new Date(now.getTime() + 86_400_000) };
+  const old = { ...newCard('b', 'hanviet', now), state: State.Review, reps: 3, lastReview: new Date(now.getTime() - 2 * 86_400_000), due: new Date(now.getTime() + 86_400_000) };
+  const q = buildQueue([seen, newCard('a', 'recognition', now), old, newCard('b', 'recognition', now), newCard('c', 'recognition', now)], now);
+  assert.deepEqual(q.map((c) => c.id), ['b:recognition', 'c:recognition']);
+});
+
+test('a word still in learning gets no new sibling either', () => {
+  const learning = { ...newCard('a', 'hanviet', now), state: State.Learning, reps: 1, lastReview: new Date(now.getTime() - 20 * 3_600_000), due: new Date(now.getTime() + 600_000) };
+  const q = buildQueue([learning, newCard('a', 'recognition', now)], now);
+  assert.deepEqual(q.map((c) => c.id), []);
+});
+
+test('the new-word limit caps words never studied, not later cards of started words', () => {
+  const started = { ...newCard('a', 'hanviet', now), state: State.Review, reps: 3, lastReview: new Date(now.getTime() - 2 * 86_400_000), due: new Date(now.getTime() + 86_400_000) };
+  const q = buildQueue([started, newCard('a', 'recognition', now), newCard('b', 'recognition', now), newCard('c', 'recognition', now)], now, { newWordLimit: 1 });
+  assert.deepEqual(q.map((c) => c.id), ['a:recognition', 'b:recognition']);
+});

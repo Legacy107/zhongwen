@@ -103,8 +103,24 @@ test('levels are counted on their own, not cumulatively', async () => {
     { id: 'b', level: 'S', chars: ['越'] },
     { id: 'c', level: '2', chars: ['好', '像'] },
   ];
-  const byWord = wordsByLevel(words, (id) => id === 'a');
-  assert.deepEqual(byWord.slice(0, 2).map((l) => [l.total, l.known]), [[2, 1], [1, 0]]);
-  const byChar = charactersByLevel(words, new Set(['你', '好']));
-  assert.deepEqual(byChar.slice(0, 2).map((l) => [l.total, l.known]), [[3, 2], [1, 0]], '好 counts at HSK 1 only');
+  const byWord = wordsByLevel(words, (id) => (id === 'a' ? 'known' : id === 'b' ? 'learning' : 'new'));
+  assert.deepEqual(byWord.slice(0, 2).map((l) => [l.total, l.known, l.learning]), [[2, 1, 1], [1, 0, 0]]);
+  const byChar = charactersByLevel(words, new Set(['你', '好']), new Set(['越']));
+  assert.deepEqual(byChar.slice(0, 2).map((l) => [l.total, l.known, l.learning]), [[3, 2, 1], [1, 0, 0]], '好 counts at HSK 1 only');
+});
+
+test('retention ignores a card\'s first review, which is its introduction', () => {
+  const now = new Date('2026-09-25T10:00:00Z');
+  const r = computeRetention(
+    [
+      { rating: 3, reviewedAt: now, state: 0 }, // "Got it" on a teaching card
+      { rating: 3, reviewedAt: now, state: 0 },
+      { rating: 1, reviewedAt: now, state: 2 }, // a real recall, missed
+      { rating: 3, reviewedAt: now, state: 2 },
+    ],
+    now,
+  );
+  assert.equal(r.retention, 0.5);
+  assert.equal(r.reviews, 4, 'every review still counts toward activity');
+  assert.equal(computeRetention([{ rating: 3, reviewedAt: now, state: 0 }], now).retention, null);
 });

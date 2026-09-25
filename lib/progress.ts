@@ -35,8 +35,14 @@ export interface RetentionStats {
   perActiveDay: number;
 }
 
+/**
+ * Retention is measured on recall only: reviews of a card that had been
+ * studied before. A card's first review is its introduction (a teaching card
+ * tapped "Got it", a first guess), so counting it would report 90% retention
+ * for a day spent meeting new words.
+ */
 export function computeRetention(
-  reviews: Array<{ rating: number; reviewedAt: Date }>,
+  reviews: Array<{ rating: number; reviewedAt: Date; state?: number }>,
   now = new Date(),
 ): RetentionStats {
   if (reviews.length === 0) {
@@ -45,16 +51,20 @@ export function computeRetention(
   const weekAgo = new Date(now);
   weekAgo.setDate(weekAgo.getDate() - 7);
 
+  let recalls = 0;
   let passed = 0;
   let lastWeek = 0;
   const days = new Set<string>();
   for (const r of reviews) {
-    if (r.rating > 1) passed++; // Rating.Again === 1
+    if (r.state !== State.New) {
+      recalls++;
+      if (r.rating > 1) passed++; // Rating.Again === 1
+    }
     if (r.reviewedAt >= weekAgo) lastWeek++;
     days.add(r.reviewedAt.toDateString());
   }
   return {
-    retention: passed / reviews.length,
+    retention: recalls ? passed / recalls : null,
     reviews: reviews.length,
     lastWeek,
     perActiveDay: reviews.length / Math.max(1, days.size),
@@ -156,25 +166,29 @@ export interface LevelCount {
   label: string;
   total: number;
   known: number;
+  /** Started but not yet known. */
+  learning: number;
 }
 
 const LEVEL_ORDER = ['1', '2', '3', '4', '5', '6'];
 const levelOf = (level: string) => (level === 'S' ? '1' : level);
 
 /**
- * Words known per HSK level, each level on its own. Cumulative bars ("HSK 6:
+ * Words per HSK level, each level on its own. Cumulative bars ("HSK 6:
  * 4 / 5,456") read as progress in HSK 6 when every known word is from HSK 1.
  */
 export function wordsByLevel(
   words: Iterable<{ id: string; level: string }>,
-  isKnown: (id: string) => boolean,
+  statusOf: (id: string) => 'new' | 'learning' | 'known',
 ): LevelCount[] {
-  const out = new Map(LEVEL_ORDER.map((l) => [l, { level: l, label: `HSK ${l}`, total: 0, known: 0 }]));
+  const out = new Map(LEVEL_ORDER.map((l) => [l, { level: l, label: `HSK ${l}`, total: 0, known: 0, learning: 0 }]));
   for (const w of words) {
     const e = out.get(levelOf(w.level));
     if (!e) continue;
     e.total++;
-    if (isKnown(w.id)) e.known++;
+    const s = statusOf(w.id);
+    if (s === 'known') e.known++;
+    else if (s === 'learning') e.learning++;
   }
   return [...out.values()];
 }
@@ -186,6 +200,7 @@ export function wordsByLevel(
 export function charactersByLevel(
   words: Iterable<{ level: string; chars: string[] }>,
   knownChars: Set<string>,
+  seenChars: Set<string> = new Set(),
 ): LevelCount[] {
   const list = [...words];
   const seen = new Set<string>();
@@ -197,7 +212,11 @@ export function charactersByLevel(
     }
     for (const c of fresh) seen.add(c);
     let known = 0;
-    for (const c of fresh) if (knownChars.has(c)) known++;
-    return { level, label: `HSK ${level}`, total: fresh.size, known };
+    let learning = 0;
+    for (const c of fresh) {
+      if (knownChars.has(c)) known++;
+      else if (seenChars.has(c)) learning++;
+    }
+    return { level, label: `HSK ${level}`, total: fresh.size, known, learning };
   });
 }

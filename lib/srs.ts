@@ -158,9 +158,12 @@ export function isDue(card: ReviewCard, now = new Date()): boolean {
   return !card.suspended && card.due.getTime() <= now.getTime();
 }
 
-/** Cards per session. Everything in the deck is technically "new", so without a
- *  cap the queue would be 16k long and the daily count meaningless. */
-export const SESSION_SIZE = 40;
+/**
+ * Cards per session: a lesson's worth, finished on a bus ride, with "Keep
+ * going" for more. Without a cap the whole deck is technically "new" and the
+ * queue would be 16k long.
+ */
+export const SESSION_SIZE = 15;
 
 /**
  * New cards admitted per session, counted inside SESSION_SIZE. Keeping intake
@@ -192,6 +195,17 @@ export interface QueueOptions<T> {
   rankNew?: (card: T) => number;
   /** Cards between two cards of the same word, where the queue allows it. */
   siblingGap?: number;
+  /**
+   * New cards for words never studied at all, per session. Later card types of
+   * a word already started do not count against it.
+   */
+  newWordLimit?: number;
+  /**
+   * Hours after any review of a word before another of its cards may be
+   * introduced, so a word's second card type arrives the next day rather than
+   * in the next session.
+   */
+  siblingCooldownHours?: number;
 }
 
 /**
@@ -204,9 +218,9 @@ export interface QueueOptions<T> {
  * A word's cards are siblings: seeing 小心 as a Hán-Việt card, then a
  * recognition card, then a typing card in a row is one exposure drilled
  * three times, with the answer on screen for the second and third. So a
- * session introduces at most one new card per word (and none for a word
- * already due), leaving the rest for later sessions, and siblings that are
- * due together are spread apart.
+ * session introduces at most one new card per word, none for a word already
+ * due or still being learned, and none for a word reviewed in the last
+ * `siblingCooldownHours`, and siblings that are due together are spread apart.
  */
 export function buildQueue<T extends ReviewCard>(
   cards: T[],
@@ -216,6 +230,8 @@ export function buildQueue<T extends ReviewCard>(
     newPerSession = NEW_PER_SESSION,
     rankNew,
     siblingGap = 4,
+    newWordLimit = Infinity,
+    siblingCooldownHours = 12,
   }: QueueOptions<T> = {},
 ): T[] {
   const sorted = sortForReview(cards, now) as T[];
@@ -226,13 +242,27 @@ export function buildQueue<T extends ReviewCard>(
     fresh.sort((a, b) => rank.get(a.id)! - rank.get(b.id)!);
   }
 
+  const started = new Set<string>();
+  const cooling = new Set<string>();
+  const cutoff = now.getTime() - siblingCooldownHours * 3_600_000;
+  for (const c of cards) {
+    if (c.state === State.New) continue;
+    started.add(c.wordId);
+    const recent = c.lastReview !== undefined && new Date(c.lastReview).getTime() > cutoff;
+    if (c.state === State.Learning || c.state === State.Relearning || recent) cooling.add(c.wordId);
+  }
+
   const words = new Set(due.map((c) => c.wordId));
   const picked: T[] = [];
+  let newWords = 0;
   for (const c of fresh) {
     if (picked.length >= newPerSession || due.length + picked.length >= sessionSize) break;
-    if (words.has(c.wordId)) continue;
+    if (words.has(c.wordId) || cooling.has(c.wordId)) continue;
+    const brandNew = !started.has(c.wordId);
+    if (brandNew && newWords >= newWordLimit) continue;
     words.add(c.wordId);
     picked.push(c);
+    if (brandNew) newWords++;
   }
   return spreadSiblings([...due, ...picked], siblingGap);
 }

@@ -5,7 +5,7 @@
 import { loadFalseFriends, loadReaderShards, loadWords, READER_LEVELS } from './data';
 import { db } from './db/local';
 import type { FalseFriend, Word } from './hanviet';
-import { frontierLevel } from './intake';
+import { drillableCards, frontierLevel } from './intake';
 import { loadMinedWords } from './mining';
 import { wordStatuses, type ReaderSentence, type WordStatus } from './reader';
 
@@ -29,7 +29,9 @@ export async function loadReadingLibrary(): Promise<ReadingLibrary> {
     db.cards.toArray(),
     loadMinedWords(),
   ]);
-  const status = wordStatuses(cards);
+  // Judged on drilled cards only: a Hán-Việt card that is never shown (的,
+  // 老师) would otherwise keep its word "learning" forever.
+  const status = wordStatuses(drillableCards(cards, words, falseFriends));
   const frontier = frontierLevel(words, (id) => (status.get(id) ?? 'new') !== 'new');
   const top = Math.min(READER_LEVELS.length, Number(frontier) + 1);
   const levels = READER_LEVELS.slice(0, top);
