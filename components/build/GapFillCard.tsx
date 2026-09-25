@@ -8,6 +8,7 @@ import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
 import { GAP_READINGS, type GapFill, type Sentence } from "@/lib/sentences";
 import { playCorrect, playPress, playWrong } from "@/lib/sound";
 import { speak } from "@/lib/speak";
+import { LookupLine, TappableSentence, type GlossFor } from "./WordLookup";
 
 interface GapFillCardProps {
   sentence: Sentence;
@@ -15,6 +16,8 @@ interface GapFillCardProps {
   /** Speak the sentence once the gap is filled. */
   speech?: boolean;
   showPinyin?: boolean;
+  /** Short meaning for a word of the sentence, shown on tap after a wrong answer. */
+  glossFor?: GlossFor;
   onDone: (correct: boolean) => void;
 }
 
@@ -22,9 +25,11 @@ interface GapFillCardProps {
  * Choose the missing particle or measure word. Select, then CHECK: picking is
  * not committing, so a second thought costs nothing, as in Duolingo.
  */
-export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, onDone }: GapFillCardProps) {
+export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, glossFor, onDone }: GapFillCardProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
+  // Index into the sentence's tiles of the word being looked up.
+  const [peek, setPeek] = useState<number | null>(null);
   const done = useRef(false);
   const correct = selected === gap.answer;
 
@@ -148,11 +153,34 @@ export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, o
           {checked && (
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p lang="zh-Hans" className="text-2xl text-ink">
-                  {sentence.hanzi}
-                </p>
+                {glossFor ? (
+                  <TappableSentence
+                    hanzi={sentence.hanzi}
+                    tiles={sentence.tiles}
+                    selected={peek}
+                    onTap={(i) => {
+                      setPeek(i);
+                      if (speech) speak(sentence.tiles[i].text);
+                    }}
+                  />
+                ) : (
+                  <p lang="zh-Hans" className="text-2xl text-ink">
+                    {sentence.hanzi}
+                  </p>
+                )}
                 <p className="font-bold">{sentence.pinyin}</p>
                 {sentence.viGloss && <p className="text-sm font-semibold opacity-80">🇻🇳 {sentence.viGloss}</p>}
+                {glossFor && (
+                  <div className="mt-2">
+                    <LookupLine
+                      tile={peek === null ? null : sentence.tiles[peek]}
+                      glossFor={glossFor}
+                      showPinyin
+                      placeholder="Tap any word to see what it means."
+                      onPanel
+                    />
+                  </div>
+                )}
               </div>
               <SpeakButton onClick={() => speak(sentence.hanzi)} size="sm" label="Replay sentence" />
             </div>

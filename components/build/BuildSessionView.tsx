@@ -23,6 +23,7 @@ import { useSound } from "@/lib/useSound";
 import { useStoredToggle } from "@/lib/useStoredToggle";
 import { GapFillCard } from "./GapFillCard";
 import { TileBuilder, type TileResult } from "./TileBuilder";
+import type { GlossFor } from "./WordLookup";
 
 /**
  * Sentence-construction practice, scheduled by the same FSRS engine as
@@ -147,6 +148,22 @@ export function BuildSessionView() {
     [sentence?.id, done, gap],
   );
 
+  // A tile with no deck word is usually a short form (妈 for 妈妈), so it
+  // falls back to the word it shortens, found by its text.
+  const byText = useMemo(() => {
+    const map = new Map<string, Word>();
+    for (const w of words?.values() ?? []) if (!map.has(w.simplified)) map.set(w.simplified, w);
+    return map;
+  }, [words]);
+  const glossFor = useCallback<GlossFor>(
+    (tile) => {
+      const word =
+        (tile.wordId ? words?.get(tile.wordId) : undefined) ?? byText.get(tile.text) ?? byText.get(tile.text + tile.text);
+      return word ? glossEn(word, 1) || undefined : undefined;
+    },
+    [words, byText],
+  );
+
   const onDone = useCallback(
     async (result: TileResult) => {
       if (!current) return;
@@ -264,15 +281,13 @@ export function BuildSessionView() {
               gap={gap}
               speech={sound.speech}
               showPinyin={showPinyin}
+              glossFor={glossFor}
               onDone={(ok) => onDone(ok ? "correct" : "wrong")}
             />
           ) : (
             <TileBuilder
               sentence={sentence}
-              glossFor={(wordId) => {
-                const w = words?.get(wordId);
-                return w ? glossEn(w, 1) : undefined;
-              }}
+              glossFor={glossFor}
               distractors={distractors}
               speech={sound.speech}
               showPinyin={showPinyin}

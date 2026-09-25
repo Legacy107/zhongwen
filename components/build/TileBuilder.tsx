@@ -10,6 +10,7 @@ import { vietnameseOrderHint } from "@/lib/orderHints";
 import type { Sentence, SentenceTile } from "@/lib/sentences";
 import { playCorrect, playTilePlace, playTileRemove, playWrong } from "@/lib/sound";
 import { speak } from "@/lib/speak";
+import { LookupLine, TappableSentence, type GlossFor } from "./WordLookup";
 
 /** A tile plus a stable key, since the same word can appear twice in a sentence. */
 interface Slot {
@@ -31,6 +32,9 @@ export type TileResult = "correct" | "wrong";
 
 const TILE_SPRING = { type: "spring", stiffness: 620, damping: 38, mass: 0.8 } as const;
 
+/** A sentence tile's slot key, shared by the bank and the tappable correct answer. */
+const tileKey = (i: number, tile: SentenceTile) => `${i}:${tile.text}`;
+
 function TileFace({ tile, showPinyin }: { tile: SentenceTile; showPinyin: boolean }) {
   return (
     <>
@@ -46,8 +50,8 @@ function TileFace({ tile, showPinyin }: { tile: SentenceTile; showPinyin: boolea
 
 interface TileBuilderProps {
   sentence: Sentence;
-  /** Short meaning for a tile's word, shown while the tile is held down. */
-  glossFor?: (wordId: string) => string | undefined;
+  /** Short meaning for a tile, shown when it is placed or held, and on tap after a wrong answer. */
+  glossFor?: GlossFor;
   /** Wrong tiles mixed into the bank. */
   distractors?: SentenceTile[];
   /** Speak each tile as it is tapped, and the sentence once checked. */
@@ -75,12 +79,13 @@ export function TileBuilder({
   // from useState is safe.
   const [bank] = useState<Slot[]>(() =>
     shuffle([
-      ...sentence.tiles.map((tile, i) => ({ key: `${i}:${tile.text}`, tile })),
+      ...sentence.tiles.map((tile, i) => ({ key: tileKey(i, tile), tile })),
       ...distractors.map((tile, i) => ({ key: `x${i}:${tile.text}`, tile })),
     ]),
   );
   const [placed, setPlaced] = useState<string[]>([]);
   const [checked, setChecked] = useState<TileResult | null>(null);
+  // The slot whose meaning is on show: the tile last placed, held or looked up.
   const [peek, setPeek] = useState<string | null>(null);
   const done = useRef(false);
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -92,8 +97,8 @@ export function TileBuilder({
   const answer = placed.map((k) => byKey.get(k)!.tile.text);
 
   /**
-   * Press and hold a tile to see what it means: the tiles are the words a
-   * learner is least sure of, and there was no way to ask.
+   * Press and hold a tile to see what it means without moving it. Placing a
+   * tile shows its meaning too, so tapping one in and back out is a lookup.
    */
   const holdProps = (slot: Slot) => ({
     onPointerDown: () => {
@@ -106,7 +111,6 @@ export function TileBuilder({
     },
     onPointerUp: () => {
       if (holdTimer.current) clearTimeout(holdTimer.current);
-      if (held.current) setTimeout(() => setPeek(null), 900);
     },
     onPointerLeave: () => {
       if (holdTimer.current) clearTimeout(holdTimer.current);
@@ -114,10 +118,9 @@ export function TileBuilder({
     onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
   });
 
-  // The held tile's meaning, shown in the line under the bank: a bubble over
-  // the tile ran off the screen edge for tiles near it.
+  // Shown in a line of its own rather than a bubble over the tile, which ran
+  // off the screen edge for tiles near it.
   const peeked = peek ? byKey.get(peek) : undefined;
-  const peekGloss = peeked?.tile.wordId ? (glossFor?.(peeked.tile.wordId) ?? null) : null;
 
   const pick = useCallback(
     (slot: Slot) => {
@@ -128,6 +131,7 @@ export function TileBuilder({
       if (checked) return;
       // A fast double tap must not place the same tile twice.
       setPlaced((p) => (p.includes(slot.key) ? p : [...p, slot.key]));
+      setPeek(slot.key);
       // Hearing the word as you place it ties sound to character; with
       // speech off, a rising note per tile stands in.
       if (speech) speak(slot.tile.text);
@@ -145,14 +149,25 @@ export function TileBuilder({
       if (checked) return;
       playTileRemove();
       setPlaced((p) => p.filter((k) => k !== slot.key));
+      setPeek((k) => (k === slot.key ? null : k));
     },
     [checked],
+  );
+
+  /** After a wrong answer every tile is a lookup: the ones misplaced, and the ones never used. */
+  const lookup = useCallback(
+    (key: string, text: string) => {
+      setPeek(key);
+      if (speech) speak(text);
+    },
+    [speech],
   );
 
   const check = useCallback(() => {
     if (checked) return;
     const result: TileResult = answer.join("") === target.join("") ? "correct" : "wrong";
     setChecked(result);
+    setPeek(null);
     if (result === "correct") playCorrect();
     else playWrong();
     if (speech) speak(sentence.hanzi);
@@ -203,7 +218,7 @@ export function TileBuilder({
                 layoutId={key}
                 type="button"
                 {...holdProps(slot)}
-                onClick={() => unpick(slot)}
+                onClick={() => (checked === "wrong" ? lookup(slot.key, slot.tile.text) : unpick(slot))}
                 transition={TILE_SPRING}
                 animate={
                   checked === "correct" ? { y: [0, -8, 0], transition: { delay: i * 0.035, duration: 0.35 } } : undefined
@@ -237,8 +252,8 @@ export function TileBuilder({
                 layoutId={slot.key}
                 type="button"
                 {...holdProps(slot)}
-                onClick={() => pick(slot)}
-                disabled={checked !== null}
+                onClick={() => (checked === "wrong" ? lookup(slot.key, slot.tile.text) : pick(slot))}
+                disabled={checked === "correct"}
                 transition={TILE_SPRING}
                 className={`tile px-3.5 ${showPinyin ? "h-[62px]" : "h-[52px]"}`}
               >
@@ -249,15 +264,14 @@ export function TileBuilder({
         </div>
       </LayoutGroup>
       {glossFor && checked === null && (
-        <p className="-mt-2 flex min-h-8 items-center justify-center text-center" aria-live="polite">
-          {peeked && peekGloss ? (
-            <span className="rounded-xl bg-ink px-3 py-1.5 text-sm font-bold text-bg">
-              <span lang="zh-Hans">{peeked.tile.text}</span> · {peekGloss}
-            </span>
-          ) : (
-            <span className="text-xs font-bold text-ink-3">Press and hold a tile to see what it means.</span>
-          )}
-        </p>
+        <div className="-mt-2">
+          <LookupLine
+            tile={peeked?.tile ?? null}
+            glossFor={glossFor}
+            showPinyin={showPinyin}
+            placeholder="Tap or hold a tile to see what it means."
+          />
+        </div>
       )}
 
       <SessionFooter>
@@ -284,11 +298,19 @@ export function TileBuilder({
           {checked && (
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                {checked === "wrong" && (
-                  <p lang="zh-Hans" className="text-2xl text-ink">
-                    {sentence.hanzi}
-                  </p>
-                )}
+                {checked === "wrong" &&
+                  (glossFor ? (
+                    <TappableSentence
+                      hanzi={sentence.hanzi}
+                      tiles={sentence.tiles}
+                      selected={sentence.tiles.findIndex((t, i) => tileKey(i, t) === peek)}
+                      onTap={(i) => lookup(tileKey(i, sentence.tiles[i]), sentence.tiles[i].text)}
+                    />
+                  ) : (
+                    <p lang="zh-Hans" className="text-2xl text-ink">
+                      {sentence.hanzi}
+                    </p>
+                  ))}
                 <p className="font-bold">{sentence.pinyin}</p>
                 {sentence.viGloss && <p className="text-sm font-semibold opacity-80">🇻🇳 {sentence.viGloss}</p>}
                 {hint && (
@@ -301,6 +323,17 @@ export function TileBuilder({
                       </span>
                     </span>
                   </p>
+                )}
+                {checked === "wrong" && glossFor && (
+                  <div className="mt-2">
+                    <LookupLine
+                      tile={peeked?.tile ?? null}
+                      glossFor={glossFor}
+                      showPinyin
+                      placeholder="Tap any word or tile to see what it means."
+                      onPanel
+                    />
+                  </div>
                 )}
               </div>
               <SpeakButton onClick={() => speak(sentence.hanzi)} size="sm" label="Replay sentence" />
