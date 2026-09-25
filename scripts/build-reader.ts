@@ -239,9 +239,17 @@ export function tokenize(text: string, lexicon: Lexicon): RawToken[] | null {
   return out;
 }
 
+/**
+ * Fewest tokens wins, then the lowest levels. A proper noun costs more than
+ * two deck words, because CC-CEDICT capitalises plenty of ordinary words:
+ * 星期六 "Saturday", 中国菜 "Chinese food", 四月 "April". Split as 星期 + 六
+ * they are two words the learner is studying; kept whole they were an
+ * un-addable "name". A real name still wins where a part is not a deck word
+ * (汤姆: 姆 is not HSK) or where it would take three words (波士顿).
+ */
 function entryCost(entry: Entry): number {
   if (entry.words) return 1000 + Math.min(...entry.words.map((w) => LEVEL_RANK[w.level] ?? 6));
-  if (entry.name) return 1007;
+  if (entry.name) return 2500;
   return 1008;
 }
 
