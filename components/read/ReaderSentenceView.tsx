@@ -2,6 +2,42 @@
 
 import type { ReaderSentence, ReaderToken, WordStatus } from "@/lib/reader";
 
+type Mark = "new" | "added" | "learning";
+
+/** How a token is marked, or null for known words, names, particles and punctuation. */
+function markOf(token: ReaderToken, status: Map<string, WordStatus>, mined: Set<string>): Mark | null {
+  if (!token.wordId) return null;
+  const s = status.get(token.wordId) ?? "new";
+  if (s === "new") return mined.has(token.wordId) ? "added" : "new";
+  return s === "learning" ? "learning" : null;
+}
+
+/**
+ * A key to the marks, listing only the ones this sentence uses, so there is
+ * never an unexplained colour and never a legend entry with nothing to match.
+ */
+export function ReaderLegend({ sentence, status, mined }: Pick<ReaderSentenceViewProps, "sentence" | "status" | "mined">) {
+  const present = new Set(sentence.tokens.map((t) => markOf(t, status, mined)).filter(Boolean) as Mark[]);
+  if (present.size === 0) return null;
+  const items: Array<{ mark: Mark; label: string; swatch: string }> = [
+    { mark: "new", label: "new", swatch: "rounded bg-blue-soft ring-2 ring-blue/50" },
+    { mark: "added", label: "added to reviews", swatch: "rounded bg-purple-soft ring-2 ring-purple/50" },
+    { mark: "learning", label: "still learning", swatch: "border-b-2 border-dotted border-line-strong" },
+  ];
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-bold text-ink-3">
+      {items
+        .filter((i) => present.has(i.mark))
+        .map((i) => (
+          <span key={i.mark} className="flex items-center gap-1.5">
+            <span className={`inline-block h-3 w-4 ${i.swatch}`} aria-hidden />
+            {i.label}
+          </span>
+        ))}
+    </div>
+  );
+}
+
 interface ReaderSentenceViewProps {
   sentence: ReaderSentence;
   status: Map<string, WordStatus>;

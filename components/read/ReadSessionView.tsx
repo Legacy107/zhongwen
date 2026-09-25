@@ -22,7 +22,7 @@ import { playMined, playNext } from "@/lib/sound";
 import { speak, warmUpSpeech } from "@/lib/speak";
 import { useSound } from "@/lib/useSound";
 import { useStoredToggle } from "@/lib/useStoredToggle";
-import { ReaderSentenceView } from "./ReaderSentenceView";
+import { ReaderLegend, ReaderSentenceView } from "./ReaderSentenceView";
 import { WordSheet } from "./WordSheet";
 
 const SESSION_SIZE = 8;
@@ -188,6 +188,7 @@ export function ReadSessionView() {
                 setSheet({ token, index: i });
               }}
             />
+            <ReaderLegend sentence={sentence} status={library.status} mined={mined} />
             <div className="flex items-center gap-3">
               <SpeakButton onClick={() => speak(sentence.hanzi, 0.9)} size="md" label="Play the sentence" />
               <button
