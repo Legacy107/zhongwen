@@ -7,15 +7,25 @@ import { SpeakButton } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
 import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
 import { glossEn } from "@/lib/gloss";
-import type { FalseFriend, Word } from "@/lib/hanviet";
+import { isEnteringTone, type FalseFriend, type Word } from "@/lib/hanviet";
 import { checkPinyin, type PinyinVerdict } from "@/lib/pinyinAnswer";
 import { numericToMarks } from "@/lib/pinyinFormat";
-import { playCorrect, playPress, playWrong } from "@/lib/sound";
+import { playAlmost, playCorrect, playPress, playWrong } from "@/lib/sound";
 import { speak } from "@/lib/speak";
 import { Rating, type CardType } from "@/lib/srs";
 import { CognateHint } from "./CognateHint";
 
 export type Grade = typeof Rating.Again | typeof Rating.Hard | typeof Rating.Good | typeof Rating.Easy;
+
+/**
+ * What a grade tells the session. `scored` is false for a word's first card
+ * (a teaching card, or a first guess from Hán-Việt): meeting a word is not a
+ * test of it, so it counts toward new words, not toward accuracy or a combo.
+ */
+export interface GradeInfo {
+  scored: boolean;
+  passed: boolean;
+}
 
 /** "<1m", "10m", "1d", "3w": the gap before the card returns at each grade. */
 export function formatInterval(due: Date, now: Date): string {
@@ -31,26 +41,21 @@ export function formatInterval(due: Date, now: Date): string {
   return `${(days / 365).toFixed(1)}y`;
 }
 
-const GRADES: Array<{ rating: Grade; label: string; cls: string }> = [
-  { rating: Rating.Again, label: "Again", cls: "btn-danger" },
-  { rating: Rating.Hard, label: "Hard", cls: "btn-gold" },
-  { rating: Rating.Good, label: "Good", cls: "btn-primary" },
-  { rating: Rating.Easy, label: "Easy", cls: "btn-info" },
-];
-
 interface ReviewCardProps {
   word: Word;
   cardType: CardType;
-  /** Never reviewed: a recognition card becomes a teaching card. */
-  isNew: boolean;
+  /** Any card of this word reviewed before: false makes this card an introduction. */
+  wordSeen: boolean;
   falseFriend?: FalseFriend;
+  /** The deck, for Hán-Việt compound examples. */
+  words: Map<string, Word>;
   /** When the card would next be due at each grade. */
   intervals: Record<Grade, Date>;
   now: Date;
   speech: boolean;
   /** The reading sentence a mined word came from, shown on its first outing. */
   context?: { hanzi: string; en: string };
-  onGrade: (rating: Grade) => void;
+  onGrade: (rating: Grade, info: GradeInfo) => void;
 }
 
 function Answer({ word }: { word: Word }) {
@@ -74,11 +79,24 @@ function Context({ context, full }: { context: { hanzi: string; en: string }; fu
   );
 }
 
+/** The Hán-Việt to Mandarin tone rule, shown as a hint on a first guess. */
+function ToneRule({ hanviet }: { hanviet: string }) {
+  const entering = isEnteringTone(hanviet);
+  return (
+    <div className="rounded-2xl bg-gold-soft px-4 py-3 text-sm text-gold-ink">
+      <p className="text-xs font-extrabold uppercase tracking-wider">Hint: the tone rule</p>
+      <p className="mt-1 font-bold text-ink">ngang → 1 · huyền → 2 · hỏi, ngã → 3 · sắc, nặng → 4</p>
+      {entering && <p className="mt-1 font-semibold">This one ends in -p, -t, -c or -ch, where the rule often breaks.</p>}
+    </div>
+  );
+}
+
 export function ReviewCard({
   word,
   cardType,
-  isNew,
+  wordSeen,
   falseFriend,
+  words,
   intervals,
   now,
   speech,
@@ -87,13 +105,15 @@ export function ReviewCard({
 }: ReviewCardProps) {
   const hanvietPrompt = cardType === "hanviet" && Boolean(word.hanviet);
   const typed = cardType === "typing" || cardType === "hanviet";
-  // A word seen for the first time is taught, not tested: everything shown at
-  // once, then "Got it". Testing recall of a word never seen is just a guess.
-  const intro = isNew && cardType === "recognition";
+  // A word's first card never tests it. A recognition card becomes a teaching
+  // card; a Hán-Việt card becomes a hinted guess whose miss is not a failure.
+  const intro = !wordSeen && cardType === "recognition";
+  const firstGuess = !wordSeen && typed;
 
   const [answer, setAnswer] = useState("");
   const [revealed, setRevealed] = useState(intro);
   const [verdict, setVerdict] = useState<PinyinVerdict | null>(null);
+  const [flash, setFlash] = useState<"correct" | "wrong" | null>(null);
   const graded = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -111,39 +131,53 @@ export function ReviewCard({
     (given: string | null) => {
       if (revealed) return;
       if (typed) {
-        const v = given === null ? "wrong" : checkPinyin(given, word.pinyin, word.toneNumbers);
+        const v = given === null ? "wrong" : checkPinyin(given, word.pinyin, word.pinyinNumeric);
         setVerdict(v);
         if (v === "correct") playCorrect();
-        else if (v === "wrong") playWrong();
-        else playPress();
+        else if (firstGuess) playPress();
+        else if (v === "tones") playAlmost();
+        else playWrong();
       }
       setRevealed(true);
       // Heard the moment the answer shows, never before: before, it would
       // read out the pinyin being tested.
       if (speech) speak(word.simplified);
     },
-    [revealed, typed, word, speech],
+    [revealed, typed, firstGuess, word, speech],
   );
 
-  const grade = useCallback(
+  const finish = useCallback(
     (rating: Grade) => {
       if (graded.current) return;
       graded.current = true;
-      if (!typed && !intro) {
-        if (rating === Rating.Again) playWrong();
-        else playCorrect();
-      }
-      onGrade(rating);
+      onGrade(rating, { scored: !intro && !firstGuess, passed: rating !== Rating.Again });
     },
-    [typed, intro, onGrade],
+    [intro, firstGuess, onGrade],
   );
 
-  // The grade a typed answer implies; emphasised in the panel.
-  const suggested: Grade = verdict === "wrong" ? Rating.Again : verdict === "tones" ? Rating.Hard : Rating.Good;
+  /** Self-graded recall: a flash of the result colour, then on to the next card. */
+  const selfGrade = useCallback(
+    (knew: boolean) => {
+      if (graded.current || flash) return;
+      if (knew) playCorrect();
+      else playWrong();
+      setFlash(knew ? "correct" : "wrong");
+      setTimeout(() => finish(knew ? Rating.Good : Rating.Again), 260);
+    },
+    [flash, finish],
+  );
+
+  // A typed answer grades itself. Wrong tones are a miss: for a Vietnamese
+  // speaker the tone is the word, and T1/T4 slips are the error to train out.
+  const autoGrade: Grade = verdict === "correct" ? Rating.Good : Rating.Again;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
+      if (intro) {
+        if (e.key === " " || e.key === "Enter") finish(Rating.Good);
+        return;
+      }
       if (!revealed) {
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
@@ -151,17 +185,14 @@ export function ReviewCard({
         }
         return;
       }
-      if (intro) {
-        if (e.key === " " || e.key === "Enter") grade(Rating.Good);
-        return;
-      }
-      const n = Number(e.key);
-      if (n >= 1 && n <= 4) grade(n as Grade);
-      else if (e.key === "Enter" && typed) grade(suggested);
+      if (typed) {
+        if (e.key === "Enter") finish(autoGrade);
+      } else if (e.key === "1" || e.key === "ArrowLeft") selfGrade(false);
+      else if (e.key === "2" || e.key === "ArrowRight" || e.key === " " || e.key === "Enter") selfGrade(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [revealed, intro, typed, suggested, grade, reveal]);
+  }, [revealed, intro, typed, autoGrade, finish, reveal, selfGrade]);
 
   const say = () => speak(word.simplified);
   const preview = /[0-5]/.test(answer) ? numericToMarks(answer) : null;
@@ -174,42 +205,44 @@ export function ReviewCard({
         ? "Guess the pinyin from Hán-Việt"
         : "Type the pinyin";
 
-  const title =
-    !revealed || intro
-      ? undefined
-      : verdict === "correct"
-        ? "Correct!"
-        : verdict === "tones"
-          ? "Right sounds, check the tones"
-          : verdict === "wrong"
-            ? answer.trim()
-              ? "Not quite"
-              : "Here it is"
-            : undefined;
+  let tone: "idle" | "correct" | "wrong" | "almost" | "info" = "idle";
+  let title: string | undefined;
+  if (flash) {
+    tone = flash;
+    title = flash === "correct" ? "Nice!" : "It'll come back soon";
+  } else if (revealed && !intro) {
+    if (!typed) {
+      tone = "info";
+      title = "Did you know it?";
+    } else if (verdict === "correct") {
+      tone = "correct";
+      title = firstGuess ? "Great guess!" : "Correct!";
+    } else if (firstGuess) {
+      tone = "info";
+      title = "Now you know it";
+    } else if (verdict === "tones") {
+      tone = "almost";
+      title = "Right sounds, wrong tones";
+    } else {
+      tone = "wrong";
+      title = answer.trim() ? "Not quite" : "Here it is";
+    }
+  }
 
-  const tone =
-    !revealed || intro
-      ? "idle"
-      : verdict === "correct"
-        ? "correct"
-        : verdict === "tones"
-          ? "almost"
-          : verdict === "wrong"
-            ? "wrong"
-            : "info";
+  const mood = intro || verdict === "correct" || flash === "correct" ? "happy" : !revealed ? "think" : firstGuess ? "happy" : "sad";
 
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex items-center gap-2">
-        {intro && (
+        {firstGuess && (
           <span className="rounded-full bg-purple-soft px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-purple-ink">
-            New
+            New · guess
           </span>
         )}
-        <h2 className="text-2xl font-extrabold text-ink">{prompt}</h2>
+        <h2 className={`text-2xl font-extrabold ${intro ? "text-purple-ink" : "text-ink"}`}>{prompt}</h2>
       </div>
 
-      <MascotBubble mood={intro ? "happy" : !revealed ? "think" : verdict === "wrong" ? "sad" : "happy"}>
+      <MascotBubble mood={mood}>
         {hanvietPrompt && !intro ? (
           <div className="flex flex-col py-1">
             <span className="text-xs font-extrabold uppercase tracking-wider text-gold-ink">Hán-Việt</span>
@@ -226,6 +259,7 @@ export function ReviewCard({
       </MascotBubble>
 
       {context && !revealed && <Context context={context} full={false} />}
+      {firstGuess && hanvietPrompt && !revealed && <ToneRule hanviet={word.hanviet!} />}
 
       {typed && !revealed && (
         <form
@@ -267,7 +301,7 @@ export function ReviewCard({
                 className="tile h-11 w-12 text-sm font-extrabold"
               >
                 {t}
-                <span className="text-xs leading-none text-ink-3">{["ˉ", "ˊ", "ˇ", "ˋ"][t - 1]}</span>
+                <span className="text-base leading-none text-ink-3">{["ˉ", "ˊ", "ˇ", "ˋ"][t - 1]}</span>
               </button>
             ))}
           </div>
@@ -298,7 +332,7 @@ export function ReviewCard({
                 </p>
               )}
             </div>
-            <CognateHint word={word} falseFriend={falseFriend} />
+            <CognateHint word={word} falseFriend={falseFriend} showReading={!hanvietPrompt} words={words} />
             {context && <Context context={context} full />}
           </motion.div>
         )}
@@ -311,10 +345,10 @@ export function ReviewCard({
           actions={
             intro ? (
               <>
-                <button type="button" className="btn btn-secondary flex-1" onClick={() => grade(Rating.Easy)}>
+                <button type="button" className="btn btn-secondary flex-1" onClick={() => finish(Rating.Easy)}>
                   I knew it
                 </button>
-                <button type="button" className="btn btn-primary flex-[1.4]" onClick={() => grade(Rating.Good)} autoFocus>
+                <button type="button" className="btn btn-primary flex-[1.4]" onClick={() => finish(Rating.Good)} autoFocus>
                   Got it
                 </button>
               </>
@@ -322,7 +356,7 @@ export function ReviewCard({
               typed ? (
                 <>
                   <button type="button" className="btn btn-secondary flex-1" onClick={() => reveal(null)}>
-                    Don&apos;t know
+                    {firstGuess ? "Show me" : "Don't know"}
                   </button>
                   <button
                     type="button"
@@ -338,40 +372,50 @@ export function ReviewCard({
                   Show answer
                 </button>
               )
+            ) : typed ? (
+              <>
+                {verdict !== "correct" && !firstGuess && answer.trim() && (
+                  // Typos and spelling variants happen; the learner is trusted to say so.
+                  <button type="button" className="btn btn-ghost flex-1" onClick={() => finish(Rating.Good)}>
+                    I was right
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className={`btn flex-[1.6] ${
+                    verdict === "correct" || firstGuess ? "btn-primary" : verdict === "tones" ? "btn-gold" : "btn-danger"
+                  }`}
+                  onClick={() => finish(autoGrade)}
+                  autoFocus
+                >
+                  Continue
+                </button>
+              </>
             ) : (
-              <div className="grid w-full grid-cols-4 gap-2">
-                {GRADES.map((g) => {
-                  const emphasised = !typed || g.rating === suggested;
-                  return (
-                    <button
-                      key={g.rating}
-                      type="button"
-                      onClick={() => grade(g.rating)}
-                      className={`btn btn-sm h-16 flex-col gap-1 px-1 ${emphasised ? g.cls : "btn-secondary"}`}
-                    >
-                      <span>{g.label}</span>
-                      <span className="text-xs font-bold normal-case tracking-normal opacity-85">
-                        {formatInterval(intervals[g.rating], now)}
-                      </span>
-                    </button>
-                  );
-                })}
+              <div className="grid w-full grid-cols-2 gap-3">
+                <button type="button" onClick={() => selfGrade(false)} className="btn btn-danger h-16 flex-col gap-1">
+                  <span>Forgot</span>
+                  <span className="text-xs font-bold normal-case tracking-normal opacity-85">
+                    again in {formatInterval(intervals[Rating.Again], now)}
+                  </span>
+                </button>
+                <button type="button" onClick={() => selfGrade(true)} className="btn btn-primary h-16 flex-col gap-1">
+                  <span>Knew it</span>
+                  <span className="text-xs font-bold normal-case tracking-normal opacity-85">
+                    next in {formatInterval(intervals[Rating.Good], now)}
+                  </span>
+                </button>
               </div>
             )
           }
         >
           {revealed && !intro && typed && verdict !== "correct" && (
-            <span className="text-base font-bold">
-              {word.pinyin}
-              {verdict === "tones" && <span className="font-semibold"> · you typed {preview ?? answer}</span>}
-            </span>
-          )}
-          {revealed && !intro && !typed && (
-            <span className="text-sm font-semibold text-ink-2">How well did you know it?</span>
+            <span className="text-base font-bold">{word.pinyin}</span>
           )}
           {revealed && !intro && typed && verdict === "correct" && (
             <span className="flex items-center gap-1 text-sm font-semibold">
               <Icon name="sparkles" size={16} /> {word.pinyin}
+              {firstGuess && " · the tone rule worked"}
             </span>
           )}
         </ActionBar>

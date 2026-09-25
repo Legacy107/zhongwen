@@ -83,8 +83,8 @@ export function SessionComplete({
   }, [goalMet, celebrate]);
 
   const action = (a: SessionCompleteProps["primary"], cls: string) =>
-    a.href ? (
-      <Link href={a.href} onClick={a.onClick} className={cls}>
+    a.href && !a.onClick ? (
+      <Link href={a.href} className={cls}>
         {a.label}
       </Link>
     ) : (
@@ -126,7 +126,8 @@ export function SessionComplete({
           </motion.div>
         )}
 
-        <div className="grid w-full grid-cols-3 gap-3">
+        {stats.length > 0 && (
+        <div className={`grid w-full gap-3 ${stats.length >= 4 ? "grid-cols-2" : stats.length === 2 ? "grid-cols-2" : stats.length === 1 ? "grid-cols-1" : "grid-cols-3"}`}>
           {stats.map((s, i) => {
             const c = COLOR[s.color];
             return (
@@ -149,6 +150,7 @@ export function SessionComplete({
             );
           })}
         </div>
+        )}
         {children}
       </div>
 

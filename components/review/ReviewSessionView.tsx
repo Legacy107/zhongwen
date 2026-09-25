@@ -3,14 +3,15 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ErrorState, Loading, TopBarToggle } from "@/components/ui/Controls";
-import { formatDuration, SessionComplete } from "@/components/ui/SessionComplete";
+import { formatDuration, SessionComplete, type CompletionStat } from "@/components/ui/SessionComplete";
 import { SessionShell } from "@/components/ui/SessionShell";
 import { loadFalseFriends, loadWordFrequency, loadWords } from "@/lib/data";
 import { db, requestPersistence, saveGradedCard } from "@/lib/db/local";
 import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId, uuid } from "@/lib/device";
+import { goalProgress, type GoalProgress } from "@/lib/goal";
 import type { FalseFriend, Word } from "@/lib/hanviet";
-import { DAILY_NEW_LIMIT, drillable, newAllowance, newCardRanker, newIntroducedToday } from "@/lib/intake";
+import { DAILY_NEW_LIMIT, drillableCards, newCardRanker, newWordAllowance, newWordsToday } from "@/lib/intake";
 import { loadMinedWords, type MinedWord } from "@/lib/mining";
 import { playCombo } from "@/lib/sound";
 import { warmUpSpeech } from "@/lib/speak";
@@ -18,7 +19,6 @@ import {
   buildQueue,
   cardId,
   grade,
-  NEW_PER_SESSION,
   newCard,
   previewIntervals,
   Rating,
@@ -26,14 +26,22 @@ import {
   WORD_CARD_TYPES,
   type CardType,
 } from "@/lib/srs";
-import { goalProgress, type GoalProgress } from "@/lib/goal";
 import { useSound } from "@/lib/useSound";
-import { ReviewCard, type Grade } from "./ReviewCard";
+import { ReviewCard, type Grade, type GradeInfo } from "./ReviewCard";
 
 interface Deck {
   words: Map<string, Word>;
   falseFriends: Map<string, FalseFriend>;
   mined: Map<string, MinedWord>;
+}
+
+interface Loaded {
+  deck: Deck;
+  queue: StoredCard[];
+  /** Words with any card studied before this session. */
+  seen: Set<string>;
+  nextDue: Date | null;
+  capped: boolean;
 }
 
 /** Builds SRS rows for any deck word that doesn't have them yet. */
@@ -49,6 +57,43 @@ async function ensureCards(words: Word[], deviceId: string): Promise<void> {
     }
   }
   if (missing.length) await db.cards.bulkPut(missing);
+}
+
+async function loadSession(extra: boolean): Promise<Loaded> {
+  void requestPersistence();
+  const [words, falseFriends, frequency, mined, introduced] = await Promise.all([
+    loadWords(),
+    loadFalseFriends(),
+    loadWordFrequency(),
+    loadMinedWords(),
+    newWordsToday(),
+  ]);
+  await ensureCards([...words.values()], getDeviceId());
+  // Sentence cards share the table but are drilled on /build.
+  const all = drillableCards(
+    (await db.cards.toArray()).filter((c) => c.cardType !== "sentence"),
+    words,
+    falseFriends,
+  );
+  const queue = buildQueue(all, new Date(), {
+    rankNew: newCardRanker(words, frequency, mined),
+    newWordLimit: newWordAllowance(introduced, extra),
+  });
+  const now = Date.now();
+  let nextDue: Date | null = null;
+  const seen = new Set<string>();
+  for (const c of all) {
+    if (c.state === State.New || c.suspended) continue;
+    seen.add(c.wordId);
+    if (c.due.getTime() > now && (nextDue === null || c.due < nextDue)) nextDue = c.due;
+  }
+  return {
+    deck: { words, falseFriends, mined },
+    queue,
+    seen,
+    nextDue,
+    capped: !extra && introduced >= DAILY_NEW_LIMIT,
+  };
 }
 
 /** "in 10 min", "in 3 h", "tomorrow": when the next card falls due. */
@@ -71,84 +116,77 @@ interface Entry {
   retries: number;
 }
 
+interface Tally {
+  /** Scored answers: recall of words already met. */
+  scored: number;
+  passed: number;
+  /** Words met for the first time this session. */
+  newWords: number;
+}
+
 export function ReviewSessionView() {
   const [deck, setDeck] = useState<Deck | null>(null);
   const [queue, setQueue] = useState<Entry[]>([]);
   const [total, setTotal] = useState(0);
   const [cleared, setCleared] = useState(0);
-  const [graded, setGraded] = useState({ count: 0, passed: 0 });
+  const [tally, setTally] = useState<Tally>({ scored: 0, passed: 0, newWords: 0 });
   const [combo, setCombo] = useState(0);
   const [bestCombo, setBestCombo] = useState(0);
   const [turn, setTurn] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [finished, setFinished] = useState<{ ms: number; goal: GoalProgress; crossed: boolean } | null>(null);
+  const [finished, setFinished] = useState<{
+    ms: number;
+    goal: GoalProgress;
+    crossed: boolean;
+    next: Loaded;
+  } | null>(null);
   const [nextDue, setNextDue] = useState<Date | null>(null);
   const [capped, setCapped] = useState(false);
   const [firstTime, setFirstTime] = useState(false);
   const sound = useSound();
   const startedAt = useRef<number>(0);
   const goalBefore = useRef<GoalProgress | null>(null);
+  // Words met before (or during) this session; a word's first card teaches instead of testing.
+  const [seen, setSeen] = useState<Set<string>>(new Set());
   // Set while a grade is being saved, so a double tap cannot grade twice.
   const busy = useRef(false);
 
   // Voices load asynchronously; start now so the first tap has a good one.
   useEffect(() => warmUpSpeech(), []);
 
-  const load = useCallback(async (extra: boolean) => {
-    void requestPersistence();
-    const [words, falseFriends, frequency, mined, introduced] = await Promise.all([
-      loadWords(),
-      loadFalseFriends(),
-      loadWordFrequency(),
-      loadMinedWords(),
-      newIntroducedToday(),
-    ]);
-    await ensureCards([...words.values()], getDeviceId());
-    // Sentence cards share the table but are drilled on /build.
-    const all = (await db.cards.toArray()).filter(
-      (c) => c.cardType !== "sentence" && drillable(c, words, falseFriends),
-    );
+  const begin = useCallback(async (loaded: Loaded) => {
     goalBefore.current = await goalProgress();
-    const q = buildQueue(all, new Date(), {
-      rankNew: newCardRanker(words, frequency, mined),
-      newPerSession: newAllowance(introduced, NEW_PER_SESSION, extra),
-    });
-    const nextDue = all
-      .filter((c) => c.state !== State.New && !c.suspended)
-      .reduce<Date | null>((min, c) => (min === null || c.due < min ? c.due : min), null);
-    return { deck: { words, falseFriends, mined }, queue: q, nextDue, capped: introduced >= DAILY_NEW_LIMIT };
+    setSeen(loaded.seen);
+    setDeck(loaded.deck);
+    setQueue(loaded.queue.map((card) => ({ card, retries: 0 })));
+    setTotal(loaded.queue.length);
+    setCleared(0);
+    setTally({ scored: 0, passed: 0, newWords: 0 });
+    setCombo(0);
+    setBestCombo(0);
+    setFinished(null);
+    setNextDue(loaded.nextDue);
+    setCapped(loaded.capped);
+    startedAt.current = Date.now();
+    busy.current = false;
   }, []);
-
-  const begin = useCallback(
-    (loaded: Awaited<ReturnType<typeof load>>) => {
-      setDeck(loaded.deck);
-      setQueue(loaded.queue.map((card) => ({ card, retries: 0 })));
-      setTotal(loaded.queue.length);
-      setCleared(0);
-      setGraded({ count: 0, passed: 0 });
-      setCombo(0);
-      setBestCombo(0);
-      setFinished(null);
-      setNextDue(loaded.nextDue);
-      setCapped(loaded.capped);
-      startedAt.current = Date.now();
-      busy.current = false;
-    },
-    [],
-  );
 
   useEffect(() => {
     let cancelled = false;
     // The very first session writes a card for every word in the deck, which
     // takes a few seconds on a phone; say so rather than look stuck.
     void db.cards.count().then((n) => !cancelled && n === 0 && setFirstTime(true));
-    load(false)
-      .then((loaded) => !cancelled && begin(loaded))
+    // "Learn more anyway", from the end screen or home, arrives as ?more=1.
+    const extra = new URLSearchParams(window.location.search).has("more");
+    loadSession(extra)
+      .then((loaded) => {
+        if (!cancelled) void begin(loaded);
+      })
       .catch((e) => !cancelled && setError(e instanceof Error ? e.message : "Failed to load deck"));
     return () => {
       cancelled = true;
     };
-  }, [load, begin]);
+  }, [begin]);
 
   const current = queue[0];
   const word = current && deck ? deck.words.get(current.card.wordId) : undefined;
@@ -159,13 +197,19 @@ export function ReviewSessionView() {
   );
 
   const finish = useCallback(async () => {
-    const goal = await goalProgress();
+    // Load the next session now, so "Keep going" can say how much is left.
+    const [goal, next] = await Promise.all([goalProgress(), loadSession(false)]);
     const before = goalBefore.current;
-    setFinished({ ms: Date.now() - startedAt.current, goal, crossed: Boolean(before && !before.met && goal.met) });
+    setFinished({
+      ms: Date.now() - startedAt.current,
+      goal,
+      crossed: Boolean(before && !before.met && goal.met),
+      next,
+    });
   }, []);
 
   const onGrade = useCallback(
-    async (rating: Grade) => {
+    async (rating: Grade, info: GradeInfo) => {
       if (!current || busy.current) return;
       busy.current = true;
       const at = new Date();
@@ -182,16 +226,27 @@ export function ReviewSessionView() {
         deviceId,
       });
 
+      const wordId = current.card.wordId;
+      const firstMeeting = !seen.has(wordId);
+      if (firstMeeting) setSeen((prev) => new Set(prev).add(wordId));
+      setTally((t) =>
+        info.scored
+          ? { ...t, scored: t.scored + 1, passed: t.passed + (info.passed ? 1 : 0) }
+          : { ...t, newWords: t.newWords + (firstMeeting ? 1 : 0) },
+      );
+
       const missed = rating === Rating.Again;
       const retry = missed && current.retries < MAX_RETRIES;
-      setGraded((g) => ({ count: g.count + 1, passed: g.passed + (missed ? 0 : 1) }));
       if (!retry) setCleared((n) => n + 1);
 
-      const run = missed ? 0 : combo + 1;
-      setCombo(run);
-      setBestCombo((b) => Math.max(b, run));
-      if (run === 3 || run === 5 || run === 10 || (run > 10 && run % 10 === 0)) {
-        setTimeout(() => playCombo(run), 260);
+      // Only real recall moves the combo: meeting a word is not a win.
+      if (info.scored) {
+        const run = info.passed ? combo + 1 : 0;
+        setCombo(run);
+        setBestCombo((b) => Math.max(b, run));
+        if (run === 3 || run === 5 || run === 10 || (run > 10 && run % 10 === 0)) {
+          setTimeout(() => playCombo(run), 260);
+        }
       }
 
       const rest = queue.slice(1);
@@ -203,49 +258,71 @@ export function ReviewSessionView() {
       busy.current = false;
       if (rest.length === 0) void finish();
     },
-    [current, queue, combo, finish],
+    [current, queue, combo, seen, finish],
   );
 
   if (error) return <ErrorState message={error} />;
-  if (!deck) return <Loading label={firstTime ? "Setting up your deck. This happens once…" : "Shuffling your cards…"} />;
+  if (!deck) {
+    return <Loading label={firstTime ? "Setting up your deck. This happens once…" : "Shuffling your cards…"} />;
+  }
 
-  if (finished || !current || !word || !intervals) {
-    const accuracy = graded.count ? Math.round((graded.passed / graded.count) * 100) : 0;
-    const more = () => {
-      setDeck(null);
-      load(true)
-        .then(begin)
-        .catch((e) => setError(e instanceof Error ? e.message : "Failed to load deck"));
-    };
+  if (!current || !word || !intervals) {
+    if (total > 0 && !finished) return <Loading label="Saving…" />;
+    const accuracy = tally.scored ? Math.round((tally.passed / tally.scored) * 100) : 0;
+    const more = finished?.next.queue.length ?? 0;
     const waitFor = nextDue && nextDue > new Date() ? until(nextDue) : null;
+    const empty = tally.scored + tally.newWords === 0;
+
+    const stats: CompletionStat[] = [];
+    if (tally.newWords) stats.push({ label: "New words", value: tally.newWords, icon: "bookPlus", color: "purple" });
+    if (tally.scored) {
+      stats.push({ label: "Reviewed", value: tally.scored, icon: "cards", color: "gold" });
+      stats.push({ label: "Accuracy", value: accuracy, suffix: "%", icon: "target", color: "green" });
+    }
+    if (!empty) {
+      stats.push({
+        label: "Time",
+        value: Math.round((finished?.ms ?? 0) / 1000),
+        format: (s) => formatDuration(s * 1000),
+        icon: "clock",
+        color: "blue",
+      });
+    }
+
     return (
       <SessionComplete
-        celebrate={graded.count > 0}
-        title={graded.count > 0 ? "Review complete!" : "All caught up!"}
+        celebrate={!empty}
+        title={empty ? "All caught up!" : tally.scored ? "Review complete!" : "New words learned!"}
         subtitle={
-          graded.count > 0
-            ? bestCombo >= 5
-              ? `Best run: ${bestCombo} in a row.`
-              : "Every card is saved and scheduled."
-            : capped
+          empty
+            ? capped
               ? `That's your ${DAILY_NEW_LIMIT} new words for today${waitFor ? `. Next review ${waitFor}` : ""}.`
               : `Nothing is due${waitFor ? `. Next review ${waitFor}` : " right now"}.`
+            : bestCombo >= 5
+              ? `Best run: ${bestCombo} in a row.`
+              : "Every card is saved and scheduled."
         }
-        stats={[
-          { label: "Reviewed", value: graded.count, icon: "cards", color: "gold" },
-          { label: "Accuracy", value: accuracy, suffix: "%", icon: "target", color: "green" },
-          {
-            label: "Time",
-            value: Math.round((finished?.ms ?? 0) / 1000),
-            format: (s) => formatDuration(s * 1000),
-            icon: "clock",
-            color: "blue",
-          },
-        ]}
+        stats={stats}
         goalMet={finished?.crossed ? { streak: finished.goal.streak } : null}
-        primary={{ label: "Continue", href: "/" }}
+        primary={
+          more > 0 && finished
+            ? { label: `Keep going · ${more}`, onClick: () => void begin(finished.next) }
+            : { label: "Continue", href: "/" }
+        }
         secondary={
-          capped ? { label: "Learn 8 more words anyway", onClick: more } : { label: "Build sentences", href: "/build" }
+          more > 0
+            ? { label: "Done for now", href: "/" }
+            : capped
+              ? {
+                  label: "Learn 8 more words anyway",
+                  onClick: () => {
+                    setDeck(null);
+                    loadSession(true)
+                      .then(begin)
+                      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load deck"));
+                  },
+                }
+              : { label: "Practise tones", href: "/tones" }
         }
       />
     );
@@ -280,8 +357,9 @@ export function ReviewSessionView() {
           <ReviewCard
             word={word}
             cardType={current.card.cardType as CardType}
-            isNew={current.card.state === State.New}
+            wordSeen={seen.has(word.id)}
             falseFriend={deck.falseFriends.get(word.simplified)}
+            words={deck.words}
             intervals={intervals}
             now={now}
             speech={sound.speech}

@@ -291,6 +291,14 @@ export function playWrong(): void {
   }, [30, 60, 30]);
 }
 
+/** Right sounds, wrong tones: a falling third, clearly neither the win nor the miss. */
+export function playAlmost(): void {
+  cue(() => {
+    mallet(NOTE.G5, 0, 0.26, 0.3);
+    mallet(NOTE.E5, 0.12, 0.24, 0.45);
+  });
+}
+
 /** Several right in a row. Climbs higher the longer the run. */
 export function playCombo(run: number): void {
   const scale = [NOTE.C6, NOTE.D6, NOTE.E6, NOTE.G6, NOTE.A6, NOTE.C7];

@@ -29,8 +29,12 @@ function claim(word: Word): { lead: string; strong: boolean } | null {
   }
 }
 
-/** The Vietnamese sense the cognate match was made on, rather than whichever sense happens to come first. */
-function matchingSense(word: Word): string {
+/**
+ * The Vietnamese sense the cognate match was made on, rather than whichever
+ * sense happens to come first. `bound` when CVDICT marks it as a form that
+ * only occurs inside compounds ("bất-").
+ */
+function matchingSense(word: Word): { sense: string; bound: boolean } {
   const senses = (word.viGloss ?? "").split(/[;/]/).map((s) => s.trim()).filter(Boolean);
   const target = normalizeVietnamese(word.hanviet ?? "");
   const bare = stripTones(target);
@@ -39,8 +43,22 @@ function matchingSense(word: Word): string {
     senses.find((s) => stripTones(normalizeVietnamese(s)) === bare) ??
     senses.find((s) => ` ${normalizeVietnamese(s)} `.includes(` ${target} `));
   const sense = hit ?? senses[0] ?? "";
-  // CVDICT marks bound forms with a hyphen ("bất-"): say so instead of showing it.
-  return /^-|-$/.test(sense) ? `${sense.replace(/^-|-$/g, "")} (in compounds)` : sense;
+  return { sense: sense.replace(/^-|-$/g, ""), bound: /^-|-$/.test(sense) };
+}
+
+/** Deck words that carry this character with the same reading, as Vietnamese compounds: 不 -> bất an, bất đồng. */
+function compoundExamples(word: Word, words: Map<string, Word> | undefined, reading: string): string[] {
+  if (!words || word.chars.length !== 1) return [];
+  const syllable = normalizeVietnamese(reading);
+  const out: string[] = [];
+  for (const w of words.values()) {
+    if (w.id === word.id || w.chars.length < 2 || !w.chars.includes(word.chars[0])) continue;
+    if (w.cognateMatch !== "exact" || !w.hanviet) continue;
+    if (!normalizeVietnamese(w.hanviet).split(" ").includes(syllable)) continue;
+    if (!out.includes(w.hanviet)) out.push(w.hanviet);
+    if (out.length >= 2) break;
+  }
+  return out;
 }
 
 type BadgeKind = "follows" | "differs" | "entering" | "neutral";
@@ -101,6 +119,17 @@ export function ToneBadge({ word }: { word: Word }) {
   );
 }
 
+interface CognateHintProps {
+  word: Word;
+  falseFriend?: FalseFriend;
+  /** Off where the Vietnamese gloss is already on screen, so it is not shown twice. */
+  showVi?: boolean;
+  /** Off where the Hán-Việt reading is already the prompt on screen. */
+  showReading?: boolean;
+  /** The deck, for compound examples of a reading used only inside compounds. */
+  words?: Map<string, Word>;
+}
+
 /**
  * The bridge: the Sino-Vietnamese reading, so a Vietnamese speaker can
  * recognise vocabulary they already half-know. A false friend overrides the
@@ -108,16 +137,7 @@ export function ToneBadge({ word }: { word: Word }) {
  * showing no hint at all. It is purple, not red: it is a warning about the
  * word, never a verdict on the answer.
  */
-export function CognateHint({
-  word,
-  falseFriend,
-  showVi = true,
-}: {
-  word: Word;
-  falseFriend?: FalseFriend;
-  /** Off where the Vietnamese gloss is already on screen, so it is not shown twice. */
-  showVi?: boolean;
-}) {
+export function CognateHint({ word, falseFriend, showVi = true, showReading = true, words }: CognateHintProps) {
   if (falseFriend) {
     return (
       <div className="rounded-2xl border-2 border-purple/40 bg-purple-soft p-4">
@@ -138,19 +158,32 @@ export function CognateHint({
 
   if (!word.hanviet) return null;
   const c = claim(word);
+  const { sense, bound } = matchingSense(word);
+  const examples = bound ? compoundExamples(word, words, word.hanviet) : [];
 
   return (
     <div className="rounded-2xl border-2 border-gold/50 bg-gold-soft p-4">
       <div className="flex items-start justify-between gap-2">
         <div>
           <span className="text-xs font-extrabold uppercase tracking-wider text-gold-ink">Hán-Việt</span>
-          <p className="text-2xl font-extrabold text-gold-ink">{word.hanviet}</p>
+          {showReading && <p className="text-2xl font-extrabold text-gold-ink">{word.hanviet}</p>}
         </div>
         <ToneBadge word={word} />
       </div>
-      {c ? (
+      {c && bound ? (
+        // A bound form is not a word the learner "already knows" on its own.
+        <p className="text-ink-2">
+          Vietnamese uses <span className="font-bold text-ink">{sense}</span> only inside words
+          {examples.length ? (
+            <>
+              , like <span className="font-bold text-ink">{examples.join(", ")}</span>
+            </>
+          ) : null}
+          .
+        </p>
+      ) : c ? (
         <p className={c.strong ? "text-ink" : "text-ink-2"}>
-          {c.lead}: <span className="font-bold">{matchingSense(word)}</span>
+          {c.lead}: <span className="font-bold">{sense}</span>
         </p>
       ) : showVi && glossVi(word, 2) ? (
         <p className="text-ink-2">🇻🇳 {glossVi(word, 2)}</p>
