@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { cleanGloss, glossEn } from './gloss';
+import { cleanGloss, glossEn, tileGloss } from './gloss';
 import { displayPinyin, numericToMarks } from './pinyinFormat';
 
 test('dictionary markup is stripped from glosses', () => {
@@ -51,4 +51,20 @@ test('tone changes are explained, identical readings are not', async () => {
   assert.match(toneChangeNote('不用', 'búyòng', 'bùyòng') ?? '', /bú before a fourth tone/);
   assert.match(toneChangeNote('一个', 'yígè', 'yīgè') ?? '', /yí before a fourth tone/);
   assert.match(toneChangeNote('还', 'huán', 'hái') ?? '', /Dictionary form/);
+});
+
+test('tile glosses keep the first sense and drop qualifiers', () => {
+  assert.equal(tileGloss('sorry; excuse me; to let (sb) down'), 'sorry');
+  assert.equal(tileGloss('two (before measure words)'), 'two');
+  assert.equal(tileGloss('(bus or train) ticket'), 'ticket');
+  assert.equal(tileGloss('(doing A) while (doing B)'), 'while');
+  assert.equal(tileGloss('Chinese character(s)'), 'Chinese character(s)');
+  assert.equal(tileGloss("'s; of (joins describer to noun)"), "'s");
+});
+
+test('a function word described in parentheses gets its first description', () => {
+  assert.equal(tileGloss('(completed action; change of state)'), 'completed action');
+  assert.equal(tileGloss('(general measure word: people, things)'), 'general measure word');
+  assert.equal(tileGloss('(and you?; ongoing action)'), 'and you?');
+  assert.equal(tileGloss(''), '');
 });

@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { MascotBubble } from "@/components/ui/Bubble";
 import { SpeakButton } from "@/components/ui/Controls";
 import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
+import { tileGloss } from "@/lib/gloss";
 import { GAP_READINGS, type GapFill, type Sentence } from "@/lib/sentences";
 import { playCorrect, playPress, playWrong } from "@/lib/sound";
 import { speak } from "@/lib/speak";
@@ -18,14 +19,34 @@ interface GapFillCardProps {
   showPinyin?: boolean;
   /** Short meaning for a word of the sentence, shown on tap after a wrong answer. */
   glossFor?: GlossFor;
+  /**
+   * Each word's meaning under it. The choices get none: 地 would be glossed as
+   * "ground", not the particle, and the particle's meaning is what is tested.
+   */
+  showMeaning?: boolean;
   onDone: (correct: boolean) => void;
+}
+
+/** A word's meaning under it, in the UI font rather than the sentence's hanzi one. */
+function Meaning({ text }: { text: string }) {
+  return (
+    <span className="max-w-[7rem] truncate font-sans text-[11px] font-bold leading-tight text-ink-3">{text || " "}</span>
+  );
 }
 
 /**
  * Choose the missing particle or measure word. Select, then CHECK: picking is
  * not committing, so a second thought costs nothing, as in Duolingo.
  */
-export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, glossFor, onDone }: GapFillCardProps) {
+export function GapFillCard({
+  sentence,
+  gap,
+  speech = true,
+  showPinyin = true,
+  glossFor,
+  showMeaning = false,
+  onDone,
+}: GapFillCardProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
   // Index into the sentence's tiles of the word being looked up.
@@ -43,6 +64,8 @@ export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, g
   }, [selected, checked, gap.answer, sentence.hanzi, speech]);
 
   const filled = checked ? gap.answer : selected;
+  const meaningOf = (i: number) => (glossFor ? tileGloss(glossFor(sentence.tiles[i]) ?? "") : "");
+  const meaningOn = showMeaning && glossFor !== undefined;
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -83,11 +106,13 @@ export function GapFillCard({ sentence, gap, speech = true, showPinyin = true, g
               >
                 {filled ?? "口"}
               </motion.span>
+              {meaningOn && <Meaning text={checked ? meaningOf(i) : ""} />}
             </span>
           ) : (
             <span key={`${i}:${t.text}`} className="flex flex-col items-center">
               {showPinyin && <span className="text-xs font-semibold text-ink-3">{t.pinyin}</span>}
               <span className="text-3xl leading-tight text-ink">{t.text}</span>
+              {meaningOn && <Meaning text={meaningOf(i)} />}
             </span>
           ),
         )}

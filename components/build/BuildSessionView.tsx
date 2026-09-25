@@ -76,6 +76,7 @@ export function BuildSessionView() {
   const [finished, setFinished] = useState<{ ms: number; goal: GoalProgress; crossed: boolean } | null>(null);
   const sound = useSound();
   const [showPinyin, setShowPinyin] = useStoredToggle("chinese.tilePinyin", true);
+  const [showMeaning, setShowMeaning] = useStoredToggle("chinese.tileMeaning", true);
   const startedAt = useRef(0);
   const goalBefore = useRef<GoalProgress | null>(null);
 
@@ -257,6 +258,13 @@ export function BuildSessionView() {
             label={showPinyin ? "Hide pinyin on tiles" : "Show pinyin on tiles"}
           />
           <TopBarToggle
+            on={showMeaning}
+            onChange={setShowMeaning}
+            iconOn="translate"
+            iconOff="translateOff"
+            label={showMeaning ? "Hide meanings on tiles" : "Show meanings on tiles"}
+          />
+          <TopBarToggle
             on={sound.any}
             onChange={sound.setAll}
             iconOn="speaker"
@@ -282,6 +290,7 @@ export function BuildSessionView() {
               speech={sound.speech}
               showPinyin={showPinyin}
               glossFor={glossFor}
+              showMeaning={showMeaning}
               onDone={(ok) => onDone(ok ? "correct" : "wrong")}
             />
           ) : (
@@ -291,6 +300,7 @@ export function BuildSessionView() {
               distractors={distractors}
               speech={sound.speech}
               showPinyin={showPinyin}
+              showMeaning={showMeaning}
               onDone={onDone}
             />
           )}

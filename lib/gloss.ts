@@ -53,3 +53,47 @@ export function glossEn(word: Pick<Word, 'enGloss'> & { enShort?: string }, n = 
 export function glossVi(word: Pick<Word, 'viGloss'> & { viShort?: string }, n = 3): string {
   return word.viShort ?? cleanGloss(word.viGloss, n);
 }
+
+/** Senses split at top-level semicolons, leaving any inside parentheses alone. */
+function senses(gloss: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < gloss.length; i++) {
+    if (gloss[i] === '(') depth++;
+    else if (gloss[i] === ')') depth = Math.max(0, depth - 1);
+    else if (gloss[i] === ';' && depth === 0) {
+      out.push(gloss.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+  out.push(gloss.slice(start).trim());
+  return out.filter(Boolean);
+}
+
+/** True when the whole of `s` is one parenthesised group. */
+function wrapped(s: string): boolean {
+  if (!s.startsWith('(')) return false;
+  let depth = 0;
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === '(') depth++;
+    else if (s[i] === ')' && --depth === 0) return i === s.length - 1;
+  }
+  return false;
+}
+
+/**
+ * A gloss short enough to sit under a word on a sentence tile: its first
+ * sense without qualifiers, so 两 "two (before measure words)" reads "two".
+ * A function word glossed only as a description, 了 "(completed action;
+ * change of state)", reads "completed action".
+ */
+export function tileGloss(gloss: string): string {
+  const first = senses(gloss)[0] ?? '';
+  if (wrapped(first)) return (senses(first.slice(1, -1))[0] ?? '').split(':')[0].trim();
+  const bare = first
+    .replace(/^\([^()]*\)\s+/, '')
+    .replace(/\s+\([^()]*\)$/, '')
+    .trim();
+  return bare || first;
+}
