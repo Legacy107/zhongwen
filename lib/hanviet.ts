@@ -48,6 +48,13 @@ export interface Word {
    * but not worth drilling as separate cards.
    */
   variants?: string[];
+  /**
+   * Hand-written learner glosses (data/glosses.json, HSK 1–2), merged in at
+   * load time. Use glossEn()/glossVi() from lib/gloss.ts rather than reading
+   * these or the raw dictionary glosses directly.
+   */
+  enShort?: string;
+  viShort?: string;
 }
 
 export interface FalseFriend {

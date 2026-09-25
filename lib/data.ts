@@ -6,6 +6,7 @@
  * fetch is evicted rather than cached, so the next caller retries.
  */
 import type { FalseFriend, Word } from './hanviet';
+import { displayPinyin } from './pinyinFormat';
 import { parseSentence, type ReaderSentence, type ReaderShard } from './reader';
 import type { Sentence } from './sentences';
 
@@ -29,10 +30,30 @@ async function json<T>(url: string): Promise<T> {
   return (await r.json()) as T;
 }
 
+type Glosses = Record<string, { en: string; vi: string }>;
+
+/**
+ * The deck, with display pinyin normalised (shǒujī, not shǒu jī) and the
+ * hand-written HSK 1–2 glosses merged in. A missing glosses file is not an
+ * error: the dictionary glosses are cleaned up at display time instead.
+ */
 export function loadWords(): Promise<Map<string, Word>> {
   return once('words', async () => {
-    const words = await json<Word[]>('/data/words.json');
-    return new Map(words.map((w) => [w.id, w]));
+    const [words, glosses] = await Promise.all([
+      json<Word[]>('/data/words.json'),
+      json<Glosses>('/data/glosses.json').catch((): Glosses => ({})),
+    ]);
+    return new Map(
+      words.map((w) => {
+        const g = glosses[w.id];
+        const word: Word = { ...w, pinyin: displayPinyin(w.pinyin) };
+        if (g) {
+          word.enShort = g.en;
+          word.viShort = g.vi;
+        }
+        return [w.id, word];
+      }),
+    );
   });
 }
 
@@ -64,13 +85,22 @@ export async function loadReaderShards(levels: readonly string[]): Promise<Reade
   return shards.flat();
 }
 
+/**
+ * Tile pinyin written per word (shǒujī), like the rest of the app, and the
+ * sentence pinyin rebuilt from the tiles so the two always agree.
+ */
+function normaliseSentence(s: Sentence): Sentence {
+  const tiles = s.tiles.map((t) => ({ ...t, pinyin: displayPinyin(t.pinyin) }));
+  return { ...s, tiles, pinyin: tiles.map((t) => t.pinyin).filter(Boolean).join(' ') };
+}
+
 /** The generated Stage 2.5 practice set, with the committed fixture as a fallback. */
 export function loadPracticeSentences(): Promise<Sentence[]> {
   return once('practice', async () => {
     for (const url of ['/data/sentences.json', '/data/sentences-fixture.json']) {
       try {
         const data = await json<Sentence[]>(url);
-        if (data.length) return data;
+        if (data.length) return data.map(normaliseSentence);
       } catch {
         // Try the next source.
       }
