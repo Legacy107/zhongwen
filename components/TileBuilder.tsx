@@ -33,10 +33,17 @@ interface TileBuilderProps {
    * word-order correction on a wrong answer; this only controls the prompt.
    */
   promptLang?: "en" | "vi";
+  /** Speak each tile as it is tapped, and the sentence on reveal. */
+  autoSpeak?: boolean;
   onDone: (result: TileResult) => void;
 }
 
-export function TileBuilder({ sentence, promptLang = "en", onDone }: TileBuilderProps) {
+export function TileBuilder({
+  sentence,
+  promptLang = "en",
+  autoSpeak = true,
+  onDone,
+}: TileBuilderProps) {
   // Slots are built once per sentence and are the single source of identity for
   // both lists. Deriving keys in two places lets the same tile text collide -
   // a sentence may legitimately repeat a word - and React then duplicates or
@@ -51,12 +58,18 @@ export function TileBuilder({ sentence, promptLang = "en", onDone }: TileBuilder
   const answer = built.map((s) => s.tile.text).join("");
   const target = useMemo(() => sentence.tiles.map((t) => t.text).join(""), [sentence]);
 
-  const pick = useCallback((slot: Slot) => {
-    if (checked) return;
-    playTap();
-    setBank((b) => b.filter((s) => s.key !== slot.key));
-    setBuilt((b) => [...b, slot]);
-  }, [checked]);
+  const pick = useCallback(
+    (slot: Slot) => {
+      if (checked) return;
+      // Hearing the word as you place it ties sound to character. The blip
+      // stands in when speech is muted, so the tap still gets feedback.
+      if (autoSpeak) void speak(slot.tile.text);
+      else playTap();
+      setBank((b) => b.filter((s) => s.key !== slot.key));
+      setBuilt((b) => [...b, slot]);
+    },
+    [checked, autoSpeak],
+  );
 
   const unpick = useCallback((slot: Slot) => {
     if (checked) return;
@@ -72,8 +85,8 @@ export function TileBuilder({ sentence, promptLang = "en", onDone }: TileBuilder
     else playWrong();
     // Hearing it only makes sense once the order is settled; playing earlier
     // would read the answer out loud.
-    void speak(sentence.hanzi);
-  }, [answer, target, sentence.hanzi]);
+    if (autoSpeak) void speak(sentence.hanzi);
+  }, [answer, target, sentence.hanzi, autoSpeak]);
 
   /**
    * A wrong answer that follows Vietnamese word order gets a specific

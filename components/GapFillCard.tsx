@@ -9,10 +9,12 @@ import { speak } from "@/lib/speak";
 interface GapFillCardProps {
   sentence: Sentence;
   gap: GapFill;
+  /** Speak the sentence once the gap is filled. */
+  autoSpeak?: boolean;
   onDone: (correct: boolean) => void;
 }
 
-export function GapFillCard({ sentence, gap, onDone }: GapFillCardProps) {
+export function GapFillCard({ sentence, gap, autoSpeak = true, onDone }: GapFillCardProps) {
   const [picked, setPicked] = useState<string | null>(null);
   const correct = picked === gap.answer;
 
@@ -23,9 +25,9 @@ export function GapFillCard({ sentence, gap, onDone }: GapFillCardProps) {
       if (option === gap.answer) playCorrect();
       else playWrong();
       // The gap is filled now, so the sentence is complete and safe to speak.
-      void speak(sentence.hanzi);
+      if (autoSpeak) void speak(sentence.hanzi);
     },
-    [picked, gap.answer, sentence.hanzi],
+    [picked, gap.answer, sentence.hanzi, autoSpeak],
   );
 
   return (

@@ -10,6 +10,7 @@ import { getDeviceId, uuid } from "@/lib/device";
 import { buildGapFill, type GapFill, type Sentence } from "@/lib/sentences";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
 import { buildQueue, cardId, grade, newCard, Rating } from "@/lib/srs";
+import { useAutoSpeak } from "@/lib/useAutoSpeak";
 
 /**
  * Sentence-construction practice, scheduled by the same FSRS engine as
@@ -58,6 +59,7 @@ export function BuildSession() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(0);
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
+  const [autoSpeak, setAutoSpeak] = useAutoSpeak();
 
   useEffect(() => {
     let cancelled = false;
@@ -162,18 +164,34 @@ export function BuildSession() {
 
   return (
     <div className="flex w-full flex-col items-center gap-4" onPointerDown={unlockAudio}>
-      <p className="text-xs text-neutral-500">
-        {queue.length} left · {done} done
-      </p>
+      <div className="flex w-full max-w-md items-center justify-between">
+        <p className="text-xs text-neutral-500">
+          {queue.length} left · {done} done
+        </p>
+        <button
+          type="button"
+          onClick={() => setAutoSpeak(!autoSpeak)}
+          aria-pressed={autoSpeak}
+          className="rounded-full bg-neutral-900 px-3 py-1 text-xs text-neutral-300 active:bg-neutral-800"
+        >
+          {autoSpeak ? "🔊 Sound on" : "🔇 Muted"}
+        </button>
+      </div>
       {gap ? (
         <GapFillCard
           key={`${current.id}:${done}:gap`}
           sentence={sentence}
           gap={gap}
+          autoSpeak={autoSpeak}
           onDone={(ok) => onDone(ok ? "correct" : "wrong")}
         />
       ) : (
-        <TileBuilder key={`${current.id}:${done}`} sentence={sentence} onDone={onDone} />
+        <TileBuilder
+          key={`${current.id}:${done}`}
+          sentence={sentence}
+          autoSpeak={autoSpeak}
+          onDone={onDone}
+        />
       )}
     </div>
   );
