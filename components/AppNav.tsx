@@ -8,6 +8,7 @@ const TITLES: Record<string, string> = {
   "/build": "Build sentences",
   "/tones": "Tone training",
   "/progress": "Progress",
+  "/signin": "Sign in",
 };
 
 /**

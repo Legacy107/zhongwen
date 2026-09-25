@@ -10,8 +10,21 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 export const AUTH_COOKIE = 'chinese_auth';
 
-/** Long expiry -- re-entering a passphrase on a phone mid-review is miserable. */
-export const AUTH_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+/**
+ * How long a sign-in lasts. "Remember me" keeps the cookie for this long; without
+ * it the browser drops the cookie when it closes. The server enforces the same
+ * limit from the signed issue time either way, so a copied cookie cannot
+ * outlive it.
+ */
+export const AUTH_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
+
+/**
+ * Whether sync needs a signed-in cookie. Always in production. In development
+ * only when a passphrase is configured, so a fresh checkout syncs with no setup.
+ */
+export function authRequired(): boolean {
+  return process.env.NODE_ENV === 'production' || Boolean(process.env.APP_PASSPHRASE);
+}
 
 function requireEnv(name: 'APP_PASSPHRASE' | 'AUTH_SECRET'): string {
   const value = process.env[name];
@@ -65,10 +78,16 @@ export function verifyCookieValue(value: string | undefined, now = new Date()): 
   return ageSeconds >= 0 && ageSeconds < AUTH_MAX_AGE_SECONDS;
 }
 
-export const authCookieOptions = {
+const baseCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax',
   path: '/',
-  maxAge: AUTH_MAX_AGE_SECONDS,
 } as const;
+
+/** `remember: false` omits maxAge, which makes it a session cookie. */
+export function authCookieOptions(remember: boolean) {
+  return remember ? { ...baseCookieOptions, maxAge: AUTH_MAX_AGE_SECONDS } : baseCookieOptions;
+}
+
+export const clearedCookieOptions = { ...baseCookieOptions, maxAge: 0 } as const;

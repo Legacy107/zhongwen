@@ -2,7 +2,7 @@ import { gt, sql as sqlOp } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { AUTH_COOKIE, verifyCookieValue } from '@/lib/auth';
+import { AUTH_COOKIE, authRequired, verifyCookieValue } from '@/lib/auth';
 import { db } from '@/lib/db/client';
 import { cards, reviews, settings, type NewCardRow } from '@/lib/db/schema';
 import {
@@ -17,14 +17,8 @@ export const runtime = 'nodejs';
 /** Always hits the database; caching a sync response would serve stale state. */
 export const dynamic = 'force-dynamic';
 
-/**
- * The passphrase gate has no sign-in screen yet, so development runs open for
- * the laptop and a phone on the LAN. Production stays closed until it does:
- * the endpoint writes to the only copy of the review history that survives an
- * iOS storage wipe.
- */
 async function isAuthorised(): Promise<boolean> {
-  if (process.env.NODE_ENV !== 'production') return true;
+  if (!authRequired()) return true;
   const store = await cookies();
   return verifyCookieValue(store.get(AUTH_COOKIE)?.value);
 }
