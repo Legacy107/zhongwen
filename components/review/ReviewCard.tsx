@@ -173,7 +173,10 @@ export function ReviewCard({
 
   // A typed answer grades itself. Wrong tones are a miss: for a Vietnamese
   // speaker the tone is the word, and T1/T4 slips are the error to train out.
-  const autoGrade: Grade = verdict === "correct" ? Rating.Good : Rating.Again;
+  // A first guess passes whatever was typed, like the teaching card's "Got
+  // it": FSRS read an Again there as a hard word and kept its difficulty high
+  // for good, costing 9 reviews in the word's first year instead of 6.
+  const autoGrade: Grade = verdict === "correct" || firstGuess ? Rating.Good : Rating.Again;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -233,7 +236,16 @@ export function ReviewCard({
     }
   }
 
-  const mood = intro || verdict === "correct" || flash === "correct" ? "happy" : !revealed ? "think" : firstGuess ? "happy" : "sad";
+  // A revealed flashcard keeps the thinking face until the learner answers:
+  // turning sad on reveal made looking at the answer read as a failure.
+  const mood =
+    intro || verdict === "correct" || flash === "correct"
+      ? "happy"
+      : !revealed || (!typed && !flash)
+        ? "think"
+        : firstGuess
+          ? "happy"
+          : "sad";
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -264,6 +276,16 @@ export function ReviewCard({
 
       {context && !revealed && <Context context={context} full={false} />}
       {firstGuess && hanvietPrompt && !revealed && <ToneRule hanviet={word.hanviet!} />}
+
+      {!typed && !revealed && (
+        // Duolingo never asks learners to mark themselves, so say how it works.
+        <div className="flex flex-col items-center gap-1 rounded-2xl border-2 border-dashed border-line-strong px-4 py-5 text-center">
+          <p className="font-extrabold text-ink-2">Think of the meaning, then check</p>
+          <p className="text-sm font-semibold text-ink-3">
+            Checking doesn&apos;t count against you. You&apos;ll say whether you knew it.
+          </p>
+        </div>
+      )}
 
       {typed && !revealed && (
         <form
@@ -309,6 +331,11 @@ export function ReviewCard({
               </button>
             ))}
           </div>
+          {firstGuess && (
+            <p className="text-center text-sm font-semibold text-ink-3">
+              It&apos;s a new word: a wrong guess costs nothing.
+            </p>
+          )}
         </form>
       )}
 
@@ -373,7 +400,7 @@ export function ReviewCard({
                 </>
               ) : (
                 <button type="button" className="btn btn-primary btn-block" onClick={() => reveal(null)}>
-                  Show answer
+                  Check
                 </button>
               )
             ) : typed ? (
