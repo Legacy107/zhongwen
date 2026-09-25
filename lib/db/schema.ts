@@ -50,15 +50,25 @@ export const cards = pgTable(
 
     suspended: boolean('suspended').notNull().default(false),
 
-    /** Last-write-wins clock; also the `pull(since)` watermark column. */
+    /** Last-write-wins clock, set by the client that made the edit. */
     updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
       .notNull()
       .defaultNow(),
     deviceId: text('device_id').notNull(),
+    /**
+     * Server clock at the moment the row last landed here, and the column
+     * `pull(since)` filters on. Client timestamps cannot serve: a grade made
+     * offline carries its grading time, so once pushed it would sit behind the
+     * other device's watermark and never be pulled.
+     */
+    syncedAt: timestamp('synced_at', { withTimezone: true, mode: 'date' })
+      .notNull()
+      .defaultNow(),
   },
   (table) => [
     index('cards_due_idx').on(table.due),
     index('cards_updated_at_idx').on(table.updatedAt),
+    index('cards_synced_at_idx').on(table.syncedAt),
   ],
 );
 
@@ -79,10 +89,15 @@ export const reviews = pgTable(
     /** Card state at the moment of grading. */
     state: smallint('state').notNull(),
     deviceId: text('device_id').notNull(),
+    /** See `cards.syncedAt`. */
+    syncedAt: timestamp('synced_at', { withTimezone: true, mode: 'date' })
+      .notNull()
+      .defaultNow(),
   },
   (table) => [
     index('reviews_card_id_idx').on(table.cardId),
     index('reviews_reviewed_at_idx').on(table.reviewedAt),
+    index('reviews_synced_at_idx').on(table.syncedAt),
   ],
 );
 
@@ -95,8 +110,15 @@ export const settings = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
       .notNull()
       .defaultNow(),
+    /** See `cards.syncedAt`. */
+    syncedAt: timestamp('synced_at', { withTimezone: true, mode: 'date' })
+      .notNull()
+      .defaultNow(),
   },
-  (table) => [index('settings_updated_at_idx').on(table.updatedAt)],
+  (table) => [
+    index('settings_updated_at_idx').on(table.updatedAt),
+    index('settings_synced_at_idx').on(table.syncedAt),
+  ],
 );
 
 export type CardRow = typeof cards.$inferSelect;

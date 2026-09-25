@@ -7,6 +7,8 @@ import { db, exportBackup, importBackup } from "@/lib/db/local";
 import { buildQueue, State } from "@/lib/srs";
 import { playFanfare, unlockAudio } from "@/lib/sfx";
 import { computeStreak, type StreakInfo } from "@/lib/streak";
+import { onSyncComplete } from "@/lib/sync";
+import { SyncStatus } from "@/components/SyncStatus";
 
 interface Stats {
   /** Cards this session will actually contain, not every unstarted card. */
@@ -101,9 +103,14 @@ export function HomeDashboard() {
     // sync pulls a grade made on the other device.
     const onFocus = () => void load();
     window.addEventListener("focus", onFocus);
+    // Focus alone reads too early: its sync lands a moment after.
+    const offSync = onSyncComplete(({ pulled }) => {
+      if (pulled.cards + pulled.reviews + pulled.settings > 0) void load();
+    });
     return () => {
       cancelled = true;
       window.removeEventListener("focus", onFocus);
+      offSync();
     };
   }, []);
 
@@ -241,9 +248,10 @@ export function HomeDashboard() {
       </Link>
 
       <section className="flex flex-col gap-2 rounded-2xl bg-neutral-900/60 p-4">
-        <h2 className="text-sm font-medium text-neutral-300">Backup</h2>
+        <h2 className="text-sm font-medium text-neutral-300">Sync &amp; backup</h2>
+        <SyncStatus />
         <p className="text-xs text-neutral-500">
-          Browsers can evict offline data. Exporting keeps your review history recoverable.
+          Progress syncs between your devices. An export is a second copy you hold yourself.
         </p>
         <div className="flex gap-2">
           <button

@@ -1,10 +1,16 @@
 import {
   db,
+  enqueueCard,
+  enqueueReview,
+  enqueueSetting,
   getLastSyncedAt,
+  getMeta,
   setLastSyncedAt,
+  setMeta,
   type OutboxEntry,
   type StoredReview,
 } from './db/local';
+import { State } from './srs';
 import {
   cardPayloadSchema,
   reviewPayloadSchema,
@@ -13,6 +19,7 @@ import {
   type CardPayload,
   type ReviewPayload,
   type SettingPayload,
+  type StoredCard,
   type SyncPullResponse,
 } from './db/wire';
 
@@ -39,16 +46,60 @@ export interface SyncResult {
 }
 
 type SyncListener = (status: SyncStatus) => void;
+type CompleteListener = (result: SyncResult) => void;
 
 const listeners = new Set<SyncListener>();
+const completeListeners = new Set<CompleteListener>();
 
 export function onSyncStatus(listener: SyncListener): () => void {
   listeners.add(listener);
   return () => listeners.delete(listener);
 }
 
+/** Fires after every sync attempt, so screens can re-read what a pull changed. */
+export function onSyncComplete(listener: CompleteListener): () => void {
+  completeListeners.add(listener);
+  return () => completeListeners.delete(listener);
+}
+
 function emit(status: SyncStatus): void {
   for (const listener of listeners) listener(status);
+}
+
+function complete(result: SyncResult): SyncResult {
+  for (const listener of completeListeners) listener(result);
+  return result;
+}
+
+/**
+ * A card `ensureCards()` created and nobody has graded. Its `updatedAt` is just
+ * the moment this device first opened the deck, which says nothing about the
+ * word, so it must not outrank real progress arriving from another device.
+ */
+function isUntouched(card: StoredCard): boolean {
+  return card.state === State.New && card.reps === 0 && !card.suspended;
+}
+
+const OUTBOX_SEEDED = 'outboxSeeded';
+
+/**
+ * Queues the whole local history once, before this device's first push.
+ *
+ * The outbox only records grades made since it existed, so anything older --
+ * or restored from a backup, which writes cards directly -- would otherwise
+ * never reach the server. Pushes are idempotent, so re-sending rows the
+ * server already has is harmless.
+ */
+async function seedOutbox(): Promise<void> {
+  if (await getMeta<boolean>(OUTBOX_SEEDED)) return;
+
+  await db.transaction('rw', db.cards, db.reviews, db.settings, db.outbox, async () => {
+    const touched = await db.cards.filter((card) => !isUntouched(card)).toArray();
+    for (const card of touched) await enqueueCard(card);
+    for (const review of await db.reviews.toArray()) await enqueueReview(review);
+    for (const setting of await db.settings.toArray()) await enqueueSetting(setting);
+  });
+  await setMeta(OUTBOX_SEEDED, true);
 }
 
 function isOnline(): boolean {
@@ -189,7 +240,7 @@ export async function pull(since?: Date | null): Promise<SyncResult['pulled']> {
       const incoming = toStoredCard(parsed.data);
       const existing = await db.cards.get(incoming.id);
 
-      if (!existing || incoming.updatedAt > existing.updatedAt) {
+      if (!existing || isUntouched(existing) || incoming.updatedAt > existing.updatedAt) {
         await db.cards.put(incoming);
         applied.cards += 1;
       }
@@ -245,15 +296,16 @@ export function sync(): Promise<SyncResult> {
   inFlight = (async (): Promise<SyncResult> => {
     if (!isOnline()) {
       emit('offline');
-      return { status: 'offline', pushed: 0, pulled: { cards: 0, reviews: 0, settings: 0 } };
+      return complete({ status: 'offline', pushed: 0, pulled: { cards: 0, reviews: 0, settings: 0 } });
     }
 
     emit('syncing');
     try {
+      await seedOutbox();
       const pushed = await pushOutbox();
       const pulled = await pull();
       emit('idle');
-      return { status: 'idle', pushed, pulled };
+      return complete({ status: 'idle', pushed, pulled });
     } catch (error) {
       const status: SyncStatus =
         error instanceof OfflineError
@@ -264,7 +316,7 @@ export function sync(): Promise<SyncResult> {
       emit(status);
       // Never rethrow: the outbox still holds everything, and a failed
       // background sync is not something the review UI should have to catch.
-      return { status, pushed: 0, pulled: { cards: 0, reviews: 0, settings: 0 } };
+      return complete({ status, pushed: 0, pulled: { cards: 0, reviews: 0, settings: 0 } });
     } finally {
       inFlight = null;
     }

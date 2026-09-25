@@ -282,13 +282,15 @@ export async function importBackup(file: Blob): Promise<{ cards: number; reviews
   let cardsApplied = 0;
   let reviewsApplied = 0;
 
-  await db.transaction('rw', db.cards, db.reviews, db.settings, async () => {
+  // Queued as well as written, so a restore on one device reaches the others.
+  await db.transaction('rw', [db.cards, db.reviews, db.settings, db.outbox], async () => {
     for (const payload of shape.cards) {
       const incoming = toStoredCard(payload);
       const existing = await db.cards.get(incoming.id);
       // Last-write-wins, so restoring a stale backup cannot clobber newer state.
       if (!existing || incoming.updatedAt > existing.updatedAt) {
         await db.cards.put(incoming);
+        await enqueueCard(incoming);
         cardsApplied += 1;
       }
     }
@@ -296,7 +298,7 @@ export async function importBackup(file: Blob): Promise<{ cards: number; reviews
     for (const payload of shape.reviews) {
       const existing = await db.reviews.get(payload.id);
       if (existing) continue;
-      await db.reviews.put({
+      const review: StoredReview = {
         id: payload.id,
         cardId: payload.cardId,
         rating: payload.rating,
@@ -304,7 +306,9 @@ export async function importBackup(file: Blob): Promise<{ cards: number; reviews
         durationMs: payload.durationMs,
         state: payload.state,
         deviceId: payload.deviceId,
-      });
+      };
+      await db.reviews.put(review);
+      await enqueueReview(review);
       reviewsApplied += 1;
     }
 
@@ -312,7 +316,9 @@ export async function importBackup(file: Blob): Promise<{ cards: number; reviews
       const incoming = new Date(payload.updatedAt);
       const existing = await db.settings.get(payload.key);
       if (!existing || incoming > existing.updatedAt) {
-        await db.settings.put({ key: payload.key, value: payload.value, updatedAt: incoming });
+        const setting: StoredSetting = { key: payload.key, value: payload.value, updatedAt: incoming };
+        await db.settings.put(setting);
+        await enqueueSetting(setting);
       }
     }
   });

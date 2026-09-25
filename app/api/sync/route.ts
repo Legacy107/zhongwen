@@ -17,7 +17,14 @@ export const runtime = 'nodejs';
 /** Always hits the database; caching a sync response would serve stale state. */
 export const dynamic = 'force-dynamic';
 
+/**
+ * The passphrase gate has no sign-in screen yet, so development runs open for
+ * the laptop and a phone on the LAN. Production stays closed until it does:
+ * the endpoint writes to the only copy of the review history that survives an
+ * iOS storage wipe.
+ */
 async function isAuthorised(): Promise<boolean> {
+  if (process.env.NODE_ENV !== 'production') return true;
   const store = await cookies();
   return verifyCookieValue(store.get(AUTH_COOKIE)?.value);
 }
@@ -95,6 +102,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             suspended: sqlOp`excluded.suspended`,
             updatedAt: sqlOp`excluded.updated_at`,
             deviceId: sqlOp`excluded.device_id`,
+            syncedAt: sqlOp`now()`,
           },
           // The LWW guard lives in SQL so two devices pushing at once cannot
           // interleave a read-then-write and let the older row win.
@@ -134,6 +142,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           set: {
             value: sqlOp`excluded.value`,
             updatedAt: sqlOp`excluded.updated_at`,
+            syncedAt: sqlOp`now()`,
           },
           setWhere: sqlOp`excluded.updated_at > ${settings.updatedAt}`,
         });
@@ -152,24 +161,36 @@ export async function POST(request: Request): Promise<NextResponse> {
 }
 
 /**
+ * Pulls re-read this far behind the client's watermark. A row stamped by a
+ * transaction that commits just after a pull began would otherwise fall behind
+ * it; re-sending a few rows is harmless because every merge is idempotent.
+ */
+const PULL_OVERLAP_MS = 60_000;
+
+/**
  * GET /api/sync?since=<iso> -- rows changed since the client's watermark.
  *
- * Reviews are filtered on `reviewedAt` rather than an update clock because the
- * table is append-only and has no other notion of change.
+ * Filters on the server-stamped `syncedAt`, not the client's `updatedAt` or
+ * `reviewedAt`: a grade made offline and pushed later is old by its own clock
+ * but new to every other device.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   if (!(await isAuthorised())) return unauthorised();
 
   const sinceParam = new URL(request.url).searchParams.get('since');
-  const since = sinceParam ? new Date(sinceParam) : new Date(0);
-  if (Number.isNaN(since.getTime())) {
+  const watermark = sinceParam ? new Date(sinceParam) : new Date(0);
+  if (Number.isNaN(watermark.getTime())) {
     return NextResponse.json({ error: 'invalid since' }, { status: 400 });
   }
+  const since = new Date(Math.max(0, watermark.getTime() - PULL_OVERLAP_MS));
+
+  // Taken before the reads, so nothing written during them is skipped next time.
+  const serverTime = new Date().toISOString();
 
   const [cardRows, reviewRows, settingRows] = await Promise.all([
-    db.select().from(cards).where(gt(cards.updatedAt, since)),
-    db.select().from(reviews).where(gt(reviews.reviewedAt, since)),
-    db.select().from(settings).where(gt(settings.updatedAt, since)),
+    db.select().from(cards).where(gt(cards.syncedAt, since)),
+    db.select().from(reviews).where(gt(reviews.syncedAt, since)),
+    db.select().from(settings).where(gt(settings.syncedAt, since)),
   ]);
 
   const body: SyncPullResponse = {
@@ -211,7 +232,7 @@ export async function GET(request: Request): Promise<NextResponse> {
         updatedAt: row.updatedAt.toISOString(),
       }),
     ),
-    serverTime: new Date().toISOString(),
+    serverTime,
   };
 
   return NextResponse.json(body);
