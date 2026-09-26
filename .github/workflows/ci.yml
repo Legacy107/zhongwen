@@ -59,7 +59,7 @@ jobs:
       VERCEL_PROJECT_ID: prj_5yAVVONLTh54oIFKhcL0kshBZ8or
       # The public production domain, for the smoke test; empty skips it.
       # Deployment URLs sit behind Vercel's login, so can't be tested directly.
-      PRODUCTION_URL: ""
+      PRODUCTION_URL: https://zhongwenn.vercel.app
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
