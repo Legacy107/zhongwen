@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# zhongwen
 
-## Getting Started
+A Chinese-learning PWA built for a Vietnamese speaker. It has:
 
-First, run the development server:
+- FSRS spaced repetition
+- a bridge through Hán-Việt readings
+- tone drills weighted to the mistakes Vietnamese speakers tend to make
+- sentence building
+- a graded reader
+
+It works offline from IndexedDB and syncs to Postgres behind a passphrase.
+
+Next.js 16, Dexie, Drizzle with Postgres, ts-fsrs, Serwist.
+
+## Develop
 
 ```bash
-npm run dev
-# or
+yarn install
+cp .env.example .env   # leave APP_PASSPHRASE unset to sync without signing in
+yarn db:up             # Postgres 17 in Docker, on port 5433
+DATABASE_URL=postgresql://chinese:chinese@localhost:5433/chinese yarn db:migrate
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run `yarn lint`, `yarn typecheck` and `yarn test` to check your changes. The sync paging test needs a scratch database and skips itself without one:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+docker exec chinese-postgres createdb -U chinese chinese_test
+DATABASE_URL=postgresql://chinese:chinese@localhost:5433/chinese_test yarn db:migrate
+TEST_DATABASE_URL=postgresql://chinese:chinese@localhost:5433/chinese_test yarn test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To change the schema, edit `lib/db/schema.ts`, run `yarn db:generate`, and commit the new file in `drizzle/`. Keep migrations additive: add columns and tables, but don't rename or drop them. Production migrates just before new code goes live, so for a moment the old code runs against the new schema.
 
-## Learn More
+## Deploy
 
-To learn more about Next.js, take a look at the following resources:
+Production runs on Vercel (Hobby plan, functions in Sydney) with Neon Postgres in Sydney. GitHub Actions deploys it (`.github/workflows/ci.yml`); Vercel's own Git deployments are turned off in `vercel.json`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Every push:** lint, then migrations and tests against a throwaway Postgres, then a production build with no secrets.
+- **Push to `main`,** once that passes: `vercel build`, migrate Neon, `vercel deploy --prod`, then `yarn smoke` against the live site.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+None of the secrets are in this repo:
 
-## Deploy on Vercel
+| Name | Where | What |
+| --- | --- | --- |
+| `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | Vercel, Production | Set by the Neon integration |
+| `APP_PASSPHRASE`, `AUTH_SECRET` | Vercel, Production, Sensitive | Sign-in. Changing `AUTH_SECRET` signs every device out |
+| `VERCEL_TOKEN` | GitHub environment `production` | Lets CI deploy |
+| `DATABASE_URL_UNPOOLED` | GitHub environment `production` | Neon's direct URL, for migrations |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A changed Vercel variable only applies from the next deploy. To redeploy without a new commit, go to Actions → CI → Run workflow on `main`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`npx vercel rollback` switches back to the previous deploy instantly. It doesn't undo migrations, which is another reason to keep them additive.
+
+## Data
+
+Vocabulary from HSK 3.0 (ivankra/hsk30, MIT). Vietnamese glosses from CVDICT by Phong Phan and English from CC-CEDICT (both CC BY-SA 4.0). Readings from the Unicode Unihan database. Reading sentences from [Tatoeba](https://tatoeba.org) (CC BY 2.0 FR).

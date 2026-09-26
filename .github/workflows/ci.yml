@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      # Throwaway, for the migrations and the sync paging test. Same major
+      # version as docker-compose.yml.
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: chinese_test
+          POSTGRES_USER: chinese
+          POSTGRES_PASSWORD: chinese
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U chinese -d chinese_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn db:migrate
+        env:
+          DATABASE_URL: postgresql://chinese:chinese@localhost:5432/chinese_test
+      - run: yarn test
+        env:
+          TEST_DATABASE_URL: postgresql://chinese:chinese@localhost:5432/chinese_test
+      # Type-checks too. No database or secrets, like the production build.
+      - run: yarn build
+
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    # One at a time, and never cancelled partway through a migration.
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    env:
+      VERCEL_CLI: vercel@60.1.3
+      # IDs, not secrets: they do nothing without the token.
+      VERCEL_ORG_ID: team_wyJNOTXnDU2wXnYymvS8WEIo
+      VERCEL_PROJECT_ID: prj_5yAVVONLTh54oIFKhcL0kshBZ8or
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      # The public production domain, for the smoke test; empty skips it.
+      # Deployment URLs sit behind Vercel's login, so can't be tested directly.
+      PRODUCTION_URL: ""
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: npm install --global "$VERCEL_CLI"
+      - run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - run: vercel build --prod --token="$VERCEL_TOKEN"
+      # After the build, so a failed build leaves the schema alone; before the
+      # deploy, so new code never meets an old schema. The old code does meet
+      # the new one until the deploy lands, so migrations must stay additive.
+      - name: Migrate Neon
+        run: yarn db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
+      - run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+      - name: Smoke test
+        if: env.PRODUCTION_URL != ''
+        run: yarn smoke "$PRODUCTION_URL"
