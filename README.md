@@ -37,7 +37,7 @@ To change the schema, edit `lib/db/schema.ts`, run `yarn db:generate`, and commi
 Production runs on Vercel (Hobby plan, functions in Sydney) with Neon Postgres in Sydney. GitHub Actions deploys it (`.github/workflows/ci.yml`); Vercel's own Git deployments are turned off in `vercel.json`.
 
 - **Every push:** lint, then migrations and tests against a throwaway Postgres, then a production build with no secrets.
-- **Push to `main`,** once that passes: `vercel build`, migrate Neon, `vercel deploy --prod`, then `yarn smoke` against the live site.
+- **Push to `main`,** once that passes: `vercel build`, migrate Neon, `vercel deploy --prod`, then `yarn smoke` against the live site, then a tag for a new version (see [Versioning](#versioning)).
 
 None of the secrets are in this repo:
 
@@ -51,6 +51,14 @@ None of the secrets are in this repo:
 A changed Vercel variable only applies from the next deploy. To redeploy without a new commit, go to Actions → CI → Run workflow on `main`.
 
 `npx vercel rollback` switches back to the previous deploy instantly. It doesn't undo migrations, which is another reason to keep them additive.
+
+## Versioning
+
+The version is `version` in `package.json`. Settings → About shows it with the commit and the build time, so you can tell whether a device has picked up a deploy.
+
+Bump it in the commit that ships a change: patch for a fix, minor for a feature, major when an older copy of the app, such as a phone that hasn't updated yet, could no longer sync or restore a backup. A push that doesn't bump it still deploys, under the old number with its own commit.
+
+Once a deploy passes the smoke test, CI tags its commit `v<version>`, unless that version is already tagged.
 
 ## Data
 

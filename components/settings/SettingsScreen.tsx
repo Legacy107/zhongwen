@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { PageHeader, Segmented, Switch } from "@/components/ui/Controls";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { db, exportBackup, getLastSyncedAt, importBackup } from "@/lib/db/local";
@@ -237,6 +237,24 @@ function BackupItems() {
   );
 }
 
+// Inlined at build time by next.config.ts.
+const VERSION = process.env.NEXT_PUBLIC_APP_VERSION;
+const COMMIT = process.env.NEXT_PUBLIC_APP_COMMIT;
+const BUILT_AT = process.env.NEXT_PUBLIC_APP_BUILT_AT;
+
+/** The build running here, to tell whether this device has picked up a deploy. */
+function VersionItem() {
+  // In this device's time zone, so from the client only: the page is
+  // prerendered at build time.
+  const built = useSyncExternalStore(
+    () => () => {},
+    () => (BUILT_AT ? new Date(BUILT_AT).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : ""),
+    () => "",
+  );
+  const when = process.env.NODE_ENV === "development" ? "development server" : built && `built ${built}`;
+  return <Item icon="info" title={`Version ${VERSION}`} detail={[COMMIT?.slice(0, 7), when].filter(Boolean).join(" · ")} />;
+}
+
 export function SettingsScreen() {
   // Same key and "1"/"0" format lib/sound reads, so the two stay in step.
   const [sfx, setSfx] = useStoredToggle("sfxEnabled", true);
@@ -293,6 +311,7 @@ export function SettingsScreen() {
         </Section>
 
         <Section title="About">
+          <VersionItem />
           <div className="flex flex-col gap-2 px-4 py-3.5 text-sm text-ink-2">
             <p>
               <span className="font-bold text-ink">HánViệt</span>: Mandarin through Sino-Vietnamese.

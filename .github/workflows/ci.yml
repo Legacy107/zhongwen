@@ -91,3 +91,23 @@ jobs:
       - name: Smoke test
         if: env.PRODUCTION_URL != ''
         run: yarn smoke "$PRODUCTION_URL" "$GITHUB_SHA"
+
+  # Tags each release once it is live: v<version> from package.json, on the
+  # first commit deployed with it. Its own job, so the write access never
+  # meets the third-party code that install and build run.
+  tag:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Tag the release
+        run: |
+          tag="v$(node -p 'require("./package.json").version')"
+          if git ls-remote --exit-code origin "refs/tags/$tag" > /dev/null; then
+            echo "$tag is already tagged"
+          else
+            git tag "$tag"
+            git push origin "$tag"
+          fi
