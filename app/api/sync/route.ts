@@ -1,17 +1,12 @@
-import { gt, sql as sqlOp } from 'drizzle-orm';
+import { sql as sqlOp } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { AUTH_COOKIE, authRequired, verifyCookieValue } from '@/lib/auth';
-import { db } from '@/lib/db/client';
+import { getDb } from '@/lib/db/client';
+import { decodeCursor, readPage, startPull } from '@/lib/db/pull';
 import { cards, reviews, settings, type NewCardRow } from '@/lib/db/schema';
-import {
-  syncPushSchema,
-  type CardPayload,
-  type ReviewPayload,
-  type SettingPayload,
-  type SyncPullResponse,
-} from '@/lib/db/wire';
+import { syncPushSchema, type CardPayload } from '@/lib/db/wire';
 
 export const runtime = 'nodejs';
 /** Always hits the database; caching a sync response would serve stale state. */
@@ -73,7 +68,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const { cards: cardPayloads, reviews: reviewPayloads, settings: settingPayloads } = parsed.data;
 
-  await db.transaction(async (tx) => {
+  await getDb().transaction(async (tx) => {
     if (cardPayloads.length > 0) {
       await tx
         .insert(cards)
@@ -155,14 +150,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 }
 
 /**
- * Pulls re-read this far behind the client's watermark. A row stamped by a
- * transaction that commits just after a pull began would otherwise fall behind
- * it; re-sending a few rows is harmless because every merge is idempotent.
- */
-const PULL_OVERLAP_MS = 60_000;
-
-/**
- * GET /api/sync?since=<iso> -- rows changed since the client's watermark.
+ * GET /api/sync?since=<iso> -- rows changed since the client's watermark, a
+ * page at a time: while a response carries `next`, GET `?cursor=<next>` for
+ * the rest.
  *
  * Filters on the server-stamped `syncedAt`, not the client's `updatedAt` or
  * `reviewedAt`: a grade made offline and pushed later is old by its own clock
@@ -171,63 +161,18 @@ const PULL_OVERLAP_MS = 60_000;
 export async function GET(request: Request): Promise<NextResponse> {
   if (!(await isAuthorised())) return unauthorised();
 
-  const sinceParam = new URL(request.url).searchParams.get('since');
+  const params = new URL(request.url).searchParams;
+  const next = params.get('cursor');
+  if (next) {
+    const cursor = decodeCursor(next);
+    if (!cursor) return NextResponse.json({ error: 'invalid cursor' }, { status: 400 });
+    return NextResponse.json(await readPage(cursor));
+  }
+
+  const sinceParam = params.get('since');
   const watermark = sinceParam ? new Date(sinceParam) : new Date(0);
   if (Number.isNaN(watermark.getTime())) {
     return NextResponse.json({ error: 'invalid since' }, { status: 400 });
   }
-  const since = new Date(Math.max(0, watermark.getTime() - PULL_OVERLAP_MS));
-
-  // Taken before the reads, so nothing written during them is skipped next time.
-  const serverTime = new Date().toISOString();
-
-  const [cardRows, reviewRows, settingRows] = await Promise.all([
-    db.select().from(cards).where(gt(cards.syncedAt, since)),
-    db.select().from(reviews).where(gt(reviews.syncedAt, since)),
-    db.select().from(settings).where(gt(settings.syncedAt, since)),
-  ]);
-
-  const body: SyncPullResponse = {
-    cards: cardRows.map(
-      (row): CardPayload => ({
-        id: row.id,
-        wordId: row.wordId,
-        cardType: row.cardType,
-        due: row.due.toISOString(),
-        stability: row.stability,
-        difficulty: row.difficulty,
-        elapsedDays: row.elapsedDays,
-        scheduledDays: row.scheduledDays,
-        reps: row.reps,
-        lapses: row.lapses,
-        state: row.state,
-        lastReview: row.lastReview ? row.lastReview.toISOString() : null,
-        learningSteps: row.learningSteps,
-        suspended: row.suspended,
-        updatedAt: row.updatedAt.toISOString(),
-        deviceId: row.deviceId,
-      }),
-    ),
-    reviews: reviewRows.map(
-      (row): ReviewPayload => ({
-        id: row.id,
-        cardId: row.cardId,
-        rating: row.rating,
-        reviewedAt: row.reviewedAt.toISOString(),
-        durationMs: row.durationMs,
-        state: row.state,
-        deviceId: row.deviceId,
-      }),
-    ),
-    settings: settingRows.map(
-      (row): SettingPayload => ({
-        key: row.key,
-        value: row.value,
-        updatedAt: row.updatedAt.toISOString(),
-      }),
-    ),
-    serverTime,
-  };
-
-  return NextResponse.json(body);
+  return NextResponse.json(await readPage(startPull(watermark)));
 }

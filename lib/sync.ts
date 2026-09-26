@@ -219,15 +219,31 @@ export async function pushOutbox(): Promise<number> {
  */
 export async function pull(since?: Date | null): Promise<SyncResult['pulled']> {
   const watermark = since ?? (await getLastSyncedAt());
-  const url = watermark
+  let url = watermark
     ? `${SYNC_ENDPOINT}?since=${encodeURIComponent(watermark.toISOString())}`
     : SYNC_ENDPOINT;
 
-  const response = await request(url);
-  const body = (await response.json()) as SyncPullResponse;
-
   const applied = { cards: 0, reviews: 0, settings: 0 };
 
+  // A page at a time, so a device pulling its whole history never asks for
+  // more than one response can carry.
+  let body: SyncPullResponse;
+  do {
+    const response = await request(url);
+    body = (await response.json()) as SyncPullResponse;
+    await merge(body, applied);
+    if (body.next) url = `${SYNC_ENDPOINT}?cursor=${encodeURIComponent(body.next)}`;
+  } while (body.next);
+
+  // Watermark comes from the server clock, so client skew cannot skip rows.
+  // It moves only once every page is in: a pull cut short starts over.
+  await setLastSyncedAt(new Date(body.serverTime));
+
+  return applied;
+}
+
+/** Merges one page of a pull into Dexie, adding what changed to `applied`. */
+async function merge(body: SyncPullResponse, applied: SyncResult['pulled']): Promise<void> {
   await db.transaction('rw', db.cards, db.reviews, db.settings, db.outbox, async () => {
     for (const payload of body.cards) {
       const parsed = cardPayloadSchema.safeParse(payload);
@@ -277,11 +293,6 @@ export async function pull(since?: Date | null): Promise<SyncResult['pulled']> {
       }
     }
   });
-
-  // Watermark comes from the server clock, so client skew cannot skip rows.
-  await setLastSyncedAt(new Date(body.serverTime));
-
-  return applied;
 }
 
 let inFlight: Promise<SyncResult> | null = null;

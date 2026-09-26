@@ -68,6 +68,8 @@ export interface SyncPullResponse {
   reviews: ReviewPayload[];
   settings: SettingPayload[];
   serverTime: string;
+  /** Set while rows remain: pass it back as `?cursor=` for the next page. */
+  next?: string;
 }
 
 /**
