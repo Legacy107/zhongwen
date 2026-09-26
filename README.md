@@ -45,7 +45,7 @@ None of the secrets are in this repo:
 | --- | --- | --- |
 | `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | Vercel, Production | Set by the Neon integration |
 | `APP_PASSPHRASE`, `AUTH_SECRET` | Vercel, Production, Sensitive | Sign-in. Changing `AUTH_SECRET` signs every device out |
-| `VERCEL_TOKEN` | GitHub environment `production` | Lets CI deploy |
+| `VERCEL_TOKEN` | GitHub environment `production` | Lets CI deploy. Limit it to the `zhongwen` project: CI skips `vercel pull`, the one step that needs team-wide access |
 | `DATABASE_URL_UNPOOLED` | GitHub environment `production` | Neon's direct URL, for migrations |
 
 A changed Vercel variable only applies from the next deploy. To redeploy without a new commit, go to Actions → CI → Run workflow on `main`.

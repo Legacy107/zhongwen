@@ -57,7 +57,6 @@ jobs:
       # IDs, not secrets: they do nothing without the token.
       VERCEL_ORG_ID: team_wyJNOTXnDU2wXnYymvS8WEIo
       VERCEL_PROJECT_ID: prj_5yAVVONLTh54oIFKhcL0kshBZ8or
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       # The public production domain, for the smoke test; empty skips it.
       # Deployment URLs sit behind Vercel's login, so can't be tested directly.
       PRODUCTION_URL: ""
@@ -69,8 +68,14 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: npm install --global "$VERCEL_CLI"
-      - run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-      - run: vercel build --prod --token="$VERCEL_TOKEN"
+      # Written here rather than fetched with `vercel pull`, which needs a token
+      # that can read the whole team; this one reaches only the project. The
+      # build takes its settings from vercel.json and needs no env vars.
+      - name: Link the Vercel project
+        run: |
+          mkdir -p .vercel
+          echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\",\"settings\":{\"framework\":\"nextjs\"}}" > .vercel/project.json
+      - run: vercel build --prod
       # After the build, so a failed build leaves the schema alone; before the
       # deploy, so new code never meets an old schema. The old code does meet
       # the new one until the deploy lands, so migrations must stay additive.
@@ -78,7 +83,11 @@ jobs:
         run: yarn db:migrate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
-      - run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+      - name: Deploy
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+        env:
+          # Given to this step alone: install and build run third-party code.
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test
         if: env.PRODUCTION_URL != ''
         run: yarn smoke "$PRODUCTION_URL"
