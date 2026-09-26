@@ -90,4 +90,4 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test
         if: env.PRODUCTION_URL != ''
-        run: yarn smoke "$PRODUCTION_URL"
+        run: yarn smoke "$PRODUCTION_URL" "$GITHUB_SHA"
