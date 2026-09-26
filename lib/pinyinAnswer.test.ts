@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { checkPinyin, pinyinLetters, pinyinTones } from './pinyinAnswer';
+import { checkPinyin, pinyinLetters, pinyinTones, syllablesFromMarks, toneSlips } from './pinyinAnswer';
 
 test('tones are optional', () => {
   assert.equal(checkPinyin('nihao', 'nǐhǎo'), 'correct');
@@ -69,4 +69,20 @@ test('tones are read in order from marks or digits', () => {
   assert.deepEqual(pinyinTones('nǐhǎo'), [3, 3]);
   assert.deepEqual(pinyinTones('ni3hao3'), [3, 3]);
   assert.deepEqual(pinyinTones('ma0'), [5]);
+});
+
+test('syllables are read from spaced, tone-marked pinyin', () => {
+  assert.deepEqual(syllablesFromMarks('chē zhàn le'), [
+    { letters: 'che', tone: 1 },
+    { letters: 'zhan', tone: 4 },
+    { letters: 'le', tone: 5 },
+  ]);
+});
+
+test('a slip names the syllable whose typed tone is wrong', () => {
+  const syllables = syllablesFromMarks('lǎo shī');
+  assert.deepEqual(toneSlips('lao3shi1', syllables), []);
+  assert.deepEqual(toneSlips('lao3shi4', syllables), [1]);
+  assert.deepEqual(toneSlips('laoshi', syllables), [], 'no tones typed, none wrong');
+  assert.equal(toneSlips('laoshir', syllables), null, 'letters that do not line up');
 });

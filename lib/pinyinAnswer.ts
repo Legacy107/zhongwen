@@ -49,6 +49,8 @@ export interface Syllable {
   letters: string;
   /** 1-4, or 5 for neutral. */
   tone: number;
+  /** Other tones also right here, as for 不 and 一, whose tone depends on what follows. */
+  also?: number[];
 }
 
 /** "lao3 shi1" -> [{ letters: "lao", tone: 3 }, { letters: "shi", tone: 1 }]. No digit, or 0, is neutral. */
@@ -62,6 +64,15 @@ export function syllablesFromNumeric(numeric: string): Syllable[] {
       const n = m ? Number(m[1]) : 5;
       return { letters: pinyinLetters(syl), tone: n === 0 ? 5 : n };
     });
+}
+
+/** "chē zhàn" -> [{ letters: "che", tone: 1 }, { letters: "zhan", tone: 4 }]. No mark is neutral. */
+export function syllablesFromMarks(pinyin: string): Syllable[] {
+  return pinyin
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((syl) => ({ letters: pinyinLetters(syl), tone: pinyinTones(syl)[0] ?? 5 }));
 }
 
 /**
@@ -95,6 +106,20 @@ function placeTones(answer: string, syllables: Syllable[]): Array<number | undef
 }
 
 /**
+ * The syllables, by index, whose given tone is wrong. Only tones actually
+ * typed count, and a neutral syllable never does. Null when the answer's
+ * letters do not line up with the syllables.
+ */
+export function toneSlips(answer: string, syllables: Syllable[]): number[] | null {
+  const placed = placeTones(answer, syllables);
+  if (!placed) return null;
+  return placed.flatMap((t, i) => {
+    const s = syllables[i];
+    return t !== undefined && t !== 5 && s.tone !== 5 && t !== s.tone && !s.also?.includes(t) ? [i] : [];
+  });
+}
+
+/**
  * - "correct": letters match, and any tones given match too.
  * - "tones":   letters match but a tone given is wrong.
  * - "wrong":   the letters themselves differ.
@@ -111,11 +136,8 @@ export function checkPinyin(answer: string, expected: string, syllables?: string
 
   const syl = typeof syllables === 'string' ? syllablesFromNumeric(syllables) : syllables;
   if (syl?.length && syl.map((s) => s.letters).join('') === letters) {
-    const placed = placeTones(answer, syl);
-    if (placed) {
-      const wrong = placed.some((t, i) => t !== undefined && t !== 5 && syl[i].tone !== 5 && t !== syl[i].tone);
-      return wrong ? 'tones' : 'correct';
-    }
+    const slips = toneSlips(answer, syl);
+    if (slips) return slips.length ? 'tones' : 'correct';
   }
 
   const given = pinyinTones(answer).filter((t) => t !== 5);

@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MascotBubble } from "@/components/ui/Bubble";
-import { SpeakButton } from "@/components/ui/Controls";
+import { SpeakButton, ToneKeys } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
 import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
 import { glossEn } from "@/lib/gloss";
@@ -311,26 +311,12 @@ export function ReviewCard({
           <p className="h-5 text-center text-sm font-bold text-blue-ink" aria-live="polite">
             {preview && preview !== answer ? `→ ${preview}` : ""}
           </p>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-xs font-bold text-ink-3">Tones (optional)</span>
-            {[1, 2, 3, 4].map((t) => (
-              <button
-                key={t}
-                type="button"
-                // Keep focus in the field, so the phone keyboard stays up.
-                onPointerDown={(e) => e.preventDefault()}
-                onClick={() => {
-                  setAnswer((a) => a + t);
-                  inputRef.current?.focus();
-                }}
-                aria-label={`Tone ${t}`}
-                className="tile h-11 w-12 text-sm font-extrabold"
-              >
-                {t}
-                <span className="text-base leading-none text-ink-3">{["ˉ", "ˊ", "ˇ", "ˋ"][t - 1]}</span>
-              </button>
-            ))}
-          </div>
+          <ToneKeys
+            onTone={(t) => {
+              setAnswer((a) => a + t);
+              inputRef.current?.focus();
+            }}
+          />
           {firstGuess && (
             <p className="text-center text-sm font-semibold text-ink-3">
               It&apos;s a new word: a wrong guess costs nothing.

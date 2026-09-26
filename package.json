@@ -20,7 +20,7 @@
     "data:sync": "tsx scripts/sync-public-data.ts",
     "prebuild": "tsx scripts/sync-public-data.ts",
     "predev": "tsx scripts/sync-public-data.ts",
-    "test": "tsx --conditions=react-server --test lib/auth.test.ts lib/streak.test.ts lib/tones.test.ts lib/gapfill.test.ts lib/progress.test.ts lib/deck.test.ts lib/speak.test.ts lib/reader.test.ts lib/pinyinAnswer.test.ts lib/path.test.ts lib/srs.test.ts lib/gloss.test.ts lib/orderHints.test.ts lib/db/pull.test.ts scripts/validate-sentences.test.ts",
+    "test": "tsx --conditions=react-server --test lib/auth.test.ts lib/streak.test.ts lib/tones.test.ts lib/gapfill.test.ts lib/progress.test.ts lib/deck.test.ts lib/speak.test.ts lib/reader.test.ts lib/pinyinAnswer.test.ts lib/path.test.ts lib/srs.test.ts lib/gloss.test.ts lib/orderHints.test.ts lib/sentenceAnswer.test.ts lib/db/pull.test.ts scripts/validate-sentences.test.ts",
     "smoke": "tsx scripts/smoke.ts",
     "sentences:merge": "tsx scripts/merge-raw-sentences.ts",
     "build:reader": "tsx scripts/build-reader.ts",

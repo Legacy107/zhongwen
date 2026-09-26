@@ -18,11 +18,12 @@ import { loadSavedSentences, toPracticeSentence } from "@/lib/mining";
 import { buildGapFill, pickDistractors, type GapFill, type Sentence } from "@/lib/sentences";
 import { playCombo } from "@/lib/sound";
 import { warmUpSpeech } from "@/lib/speak";
-import { buildQueue, cardId, grade, newCard, Rating } from "@/lib/srs";
+import { buildQueue, cardId, grade, newCard, Rating, State, type Grade } from "@/lib/srs";
 import { useSound } from "@/lib/useSound";
 import { useStoredToggle } from "@/lib/useStoredToggle";
 import { GapFillCard } from "./GapFillCard";
-import { TileBuilder, type TileResult } from "./TileBuilder";
+import { TileBuilder } from "./TileBuilder";
+import { TypedSentenceCard } from "./TypedSentenceCard";
 import type { GlossFor } from "./WordLookup";
 
 /**
@@ -77,6 +78,8 @@ export function BuildSessionView() {
   const sound = useSound();
   const [showPinyin, setShowPinyin] = useStoredToggle("chinese.tilePinyin", true);
   const [showMeaning, setShowMeaning] = useStoredToggle("chinese.tileMeaning", true);
+  // Tiles or typing, when the learner swaps from what this turn chose.
+  const [swapped, setSwapped] = useState<"tiles" | "typed" | null>(null);
   const startedAt = useRef(0);
   const goalBefore = useRef<GoalProgress | null>(null);
 
@@ -138,6 +141,12 @@ export function BuildSessionView() {
     [sentence, current],
   );
 
+  // Once a sentence has graduated to review, its even turns ask for it typed
+  // from memory: free production is the strongest recall, and the tiles and
+  // gap-fills of its early turns are the scaffolding. Either can be swapped.
+  const typedTurn = current?.state === State.Review && current.reps % 2 === 0;
+  const exercise = gap ? "gap" : (swapped ?? (typedTurn ? "typed" : "tiles"));
+
   // Wrong tiles in the bank: one for a short sentence, two for a longer one.
   // Keyed on the card and turn, so they stay put while the card is shown.
   const distractors = useMemo(
@@ -165,11 +174,14 @@ export function BuildSessionView() {
     [words, byText],
   );
 
-  const onDone = useCallback(
-    async (result: TileResult) => {
+  /**
+   * Tiles and gap-fills are right or wrong, with no partial credit: Good or
+   * Again. A typed sentence can also come back Hard, right but for a tone.
+   */
+  const onGraded = useCallback(
+    async (rating: Grade) => {
       if (!current) return;
-      // Ordering is right or wrong, with no partial credit: Good or Again.
-      const rating = result === "correct" ? Rating.Good : Rating.Again;
+      const passed = rating !== Rating.Again;
       const now = new Date();
       const graded = grade(current, rating, now);
       const deviceId = getDeviceId();
@@ -185,13 +197,14 @@ export function BuildSessionView() {
           deviceId,
         },
       );
-      const run = result === "correct" ? combo + 1 : 0;
+      const run = passed ? combo + 1 : 0;
       setCombo(run);
       if (run === 3 || run === 5 || run === 10) setTimeout(() => playCombo(run), 200);
       setScore((s) => ({
-        correct: s.correct + (result === "correct" ? 1 : 0),
-        wrong: s.wrong + (result === "wrong" ? 1 : 0),
+        correct: s.correct + (passed ? 1 : 0),
+        wrong: s.wrong + (passed ? 0 : 1),
       }));
+      setSwapped(null);
       setDone((n) => n + 1);
       const rest = queue.slice(1);
       setQueue(rest);
@@ -276,7 +289,7 @@ export function BuildSessionView() {
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={`${current.id}:${done}`}
+          key={`${current.id}:${done}:${exercise}`}
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -40 }}
@@ -291,7 +304,15 @@ export function BuildSessionView() {
               showPinyin={showPinyin}
               glossFor={glossFor}
               showMeaning={showMeaning}
-              onDone={(ok) => onDone(ok ? "correct" : "wrong")}
+              onDone={(ok) => onGraded(ok ? Rating.Good : Rating.Again)}
+            />
+          ) : exercise === "typed" ? (
+            <TypedSentenceCard
+              sentence={sentence}
+              glossFor={glossFor}
+              speech={sound.speech}
+              onUseTiles={() => setSwapped("tiles")}
+              onDone={onGraded}
             />
           ) : (
             <TileBuilder
@@ -301,7 +322,8 @@ export function BuildSessionView() {
               speech={sound.speech}
               showPinyin={showPinyin}
               showMeaning={showMeaning}
-              onDone={onDone}
+              onUseKeyboard={() => setSwapped("typed")}
+              onDone={(result) => onGraded(result === "correct" ? Rating.Good : Rating.Again)}
             />
           )}
         </motion.div>

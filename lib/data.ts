@@ -87,11 +87,12 @@ export async function loadReaderShards(levels: readonly string[]): Promise<Reade
 
 /**
  * Tile pinyin written per word (shǒujī), like the rest of the app, and the
- * sentence pinyin rebuilt from the tiles so the two always agree.
+ * sentence pinyin rebuilt from the tiles so the two always agree. The
+ * per-syllable original is kept for checking a typed answer's tones.
  */
 function normaliseSentence(s: Sentence): Sentence {
   const tiles = s.tiles.map((t) => ({ ...t, pinyin: displayPinyin(t.pinyin) }));
-  return { ...s, tiles, pinyin: tiles.map((t) => t.pinyin).filter(Boolean).join(' ') };
+  return { ...s, tiles, pinyin: tiles.map((t) => t.pinyin).filter(Boolean).join(' '), syllablePinyin: s.pinyin };
 }
 
 /** The generated Stage 2.5 practice set, with the committed fixture as a fallback. */

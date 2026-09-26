@@ -62,6 +62,12 @@ export interface Sentence {
   /** HSK level this sentence is constrained to, e.g. "1". */
   level: string;
   tiles: SentenceTile[];
+  /**
+   * The generated `pinyin`, one syllable per character, kept by lib/data.ts
+   * when it rewrites `pinyin` per word for display. A typed answer's tones are
+   * checked against it. Absent for sentences saved from reading.
+   */
+  syllablePinyin?: string;
   /** Set when a modifier+noun phrase exhibits the VN/ZH order contrast. */
   viContrast?: ViContrast;
   /** Deck words in this sentence that are also false friends — for extra scrutiny. */

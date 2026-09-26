@@ -14,6 +14,8 @@
  * reversal, so the note always describes the mistake actually made.
  */
 
+import type { Sentence } from './sentences';
+
 /** Position words that follow the noun in Chinese, with their Vietnamese preposition. */
 const LOCALIZERS: Record<string, string> = {
   旁边: 'bên cạnh',
@@ -125,5 +127,21 @@ export function vietnameseOrderHint(target: string[], answer: string[]): OrderHi
     }
   }
 
+  return null;
+}
+
+/**
+ * The correction for a wrong answer: the rule its own order breaks, else the
+ * contrast the sentence was written to teach, when the answer lacks that
+ * chunk. `words` is the answer as the sentence's words, when it splits into
+ * them; `hanzi` is the answer's characters, when it was written in them.
+ */
+export function orderHintFor(sentence: Sentence, words: string[] | null, hanzi: string | null): OrderHint | null {
+  const runtime = words ? vietnameseOrderHint(sentence.tiles.map((t) => t.text), words) : null;
+  if (runtime) return runtime;
+  const tagged = sentence.viContrast;
+  if (tagged && hanzi !== null && !hanzi.includes(tagged.chineseOrder)) {
+    return { note: tagged.note, chinese: tagged.chineseOrder };
+  }
   return null;
 }

@@ -7,7 +7,7 @@ import { SpeakButton } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
 import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
 import { tileGloss } from "@/lib/gloss";
-import { vietnameseOrderHint } from "@/lib/orderHints";
+import { orderHintFor } from "@/lib/orderHints";
 import type { Sentence, SentenceTile } from "@/lib/sentences";
 import { playCorrect, playTilePlace, playTileRemove, playWrong } from "@/lib/sound";
 import { speak } from "@/lib/speak";
@@ -68,6 +68,8 @@ interface TileBuilderProps {
   showPinyin?: boolean;
   /** Each tile's meaning under its word, before the answer is checked as well as after. */
   showMeaning?: boolean;
+  /** Swap to typing this sentence instead; shown until the answer is checked. */
+  onUseKeyboard?: () => void;
   onDone: (result: TileResult) => void;
 }
 
@@ -84,6 +86,7 @@ export function TileBuilder({
   speech = true,
   showPinyin = true,
   showMeaning = false,
+  onUseKeyboard,
   onDone,
 }: TileBuilderProps) {
   // Slots are built once per sentence and are the single source of identity
@@ -162,14 +165,10 @@ export function TileBuilder({
 
   // A wrong answer that follows Vietnamese order gets the specific correction
   // for the mistake actually made. The tag set at build time is the fallback.
-  const hint = useMemo(() => {
-    if (checked !== "wrong") return null;
-    const runtime = vietnameseOrderHint(target, answer);
-    if (runtime) return runtime;
-    const tagged = sentence.viContrast;
-    if (tagged && !answer.join("").includes(tagged.chineseOrder)) return { note: tagged.note, chinese: tagged.chineseOrder };
-    return null;
-  }, [checked, target, answer, sentence.viContrast]);
+  const hint = useMemo(
+    () => (checked === "wrong" ? orderHintFor(sentence, answer, answer.join("")) : null),
+    [checked, sentence, answer],
+  );
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -241,6 +240,13 @@ export function TileBuilder({
           )}
         </div>
       </LayoutGroup>
+
+      {onUseKeyboard && checked === null && (
+        <button type="button" onClick={onUseKeyboard} className="btn btn-ghost btn-sm self-center">
+          <Icon name="keyboard" size={18} />
+          Type it instead
+        </button>
+      )}
 
       <SessionFooter>
         <ActionBar

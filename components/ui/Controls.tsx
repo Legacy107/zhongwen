@@ -27,6 +27,32 @@ export function SpeakButton({
   );
 }
 
+/**
+ * Tone keys under a pinyin field. Each hands back its digit, which the field
+ * shows as a mark. Pressing one keeps focus in the field, so the phone
+ * keyboard stays up.
+ */
+export function ToneKeys({ onTone }: { onTone: (tone: number) => void }) {
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <span className="text-xs font-bold text-ink-3">Tones (optional)</span>
+      {[1, 2, 3, 4].map((t) => (
+        <button
+          key={t}
+          type="button"
+          onPointerDown={(e) => e.preventDefault()}
+          onClick={() => onTone(t)}
+          aria-label={`Tone ${t}`}
+          className="tile h-11 w-12 text-sm font-extrabold"
+        >
+          {t}
+          <span className="text-base leading-none text-ink-3">{["ˉ", "ˊ", "ˇ", "ˋ"][t - 1]}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /** An icon-only toggle for a session's top bar (sound, pinyin). */
 export function TopBarToggle({
   on,

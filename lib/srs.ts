@@ -128,6 +128,7 @@ function toFsrsCard(state: SrsState): FsrsCard {
 }
 
 export { Rating, State };
+export type { Grade };
 
 export interface GradeResult {
   card: ReviewCard;
