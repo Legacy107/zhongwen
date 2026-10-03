@@ -56,7 +56,7 @@ A changed Vercel variable only applies from the next deploy. To redeploy without
 
 The version is `version` in `package.json`. Settings → About shows it with the commit and the build time, so you can tell whether a device has picked up a deploy.
 
-Bump it in the commit that ships a change: patch for a fix, minor for a feature, major when an older copy of the app, such as a phone that hasn't updated yet, could no longer sync or restore a backup. A push that doesn't bump it still deploys, under the old number with its own commit.
+Bump it in the commit that ships a change, with an entry at the top of `CHANGELOG.md` (the app shows it under Settings → About → What's new, and a test fails without it): patch for a fix, minor for a feature, major when an older copy of the app, such as a phone that hasn't updated yet, could no longer sync or restore a backup. A push that doesn't bump it still deploys, under the old number with its own commit.
 
 Once a deploy passes the smoke test, CI tags its commit `v<version>`, unless that version is already tagged.
 

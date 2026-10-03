@@ -287,7 +287,13 @@ function VersionItem() {
     () => "",
   );
   const when = process.env.NODE_ENV === "development" ? "development server" : built && `built ${built}`;
-  return <Item icon="info" title={`Version ${VERSION}`} detail={[COMMIT?.slice(0, 7), when].filter(Boolean).join(" · ")} />;
+  return (
+    <Item icon="info" title={`Version ${VERSION}`} detail={[COMMIT?.slice(0, 7), when].filter(Boolean).join(" · ")}>
+      <Link href="/changelog" className="btn btn-secondary btn-sm">
+        What&apos;s new
+      </Link>
+    </Item>
+  );
 }
 
 export function SettingsScreen() {
