@@ -7,8 +7,8 @@ import { SpeakButton, ToneKeys } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
 import { ActionBar, SessionFooter } from "@/components/ui/SessionShell";
 import { glossEn } from "@/lib/gloss";
-import { isEnteringTone, type FalseFriend, type Word } from "@/lib/hanviet";
-import { checkPinyin, type PinyinVerdict } from "@/lib/pinyinAnswer";
+import { type FalseFriend, type Word } from "@/lib/hanviet";
+import { checkPinyin, pinyinLetters, type PinyinVerdict } from "@/lib/pinyinAnswer";
 import { numericToMarks } from "@/lib/pinyinFormat";
 import { playAlmost, playCorrect, playPress, playWrong } from "@/lib/sound";
 import { speak } from "@/lib/speak";
@@ -55,6 +55,8 @@ interface ReviewCardProps {
   speech: boolean;
   /** The reading sentence a mined word came from, shown on its first outing. */
   context?: { hanzi: string; en: string };
+  /** A picture of the word, where an emoji shows it. */
+  emoji?: string;
   onGrade: (rating: Grade, info: GradeInfo) => void;
 }
 
@@ -79,16 +81,31 @@ function Context({ context, full }: { context: { hanzi: string; en: string }; fu
   );
 }
 
-/** The Hán-Việt to Mandarin tone rule, shown as a hint on a first guess. */
-function ToneRule({ hanviet }: { hanviet: string }) {
-  const entering = isEnteringTone(hanviet);
+/**
+ * The Hán-Việt reading as a side note, there from the start. It helps when it
+ * is a Vietnamese word the learner knows (安全, an toàn) and is easy to skip
+ * when it isn't (什么, thập ma). A false friend's reading points the wrong way,
+ * so it waits for the warning after the answer instead.
+ */
+export function HanVietNote({ word, falseFriend }: { word: Word; falseFriend?: FalseFriend }) {
+  if (!word.hanviet || falseFriend) return null;
   return (
-    <div className="rounded-2xl bg-gold-soft px-4 py-3 text-sm text-gold-ink">
-      <p className="text-xs font-extrabold uppercase tracking-wider">Hint: the tone rule</p>
-      <p className="mt-1 font-bold text-ink">ngang → 1 · huyền → 2 · hỏi, ngã → 3 · sắc, nặng → 4</p>
-      {entering && <p className="mt-1 font-semibold">This one ends in -p, -t, -c or -ch, where the rule often breaks.</p>}
-    </div>
+    <p className="self-start rounded-full bg-gold-soft px-3 py-1 text-sm font-bold text-gold-ink">
+      <span className="text-xs font-extrabold uppercase tracking-wider opacity-80">Hán-Việt</span> {word.hanviet}
+    </p>
   );
+}
+
+/** Another word the learner may have meant: the same pinyin, and an English meaning in common. */
+function sameMeaningWord(answer: string, word: Word, words: Map<string, Word>): Word | null {
+  const letters = pinyinLetters(answer);
+  if (!letters) return null;
+  const senses = new Set(glossEn(word).toLowerCase().split(/;\s*/));
+  for (const w of words.values()) {
+    if (w.id === word.id || pinyinLetters(w.pinyin) !== letters) continue;
+    if (glossEn(w).toLowerCase().split(/;\s*/).some((s) => senses.has(s))) return w;
+  }
+  return null;
 }
 
 export function ReviewCard({
@@ -101,12 +118,16 @@ export function ReviewCard({
   now,
   speech,
   context,
+  emoji,
   onGrade,
 }: ReviewCardProps) {
-  const hanvietPrompt = cardType === "hanviet" && Boolean(word.hanviet);
+  // The `hanviet` card asks for the pinyin from the English meaning. It once
+  // asked from the Hán-Việt reading, a blind guess for any word whose reading
+  // isn't a Vietnamese word the learner knows; the id stays so schedules carry over.
+  const englishPrompt = cardType === "hanviet";
   const typed = cardType === "typing" || cardType === "hanviet";
   // A word's first card never tests it. A recognition card becomes a teaching
-  // card; a Hán-Việt card becomes a hinted guess whose miss is not a failure.
+  // card; a typed card becomes a guess whose miss is not a failure.
   const intro = !wordSeen && cardType === "recognition";
   const firstGuess = !wordSeen && typed;
 
@@ -114,6 +135,8 @@ export function ReviewCard({
   const [revealed, setRevealed] = useState(intro);
   const [verdict, setVerdict] = useState<PinyinVerdict | null>(null);
   const [flash, setFlash] = useState<"correct" | "wrong" | null>(null);
+  // Typed from the English, the pinyin of another word with that meaning.
+  const [meant, setMeant] = useState<Word | null>(null);
   const graded = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -137,6 +160,7 @@ export function ReviewCard({
       if (typed) {
         const v = given === null ? "wrong" : checkPinyin(given, word.pinyin, word.pinyinNumeric);
         setVerdict(v);
+        if (v === "wrong" && given !== null && englishPrompt) setMeant(sameMeaningWord(given, word, words));
         if (v === "correct") playCorrect();
         else if (firstGuess) playPress();
         else if (v === "tones") playAlmost();
@@ -147,7 +171,7 @@ export function ReviewCard({
       // read out the pinyin being tested.
       if (speech) speak(word.simplified);
     },
-    [revealed, typed, firstGuess, word, speech],
+    [revealed, typed, firstGuess, word, words, englishPrompt, speech],
   );
 
   const finish = useCallback(
@@ -176,7 +200,9 @@ export function ReviewCard({
   // A first guess passes whatever was typed, like the teaching card's "Got
   // it": FSRS read an Again there as a hard word and kept its difficulty high
   // for good, costing 9 reviews in the word's first year instead of 6.
-  const autoGrade: Grade = verdict === "correct" || firstGuess ? Rating.Good : Rating.Again;
+  // An English meaning can belong to more than one word: naming the other one
+  // is not forgetting this one, so it comes back sooner but isn't a lapse.
+  const autoGrade: Grade = verdict === "correct" || firstGuess ? Rating.Good : meant ? Rating.Hard : Rating.Again;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -208,8 +234,8 @@ export function ReviewCard({
     ? "New word"
     : cardType === "recognition"
       ? "What does this mean?"
-      : hanvietPrompt
-        ? "Guess the pinyin from Hán-Việt"
+      : englishPrompt
+        ? "How do you say this?"
         : "Type the pinyin";
 
   let tone: "idle" | "correct" | "wrong" | "almost" | "info" = "idle";
@@ -227,6 +253,9 @@ export function ReviewCard({
     } else if (firstGuess) {
       tone = "info";
       title = "Now you know it";
+    } else if (meant) {
+      tone = "almost";
+      title = "Another word for that";
     } else if (verdict === "tones") {
       tone = "almost";
       title = "Right sounds, wrong tones";
@@ -259,23 +288,32 @@ export function ReviewCard({
       </div>
 
       <MascotBubble mood={mood}>
-        {hanvietPrompt && !intro ? (
-          <div className="flex flex-col py-1">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-gold-ink">Hán-Việt</span>
-            <span className="text-3xl font-extrabold text-gold-ink">{word.hanviet}</span>
+        {englishPrompt && !intro ? (
+          <div className="flex items-center gap-3 py-1">
+            {emoji && (
+              <span className="text-5xl leading-none" aria-hidden>
+                {emoji}
+              </span>
+            )}
+            <span className="text-2xl font-extrabold leading-snug text-ink">{glossEn(word, 2)}</span>
           </div>
         ) : (
           <div className="flex items-center justify-between gap-3">
             <span lang="zh-Hans" className="text-6xl font-medium leading-tight text-ink">
               {word.simplified}
             </span>
+            {intro && emoji && (
+              <span className="text-5xl leading-none" aria-hidden>
+                {emoji}
+              </span>
+            )}
             {revealed && <SpeakButton onClick={say} size="md" />}
           </div>
         )}
       </MascotBubble>
 
+      <HanVietNote word={word} falseFriend={falseFriend} />
       {context && !revealed && <Context context={context} full={false} />}
-      {firstGuess && hanvietPrompt && !revealed && <ToneRule hanviet={word.hanviet!} />}
 
       {!typed && !revealed && (
         // Duolingo never asks learners to mark themselves, so say how it works.
@@ -334,7 +372,7 @@ export function ReviewCard({
             className="flex flex-col gap-4"
           >
             <div className="card flex flex-col items-center gap-3 px-4 py-5">
-              {hanvietPrompt && !intro && (
+              {englishPrompt && !intro && (
                 <div className="flex items-center gap-3">
                   <span lang="zh-Hans" className="text-5xl font-medium text-ink">
                     {word.simplified}
@@ -346,10 +384,19 @@ export function ReviewCard({
               {typed && answer.trim() && verdict !== "correct" && (
                 <p className="text-sm text-ink-3">
                   You typed <span className="font-bold text-ink-2">{preview ?? answer}</span>
+                  {meant && (
+                    <>
+                      : that&apos;s{" "}
+                      <span lang="zh-Hans" className="font-bold text-ink-2">
+                        {meant.simplified}
+                      </span>
+                      , which also means {glossEn(meant, 1)}
+                    </>
+                  )}
                 </p>
               )}
             </div>
-            <CognateHint word={word} falseFriend={falseFriend} showReading={!hanvietPrompt} words={words} />
+            <CognateHint word={word} falseFriend={falseFriend} showReading={false} words={words} />
             {context && <Context context={context} full />}
           </motion.div>
         )}
@@ -400,7 +447,7 @@ export function ReviewCard({
                 <button
                   type="button"
                   className={`btn flex-[1.6] ${
-                    verdict === "correct" || firstGuess ? "btn-primary" : verdict === "tones" ? "btn-gold" : "btn-danger"
+                    verdict === "correct" || firstGuess ? "btn-primary" : verdict === "tones" || meant ? "btn-gold" : "btn-danger"
                   }`}
                   onClick={() => finish(autoGrade)}
                   autoFocus
@@ -432,7 +479,6 @@ export function ReviewCard({
           {revealed && !intro && typed && verdict === "correct" && (
             <span className="flex items-center gap-1 text-sm font-semibold">
               <Icon name="sparkles" size={16} /> {word.pinyin}
-              {firstGuess && " · the tone rule worked"}
             </span>
           )}
         </ActionBar>

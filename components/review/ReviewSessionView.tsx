@@ -11,21 +11,18 @@ import { type StoredCard } from "@/lib/db/wire";
 import { getDeviceId, uuid } from "@/lib/device";
 import { goalProgress, type GoalProgress } from "@/lib/goal";
 import type { FalseFriend, Word } from "@/lib/hanviet";
-import { DAILY_NEW_LIMIT, drillableCards, newCardRanker, newWordAllowance, newWordsToday } from "@/lib/intake";
+import {
+  DAILY_NEW_LIMIT,
+  drillableCards,
+  ensureWordCards,
+  newCardRanker,
+  newWordAllowance,
+  newWordsToday,
+} from "@/lib/intake";
 import { loadMinedWords, type MinedWord } from "@/lib/mining";
 import { playCombo } from "@/lib/sound";
 import { warmUpSpeech } from "@/lib/speak";
-import {
-  buildQueue,
-  cardId,
-  grade,
-  newCard,
-  previewIntervals,
-  Rating,
-  State,
-  WORD_CARD_TYPES,
-  type CardType,
-} from "@/lib/srs";
+import { buildQueue, grade, previewIntervals, Rating, State, type CardType } from "@/lib/srs";
 import { useSound } from "@/lib/useSound";
 import { ReviewCard, type Grade, type GradeInfo } from "./ReviewCard";
 
@@ -44,21 +41,6 @@ interface Loaded {
   capped: boolean;
 }
 
-/** Builds SRS rows for any deck word that doesn't have them yet. */
-async function ensureCards(words: Word[], deviceId: string): Promise<void> {
-  const existing = new Set((await db.cards.toCollection().primaryKeys()) as string[]);
-  const missing: StoredCard[] = [];
-  const now = new Date();
-  for (const w of words) {
-    for (const t of WORD_CARD_TYPES) {
-      if (existing.has(cardId(w.id, t))) continue;
-      const c = newCard(w.id, t as CardType, now);
-      missing.push({ ...c, updatedAt: now, deviceId });
-    }
-  }
-  if (missing.length) await db.cards.bulkPut(missing);
-}
-
 async function loadSession(extra: boolean): Promise<Loaded> {
   void requestPersistence();
   const [words, falseFriends, frequency, mined, introduced] = await Promise.all([
@@ -68,7 +50,7 @@ async function loadSession(extra: boolean): Promise<Loaded> {
     loadMinedWords(),
     newWordsToday(),
   ]);
-  await ensureCards([...words.values()], getDeviceId());
+  await ensureWordCards(words.values(), getDeviceId());
   // Sentence cards share the table but are drilled on /build.
   const all = drillableCards(
     (await db.cards.toArray()).filter((c) => c.cardType !== "sentence"),

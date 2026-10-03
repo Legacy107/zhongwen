@@ -194,16 +194,17 @@ test('Hán-Việt cards only where the reading can predict something', async () 
   assert.equal(drillable({ wordId: 'x', cardType: 'typing' }, words, ff), true);
 });
 
-test('a cognate starts with its Hán-Việt card, anything else with recognition', () => {
+test('every word starts with recognition, and its English-prompted card comes last', () => {
   const words = new Map<string, Word>([
     ['c', { id: 'c', level: '1', cognateMatch: 'exact' } as Word],
     ['n', { id: 'n', level: '1', cognateMatch: 'none' } as Word],
   ]);
   const rank = newCardRanker(words, {}, new Map());
-  const first = (id: string) =>
+  const order = (id: string) =>
     (['hanviet', 'recognition', 'typing'] as const)
       .map((t) => ({ t, r: rank({ wordId: id, cardType: t }) }))
-      .sort((a, b) => a.r - b.r)[0].t;
-  assert.equal(first('c'), 'hanviet');
-  assert.equal(first('n'), 'recognition');
+      .sort((a, b) => a.r - b.r)
+      .map((x) => x.t);
+  assert.deepEqual(order('c'), ['recognition', 'typing', 'hanviet']);
+  assert.deepEqual(order('n'), ['recognition', 'typing', 'hanviet']);
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { LayoutGroup, motion } from "motion/react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import { MascotBubble } from "@/components/ui/Bubble";
 import { SpeakButton } from "@/components/ui/Controls";
 import { Icon } from "@/components/ui/Icon";
@@ -70,6 +70,9 @@ interface TileBuilderProps {
   showMeaning?: boolean;
   /** Swap to typing this sentence instead; shown until the answer is checked. */
   onUseKeyboard?: () => void;
+  /** In place of "Write this in Chinese" and the English, e.g. to build from what is heard. */
+  heading?: string;
+  prompt?: ReactNode;
   onDone: (result: TileResult) => void;
 }
 
@@ -87,6 +90,8 @@ export function TileBuilder({
   showPinyin = true,
   showMeaning = false,
   onUseKeyboard,
+  heading = "Write this in Chinese",
+  prompt,
   onDone,
 }: TileBuilderProps) {
   // Slots are built once per sentence and are the single source of identity
@@ -172,10 +177,10 @@ export function TileBuilder({
 
   return (
     <div className="flex flex-1 flex-col gap-6">
-      <h2 className="text-2xl font-extrabold text-ink">Write this in Chinese</h2>
+      <h2 className="text-2xl font-extrabold text-ink">{heading}</h2>
 
       <MascotBubble mood={checked === "wrong" ? "sad" : checked === "correct" ? "cheer" : "think"}>
-        <p className="text-lg font-semibold leading-snug text-ink">{sentence.enGloss}</p>
+        {prompt ?? <p className="text-lg font-semibold leading-snug text-ink">{sentence.enGloss}</p>}
       </MascotBubble>
 
       <LayoutGroup>
@@ -286,6 +291,7 @@ export function TileBuilder({
                     </p>
                   ))}
                 <p className="font-bold">{sentence.pinyin}</p>
+                {prompt && <p className="text-sm font-semibold">{sentence.enGloss}</p>}
                 {sentence.viGloss && <p className="text-sm font-semibold opacity-80">🇻🇳 {sentence.viGloss}</p>}
                 {hint && (
                   <p className="mt-2 flex gap-2 rounded-xl bg-surface/80 px-3 py-2 text-sm font-semibold text-ink">

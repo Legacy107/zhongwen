@@ -10,19 +10,11 @@ import { loadFalseFriends, loadWordFrequency, loadWords } from "@/lib/data";
 import { db } from "@/lib/db/local";
 import { goalProgress, type GoalProgress } from "@/lib/goal";
 import type { Word } from "@/lib/hanviet";
-import {
-  DAILY_NEW_LIMIT,
-  drillableCards,
-  frontierLevel,
-  newCardRanker,
-  newWordAllowance,
-  newWordsToday,
-} from "@/lib/intake";
-import { loadMinedWords } from "@/lib/mining";
+import { drillableCards, frontierLevel } from "@/lib/intake";
 import { buildPath, pathWindow, type LevelPath, type PathUnit } from "@/lib/path";
 import { planReading, wordStatuses } from "@/lib/reader";
 import { loadReadingLibrary } from "@/lib/readingLibrary";
-import { buildQueue, NEW_PER_SESSION, State } from "@/lib/srs";
+import { State } from "@/lib/srs";
 import { countByDay, dayKey } from "@/lib/streak";
 import { onSyncComplete } from "@/lib/sync";
 import { unlockAudio } from "@/lib/sound";
@@ -30,69 +22,33 @@ import { SyncBadge } from "./SyncBadge";
 
 interface HomeData {
   goal: GoalProgress;
-  reviewReady: number;
-  /** When the next review falls due, if nothing is ready now. */
-  nextDue: Date | null;
-  /** Today's new words are used up. */
-  capped: boolean;
-  buildReady: number | null;
+  /** Word cards due now, for catching up outside lessons. */
+  due: number;
   firstRun: boolean;
   words: Map<string, Word>;
   path: LevelPath;
 }
 
 async function readHome(): Promise<HomeData> {
-  const [words, falseFriends, frequency, mined, cards, goal, introduced] = await Promise.all([
+  const [words, falseFriends, frequency, cards, goal] = await Promise.all([
     loadWords(),
     loadFalseFriends(),
     loadWordFrequency(),
-    loadMinedWords(),
     db.cards.toArray(),
     goalProgress(),
-    newWordsToday(),
   ]);
-  // The same cards, filter and caps the review session uses, so the number on
-  // the button is the number of cards the session will hold.
   const drilled = drillableCards(cards, words, falseFriends);
-  const wordCards = drilled.filter((c) => c.cardType !== "sentence");
-  const sentenceCards = cards.filter((c) => c.cardType === "sentence");
   const status = wordStatuses(drilled);
   const level = frontierLevel(words, (id) => (status.get(id) ?? "new") !== "new");
   const now = Date.now();
-  let nextDue: Date | null = null;
-  for (const c of wordCards) {
-    if (c.state === State.New || c.suspended || c.due.getTime() <= now) continue;
-    if (nextDue === null || c.due < nextDue) nextDue = c.due;
-  }
   return {
     goal,
-    // Before the first session no cards exist yet; the first one takes in
-    // a full intake of new words.
-    reviewReady: wordCards.length
-      ? buildQueue(wordCards, new Date(), {
-          rankNew: newCardRanker(words, frequency, mined),
-          newWordLimit: newWordAllowance(introduced),
-        }).length
-      : NEW_PER_SESSION,
-    nextDue,
-    capped: introduced >= DAILY_NEW_LIMIT,
-    buildReady: sentenceCards.length
-      ? buildQueue(sentenceCards, new Date(), { sessionSize: 12, newPerSession: 6 }).length
-      : null,
-    firstRun: goal.timestamps.length === 0,
+    due: drilled.filter((c) => c.cardType !== "sentence" && c.state !== State.New && !c.suspended && c.due.getTime() <= now)
+      .length,
+    firstRun: cards.every((c) => c.state === State.New),
     words,
     path: buildPath(words, frequency, status, level),
   };
-}
-
-/** "in 9 min", "in 3 h", "tomorrow". */
-function until(when: Date): string {
-  const minutes = Math.round((when.getTime() - Date.now()) / 60_000);
-  if (minutes < 60) return `in ${Math.max(1, minutes)} min`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `in ${hours} h`;
-  const days = Math.round(hours / 24);
-  return days === 1 ? "tomorrow" : `in ${days} days`;
 }
 
 /** Hour -1 is the server render, which cannot know the learner's clock. */
@@ -241,7 +197,10 @@ function PathNode({ unit, offset, words }: { unit: PathUnit; offset: number; wor
           />
         </svg>
       )}
-      <span className={`grid size-[70px] place-items-center rounded-full ${face} transition-transform active:translate-y-1.5 active:shadow-none`}>
+      {/* Raised by half its 6px lip, so face and lip together sit centred in the ring. */}
+      <span
+        className={`grid size-[70px] -translate-y-[3px] place-items-center rounded-full ${face} transition-transform active:translate-y-[3px] active:shadow-none`}
+      >
         <Icon name={done ? "check" : current ? "star" : "lock"} size={34} strokeWidth={done ? 4 : 2.5} />
       </span>
     </span>
@@ -265,7 +224,7 @@ function PathNode({ unit, offset, words }: { unit: PathUnit; offset: number; wor
         <span aria-label={`Unit ${unit.index + 1}, locked`}>{node}</span>
       ) : (
         <Link
-          href="/review"
+          href="/lesson"
           onClick={unlockAudio}
           aria-label={`Unit ${unit.index + 1}: ${preview}${done ? ", studied" : ""}`}
         >
@@ -374,10 +333,10 @@ export function LearnHome() {
               <h1 className="mt-1 text-2xl font-extrabold text-ink">Mandarin through the Vietnamese you know</h1>
               <p className="mt-1 text-ink-2">
                 Nearly half of common Chinese words have a Hán-Việt cousin: 电话 is điện thoại, 问题 is vấn đề.
-                Your first {NEW_PER_SESSION} words are ready.
+                Your first lesson is ready.
               </p>
             </div>
-            <Link href="/review" onClick={unlockAudio} className="btn btn-primary btn-block">
+            <Link href="/lesson" onClick={unlockAudio} className="btn btn-primary btn-block">
               Start learning
             </Link>
           </section>
@@ -392,45 +351,22 @@ export function LearnHome() {
             <ProgressBar value={pct} color={goal?.met ? "bg-gold" : "bg-green"} label="Daily goal" />
             {goal && <WeekStrip goal={goal} />}
             <p className="-mt-1 text-xs font-bold text-ink-3">
-              {goal?.goal} a day · reviews, tones and reading all count
+              {goal?.goal === 1 ? "1 lesson" : `${goal?.goal} lessons`} a day · reading and tones are extra
               {goal && goal.streak > 0 && goal.freezesLeft > 0 ? " · a missed day won't break your streak" : ""}
             </p>
-            {data.reviewReady > 0 ? (
-              <Link href="/review" onClick={unlockAudio} className="btn btn-primary btn-block">
-                Start review · {data.reviewReady}
-              </Link>
-            ) : (
-              // Nothing to review: a way onward, never an empty session.
-              <div className="flex flex-col gap-3 rounded-2xl bg-green-soft px-4 py-3">
-                <p className="font-bold text-green-ink">
-                  All caught up!{data.nextDue ? ` Next review ${until(data.nextDue)}.` : ""}
-                  {data.capped ? ` That's today's ${DAILY_NEW_LIMIT} new words.` : ""}
-                </p>
-                <div className="flex gap-2">
-                  <Link href="/tones" onClick={unlockAudio} className="btn btn-secondary btn-sm flex-1">
-                    Tones
-                  </Link>
-                  <Link href="/read" onClick={unlockAudio} className="btn btn-secondary btn-sm flex-1">
-                    Read
-                  </Link>
-                  {data.capped && (
-                    <Link href="/review?more=1" onClick={unlockAudio} className="btn btn-secondary btn-sm flex-1">
-                      More words
-                    </Link>
-                  )}
-                </div>
-              </div>
-            )}
+            <Link href="/lesson" onClick={unlockAudio} className={`btn btn-block ${goal?.met ? "btn-secondary" : "btn-primary"}`}>
+              {goal?.met ? "Another lesson" : "Start lesson"}
+            </Link>
           </section>
         )}
 
         {/* practice */}
         <section className="grid grid-cols-3 gap-3">
           <PracticeTile
-            href="/build"
-            icon="blocks"
-            title="Build"
-            detail={data?.buildReady == null ? "sentences" : `${data.buildReady} ready`}
+            href="/practice"
+            icon="cards"
+            title="Practice"
+            detail={data ? (data.due ? `${data.due} due` : "catch up") : "catch up"}
             color="purple"
           />
           <PracticeTile

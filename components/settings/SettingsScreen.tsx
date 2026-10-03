@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type Re
 import { PageHeader, Segmented, Switch } from "@/components/ui/Controls";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { db, exportBackup, getLastSyncedAt, importBackup } from "@/lib/db/local";
-import { getDailyGoal, GOAL_CHOICES, setDailyGoal } from "@/lib/goal";
+import { getDailyGoal, getLessonLength, GOAL_CHOICES, setDailyGoal, setLessonLength } from "@/lib/goal";
+import type { LessonLength } from "@/lib/lesson";
 import { playCorrect, setSfxEnabled } from "@/lib/sound";
 import { onSyncComplete, onSyncStatus, sync, type SyncStatus } from "@/lib/sync";
 import { useTheme, type ThemeChoice } from "@/lib/theme";
@@ -132,42 +133,76 @@ function SyncItems() {
 }
 
 const GOAL_NAME: Record<number, string> = {
-  10: "Casual: a few minutes a day",
-  20: "Regular: about 10 minutes",
-  30: "Serious: about 15 minutes",
-  50: "Intense: 25 minutes or more",
+  1: "One lesson a day",
+  2: "Two lessons a day",
+  3: "Three lessons a day",
+  5: "Five lessons a day",
 };
 
-/** Synced, so the goal is the same on every device. */
-function GoalPicker() {
+const LENGTH_NAME: Record<LessonLength, string> = {
+  short: "Short: about 3 minutes, 3 new words",
+  normal: "Normal: about 5 minutes, 5 new words",
+  long: "Long: about 8 minutes, 6 new words and more review",
+};
+
+/** Synced, so goal and length are the same on every device. */
+function LessonSettings() {
   const [goal, setGoal] = useState<number | null>(null);
+  const [length, setLength] = useState<LessonLength | null>(null);
   useEffect(() => {
     let cancelled = false;
-    getDailyGoal().then((g) => !cancelled && setGoal(g));
+    void Promise.all([getDailyGoal(), getLessonLength()]).then(([g, l]) => {
+      if (cancelled) return;
+      setGoal(g);
+      setLength(l);
+    });
     return () => {
       cancelled = true;
     };
   }, []);
   return (
-    <div className="flex flex-col gap-3 px-4 py-3.5">
-      <div>
-        <p className="font-bold text-ink">Daily goal</p>
-        <p className="text-sm text-ink-3">
-          {goal ? GOAL_NAME[goal] ?? `${goal} a day` : "…"}. Reviews, tone drills and sentences read all count.
-        </p>
+    <>
+      <div className="flex flex-col gap-3 px-4 py-3.5">
+        <div>
+          <p className="font-bold text-ink">Daily goal</p>
+          <p className="text-sm text-ink-3">
+            {goal ? GOAL_NAME[goal] ?? `${goal} lessons a day` : "…"}. Reading and tone drills are extra.
+          </p>
+        </div>
+        {goal !== null && (
+          <Segmented
+            label="Daily goal"
+            value={String(goal)}
+            onChange={(v) => {
+              setGoal(Number(v));
+              void setDailyGoal(Number(v));
+            }}
+            options={GOAL_CHOICES.map((n) => ({ value: String(n), label: String(n) }))}
+          />
+        )}
       </div>
-      {goal !== null && (
-        <Segmented
-          label="Daily goal"
-          value={String(goal)}
-          onChange={(v) => {
-            setGoal(Number(v));
-            void setDailyGoal(Number(v));
-          }}
-          options={GOAL_CHOICES.map((n) => ({ value: String(n), label: String(n) }))}
-        />
-      )}
-    </div>
+      <div className="flex flex-col gap-3 px-4 py-3.5">
+        <div>
+          <p className="font-bold text-ink">Lesson length</p>
+          <p className="text-sm text-ink-3">{length ? LENGTH_NAME[length] : "…"}</p>
+        </div>
+        {length !== null && (
+          <Segmented<LessonLength>
+            label="Lesson length"
+            value={length}
+            onChange={(v) => {
+              setLength(v);
+              void setLessonLength(v);
+            }}
+            options={[
+              { value: "short", label: "Short" },
+              { value: "normal", label: "Normal" },
+              { value: "long", label: "Long" },
+            ]}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
@@ -266,7 +301,7 @@ export function SettingsScreen() {
       <PageHeader title="Settings" />
       <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4">
         <Section title="Learning">
-          <GoalPicker />
+          <LessonSettings />
         </Section>
 
         <Section title="Sound">

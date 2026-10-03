@@ -7,23 +7,26 @@
  *      是 come before 熊猫. The HSK list itself is alphabetical by pinyin, which
  *      taught 爱, 八, 爸爸, 吧 in that order for no reason but spelling.
  *
- * A word's first card depends on what the learner can bring to it. For a
- * cognate, the Hán-Việt guess comes first: predicting the pinyin from a word
- * they already know is the point of the card. Otherwise the recognition card
- * comes first, which introduces the word before any test of it.
+ * A word's cards come in one order: recognition first, which introduces the
+ * word before any test of it, then its pinyin from the characters, then the
+ * pinyin from the English meaning, the hardest, since nothing on screen gives
+ * the sound away.
  */
+import type { StoredCard } from './db/wire';
 import type { FalseFriend, Word } from './hanviet';
 import type { MinedWord } from './mining';
+import { cardId, newCard, WORD_CARD_TYPES } from './srs';
 
 const LEVEL_RANK: Record<string, number> = { S: 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6 };
-const COGNATE_FIRST: Record<string, number> = { hanviet: 0, recognition: 0.1, typing: 0.2 };
-const MEANING_FIRST: Record<string, number> = { recognition: 0, hanviet: 0.1, typing: 0.2 };
+const CARD_ORDER: Record<string, number> = { recognition: 0, typing: 0.1, hanviet: 0.2 };
 
 /**
- * Whether the Hán-Việt card can teach anything for this word. Not for a false
- * friend (the reading points at the wrong meaning), not for a word whose every
- * syllable is neutral (的 đích → de: the tone rule has nothing to predict), and
- * not without a reading at all, where the card would only repeat the typing card.
+ * Which words get a `hanviet` card. The card once asked for the pinyin from
+ * the Hán-Việt reading, and only where the reading could predict it: not for a
+ * false friend, not for a word whose every syllable is neutral (的 đích → de),
+ * not without a reading at all. It now asks from the English meaning, which
+ * would suit every word, but the rule stays: widening it would turn words
+ * already known back into words being learned.
  */
 export function hanvietDrillable(word: Word, falseFriends: Map<string, FalseFriend>): boolean {
   return Boolean(word.hanviet) && !falseFriends.has(word.simplified) && word.toneNumbers.some((t) => t !== 5);
@@ -54,9 +57,7 @@ export function newCardRanker(
   const frequencyRank = new Map(byFrequency.map((id, i) => [id, i]));
 
   return (card) => {
-    const word = words.get(card.wordId);
-    const order = word && word.cognateMatch !== 'none' ? COGNATE_FIRST : MEANING_FIRST;
-    const type = order[card.cardType] ?? 0.5;
+    const type = CARD_ORDER[card.cardType] ?? 0.5;
     const m = minedOrder.get(card.wordId);
     if (m !== undefined) return m + type;
     const level = LEVEL_RANK[words.get(card.wordId)?.level ?? '6'] ?? 6;
@@ -126,4 +127,19 @@ export function drillableCards<T extends { wordId: string; cardType: string }>(
   falseFriends: Map<string, FalseFriend>,
 ): T[] {
   return cards.filter((c) => drillable(c, words, falseFriends));
+}
+
+/** Builds SRS rows for any deck word that doesn't have them yet. */
+export async function ensureWordCards(words: Iterable<Word>, deviceId: string): Promise<void> {
+  const { db } = await import('./db/local');
+  const existing = new Set((await db.cards.toCollection().primaryKeys()) as string[]);
+  const missing: StoredCard[] = [];
+  const now = new Date();
+  for (const w of words) {
+    for (const t of WORD_CARD_TYPES) {
+      if (existing.has(cardId(w.id, t))) continue;
+      missing.push({ ...newCard(w.id, t, now), updatedAt: now, deviceId });
+    }
+  }
+  if (missing.length) await db.cards.bulkPut(missing);
 }

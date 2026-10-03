@@ -109,3 +109,20 @@ export function loadPracticeSentences(): Promise<Sentence[]> {
     throw new Error('No sentence set found. Run yarn sentences:generate.');
   });
 }
+
+/**
+ * Generated phrases and short sentences for lessons, a few per HSK 1–2 word,
+ * in the reading corpus's shape (`P:<wordId>:<n>` ids). Optional: lessons
+ * fall back to the reading corpus alone.
+ */
+export function loadPhrases(): Promise<ReaderSentence[]> {
+  return once('phrases', async () => {
+    const shard = await json<ReaderShard>('/data/phrases.json').catch((): ReaderShard => ({ level: '', sentences: [] }));
+    return shard.sentences.map(parseSentence);
+  });
+}
+
+/** An emoji for each word a picture can show. Optional, like the phrases. */
+export function loadEmoji(): Promise<Record<string, string>> {
+  return once('emoji', () => json<Record<string, string>>('/data/emoji.json').catch(() => ({})));
+}
