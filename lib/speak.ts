@@ -190,8 +190,25 @@ export function setChosenVoice(name: string | null): void {
   write(VOICE_KEY, name);
 }
 
-function networkOk(): boolean {
-  return navigator.onLine && Date.now() - networkFailedAt > NETWORK_RETRY_MS;
+/** The last utterance that failed, shown on the Voice screen to tell why a voice isn't heard. */
+export interface SpeechFailure {
+  voice: string;
+  error: string;
+  at: number;
+}
+
+let lastFailure: SpeechFailure | null = null;
+
+export function getLastSpeechFailure(): SpeechFailure | null {
+  return lastFailure;
+}
+
+/**
+ * Whether a network voice is worth trying. A voice chosen by hand is always
+ * tried while online: a failure falls back for that utterance only.
+ */
+function networkOk(chosen: boolean): boolean {
+  return navigator.onLine && (chosen || Date.now() - networkFailedAt > NETWORK_RETRY_MS);
 }
 
 /** Calls back when the voice list arrives or a speech preference changes. */
@@ -205,13 +222,21 @@ export function getVoiceList(): SpeechSynthesisVoice[] {
   return voices;
 }
 
+/** Asks the browser for its voices again, for a list that loaded partway. */
+export function reloadVoices(): void {
+  if (!isSpeechSupported()) return;
+  ensureVoiceList();
+  refreshVoices();
+}
+
 /** The voice the next utterance would use, once warmUpSpeech has loaded the list. */
 export function currentVoice(): SpeechSynthesisVoice | undefined {
   if (!isSpeechSupported()) return undefined;
-  return pickVoice(voices, { online: networkOk(), chosen: getChosenVoice() });
+  const chosen = getChosenVoice();
+  return pickVoice(voices, { online: networkOk(Boolean(chosen)), chosen });
 }
 
-function utter(text: string, rate: number, voice: SpeechSynthesisVoice | undefined): void {
+function utter(text: string, rate: number, voice: SpeechSynthesisVoice | undefined, fallback = true): void {
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "zh-CN";
   u.rate = rate;
@@ -220,25 +245,33 @@ function utter(text: string, rate: number, voice: SpeechSynthesisVoice | undefin
   u.onend = () => {
     if (current === u) current = null;
   };
-  if (voice && !voice.localService) {
-    u.onerror = (e) => {
-      // Cut off by the next word, not a failure.
-      if (e.error === "interrupted" || e.error === "canceled" || current !== u) return;
-      networkFailedAt = Date.now();
-      notify();
-      utter(text, rate, pickVoice(voices, { online: false }));
-    };
-  }
+  u.onerror = (e) => {
+    // Cut off by the next word, not a failure.
+    if (e.error === "interrupted" || e.error === "canceled" || current !== u) return;
+    lastFailure = { voice: voice?.name ?? "browser default", error: e.error, at: Date.now() };
+    if (voice && !voice.localService) networkFailedAt = Date.now();
+    notify();
+    if (fallback && voice && !voice.localService) utter(text, rate, pickVoice(voices, { online: false }), false);
+  };
   speechSynthesis.speak(u);
+}
+
+function stop(): void {
+  // Cancel only when something is playing: rapid taps then interrupt the
+  // previous word, as Duolingo does, instead of queueing behind it.
+  if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
 }
 
 export function speak(text: string, { slow = false }: { slow?: boolean } = {}): void {
   if (!isSpeechSupported()) return;
   ensureVoiceList();
-
-  // Cancel only when something is playing: rapid taps then interrupt the
-  // previous word, as Duolingo does, instead of queueing behind it.
-  if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
-
+  stop();
   utter(text, slow ? SLOW_RATE : SPEECH_RATE[getSpeechSpeed()], currentVoice());
+}
+
+/** Says the text in one particular voice, with no fallback, to hear what it sounds like. */
+export function previewVoice(text: string, voice: SpeechSynthesisVoice): void {
+  if (!isSpeechSupported()) return;
+  stop();
+  utter(text, SPEECH_RATE[getSpeechSpeed()], voice, false);
 }

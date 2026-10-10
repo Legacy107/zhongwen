@@ -4,6 +4,11 @@ What changed in each version, newest first. Settings → About → What's new sh
 
 Add an entry in the commit that bumps `version` in `package.json` (see README, Versioning). A test fails if the newest entry isn't the current version.
 
+## 1.4.0 — 2026-10-10
+
+- Settings → Sound → Voice opens a screen listing every voice this browser offers, each with a play button. Pick the one that sounds best; the choice is saved per device, since phones and browsers name their voices differently.
+- If a voice fails to speak, that screen says which one and why.
+
 ## 1.3.0 — 2026-10-10
 
 - Words are spoken with Microsoft's natural voice (Xiaoxiao) in Edge, on Android as well as desktop. Offline, or if that voice fails, the device's own voice takes over.

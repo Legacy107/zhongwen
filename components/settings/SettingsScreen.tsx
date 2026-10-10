@@ -8,7 +8,7 @@ import { db, exportBackup, getLastSyncedAt, importBackup } from "@/lib/db/local"
 import { getDailyGoal, getLessonLength, GOAL_CHOICES, setDailyGoal, setLessonLength } from "@/lib/goal";
 import type { LessonLength } from "@/lib/lesson";
 import { playCorrect, setSfxEnabled } from "@/lib/sound";
-import { rankVoices, setChosenVoice, setSpeechSpeed, shortVoiceName, speak, type SpeechSpeed } from "@/lib/speak";
+import { setSpeechSpeed, shortVoiceName, speak, type SpeechSpeed } from "@/lib/speak";
 import { onSyncComplete, onSyncStatus, sync, type SyncStatus } from "@/lib/sync";
 import { useTheme, type ThemeChoice } from "@/lib/theme";
 import { useAutoSpeak } from "@/lib/useAutoSpeak";
@@ -216,40 +216,28 @@ const SPEED_NAME: Record<SpeechSpeed, string> = {
   natural: "Natural: everyday speed",
 };
 
-/** Per device: each has its own voices. */
+/** Per device: each has its own voices, and a speed suits a voice. */
 function VoiceSettings() {
   const { voices, chosen, speaking, speed } = useSpeechPrefs();
-  const ranked = rankVoices(voices);
   const detail = speaking
-    ? `${shortVoiceName(speaking)}${speaking.localService ? ", on this device" : ", natural voice (needs internet)"}`
-    : "This browser has no Chinese voice, so words can't be spoken.";
+    ? `${shortVoiceName(speaking)}${chosen === speaking.name ? ", your choice" : ", the best available"}`
+    : voices.length
+      ? "No Chinese voice found. Tap to pick one."
+      : "Loading voices…";
   return (
     <>
-      <div className="flex flex-col gap-3 px-4 py-3.5">
-        <div>
+      <Link href="/settings/voice" className="flex items-center gap-3 px-4 py-3.5 active:bg-surface-2">
+        <span className="text-ink-2">
+          <Icon name="speaker" size={24} />
+        </span>
+        <div className="min-w-0 flex-1">
           <p className="font-bold text-ink">Voice</p>
           <p className="text-sm text-ink-3">{detail}</p>
         </div>
-        {ranked.length > 0 && (
-          <select
-            aria-label="Voice"
-            value={chosen && ranked.some((v) => v.name === chosen) ? chosen : ""}
-            onChange={(e) => {
-              setChosenVoice(e.target.value || null);
-              speak(SAMPLE);
-            }}
-            className="field text-base"
-          >
-            <option value="">Best available</option>
-            {ranked.map((v) => (
-              <option key={v.name} value={v.name}>
-                {shortVoiceName(v)}
-                {v.localService ? "" : " (natural, online)"}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+        <span className="text-ink-3">
+          <Icon name="chevronRight" size={22} strokeWidth={3} />
+        </span>
+      </Link>
       <div className="flex flex-col gap-3 px-4 py-3.5">
         <div>
           <p className="font-bold text-ink">Speaking speed</p>

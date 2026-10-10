@@ -4,9 +4,11 @@ import { useSyncExternalStore } from "react";
 import {
   currentVoice,
   getChosenVoice,
+  getLastSpeechFailure,
   getSpeechSpeed,
   getVoiceList,
   onSpeechChange,
+  type SpeechFailure,
   type SpeechSpeed,
 } from "@/lib/speak";
 
@@ -22,10 +24,12 @@ export function useSpeechPrefs(): {
   chosen: string | null;
   speaking: SpeechSynthesisVoice | undefined;
   speed: SpeechSpeed;
+  failure: SpeechFailure | null;
 } {
   const voices = useSyncExternalStore(onSpeechChange, getVoiceList, () => NO_VOICES);
   const chosen = useSyncExternalStore(onSpeechChange, getChosenVoice, () => null);
   const speaking = useSyncExternalStore(onSpeechChange, currentVoice, () => undefined);
   const speed = useSyncExternalStore(onSpeechChange, getSpeechSpeed, () => "relaxed" as const);
-  return { voices, chosen, speaking, speed };
+  const failure = useSyncExternalStore(onSpeechChange, getLastSpeechFailure, () => null);
+  return { voices, chosen, speaking, speed, failure };
 }
