@@ -64,7 +64,10 @@ export function TranslateCard({ sentence, distractors, speech, onDone }: Transla
             </p>
             <p className="text-sm font-semibold text-ink-3">{sentence.pinyin}</p>
           </div>
-          <SpeakButton onClick={() => speak(sentence.hanzi)} size="sm" label="Replay sentence" />
+          <div className="flex shrink-0 gap-2">
+            <SpeakButton onClick={() => speak(sentence.hanzi)} size="sm" label="Replay sentence" />
+            <SpeakButton onClick={() => speak(sentence.hanzi, { slow: true })} size="sm" slow />
+          </div>
         </div>
       </MascotBubble>
 

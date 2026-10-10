@@ -4,6 +4,12 @@ What changed in each version, newest first. Settings → About → What's new sh
 
 Add an entry in the commit that bumps `version` in `package.json` (see README, Versioning). A test fails if the newest entry isn't the current version.
 
+## 1.3.0 — 2026-10-10
+
+- Words are spoken with Microsoft's natural voice (Xiaoxiao) in Edge, on Android as well as desktop. Offline, or if that voice fails, the device's own voice takes over.
+- Speech is a little slower by default. Settings → Sound has a speaking speed (slow, relaxed, natural) and a voice picker that shows which voice is in use.
+- A turtle button replays slowly on every step where you listen: lessons, sentence building, reading and tone drills.
+
 ## 1.2.0 — 2026-10-03
 
 - What's new: this changelog, in Settings → About.

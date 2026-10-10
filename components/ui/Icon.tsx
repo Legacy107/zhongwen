@@ -43,7 +43,14 @@ const PATHS = {
       <path d="M16 9.5l5 5M21 9.5l-5 5" />
     </>
   ),
-  chevronRight: <path d="M9 5.5 15.5 12 9 18.5" />,
+  turtle: (
+    <>
+      <path d="M1.5 16a8.5 8 0 0 1 17 0z" />
+      <path d="M18.5 13.2a2.6 2.6 0 1 1 2.9 2.8h-2.9" />
+      <path d="M5 16v3.5M15 16v3.5" />
+    </>
+  ),
+  chevronRight:<path d="M9 5.5 15.5 12 9 18.5" />,
   chevronLeft: <path d="M15 5.5 8.5 12 15 18.5" />,
   plus: <path d="M12 5v14M5 12h14" />,
   eye: (

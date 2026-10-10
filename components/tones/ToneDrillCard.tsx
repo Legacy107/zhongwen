@@ -64,7 +64,7 @@ interface ToneDrillCardProps {
   /** Play the word on arrival. Only reliable where speech is not gesture-gated (not iOS). */
   autoPlay?: boolean;
   onAnswer: (correct: boolean) => void;
-  onPlayAudio: (rate?: number) => void;
+  onPlayAudio: (slow?: boolean) => void;
 }
 
 /**
@@ -104,9 +104,7 @@ export function ToneDrillCard({ drill, autoPlay = false, onAnswer, onPlayAudio }
       <div className="flex flex-col items-center gap-4 py-2">
         <div className="flex items-center gap-3">
           <SpeakButton onClick={() => onPlayAudio()} size="lg" label="Play the word again" />
-          <button type="button" onClick={() => onPlayAudio(0.55)} className="btn btn-secondary btn-sm" aria-label="Play slowly">
-            Slow
-          </button>
+          <SpeakButton onClick={() => onPlayAudio(true)} size="md" slow />
         </div>
         {checked || peek ? (
           <div className="flex flex-col items-center">
@@ -202,7 +200,7 @@ export function ToneDrillCard({ drill, autoPlay = false, onAnswer, onPlayAudio }
                     <button
                       key={w.id}
                       type="button"
-                      onClick={() => speak(w.simplified, 0.8)}
+                      onClick={() => speak(w.simplified)}
                       className="flex items-center gap-2 rounded-xl bg-surface/80 px-3 py-1.5"
                     >
                       <Icon name="speaker" size={16} />

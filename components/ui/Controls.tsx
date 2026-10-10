@@ -12,17 +12,24 @@ import { Icon } from "./Icon";
 export function SpeakButton({
   onClick,
   size = "lg",
-  label = "Play audio",
+  label,
+  slow = false,
 }: {
   onClick: () => void;
   size?: "lg" | "md" | "sm";
   label?: string;
+  slow?: boolean;
 }) {
   const dims = size === "lg" ? "size-16" : size === "md" ? "size-12" : "size-11";
   const icon = size === "lg" ? 32 : size === "md" ? 24 : 20;
   return (
-    <button type="button" onClick={onClick} aria-label={label} className={`btn btn-info btn-icon ${dims}`}>
-      <Icon name="speaker" size={icon} />
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label ?? (slow ? "Play slowly" : "Play audio")}
+      className={`btn btn-icon ${slow ? "btn-secondary" : "btn-info"} ${dims}`}
+    >
+      <Icon name={slow ? "turtle" : "speaker"} size={icon} />
     </button>
   );
 }

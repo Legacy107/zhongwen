@@ -71,8 +71,8 @@ export function ToneSessionView() {
 
   const current = drills?.[i];
   const play = useCallback(
-    (rate = 0.8) => {
-      if (current) speak(current.word.simplified, rate);
+    (slow = false) => {
+      if (current) speak(current.word.simplified, { slow });
     },
     [current],
   );
@@ -83,7 +83,7 @@ export function ToneSessionView() {
       const nextDrill = drills[i + 1];
       // Speak the next word from inside this tap: iOS plays speech only from
       // a user gesture, so an effect on the next card would be silent there.
-      if (nextDrill) speak(nextDrill.word.simplified, 0.8);
+      if (nextDrill) speak(nextDrill.word.simplified);
       setScore((s) => ({ correct: s.correct + (ok ? 1 : 0), wrong: s.wrong + (ok ? 0 : 1) }));
       const contrast = drills[i].contrast;
       setByContrast((b) => {

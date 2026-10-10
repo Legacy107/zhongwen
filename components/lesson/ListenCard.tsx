@@ -23,7 +23,7 @@ export function ListenCard({ word, onDone }: ListenCardProps) {
   const done = useRef(false);
 
   const say = useCallback(() => speak(word.simplified), [word.simplified]);
-  const slow = useCallback(() => speak(word.simplified, 0.6), [word.simplified]);
+  const slow = useCallback(() => speak(word.simplified, { slow: true }), [word.simplified]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -49,7 +49,7 @@ export function ListenCard({ word, onDone }: ListenCardProps) {
       <h2 className="text-2xl font-extrabold text-ink">Type what you hear</h2>
       <div className="flex items-center justify-center gap-4 py-4">
         <SpeakButton onClick={say} label="Play the word" />
-        <SpeakButton onClick={slow} size="md" label="Play it slowly" />
+        <SpeakButton onClick={slow} size="md" slow />
       </div>
 
       <form

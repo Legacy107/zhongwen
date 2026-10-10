@@ -192,15 +192,8 @@ export function ReadSessionView() {
             />
             <ReaderLegend sentence={sentence} status={library.status} mined={mined} />
             <div className="flex items-center gap-3">
-              <SpeakButton onClick={() => speak(sentence.hanzi, 0.9)} size="md" label="Play the sentence" />
-              <button
-                type="button"
-                onClick={() => speak(sentence.hanzi, 0.6)}
-                className="btn btn-secondary btn-sm"
-                aria-label="Play the sentence slowly"
-              >
-                Slow
-              </button>
+              <SpeakButton onClick={() => speak(sentence.hanzi)} size="md" label="Play the sentence" />
+              <SpeakButton onClick={() => speak(sentence.hanzi, { slow: true })} size="md" slow label="Play the sentence slowly" />
             </div>
           </div>
 

@@ -207,7 +207,10 @@ export function GapFillCard({
                   </div>
                 )}
               </div>
-              <SpeakButton onClick={() => speak(sentence.hanzi)} size="sm" label="Replay sentence" />
+              <div className="flex shrink-0 flex-col gap-2">
+                <SpeakButton onClick={() => speak(sentence.hanzi)} size="sm" label="Replay sentence" />
+                <SpeakButton onClick={() => speak(sentence.hanzi, { slow: true })} size="sm" slow />
+              </div>
             </div>
           )}
         </ActionBar>

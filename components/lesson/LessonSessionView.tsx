@@ -373,6 +373,7 @@ export function LessonSessionView() {
           audio ? (
             <AutoSpeak text={step.sentence.hanzi}>
               <SpeakButton onClick={() => speak(step.sentence.hanzi)} size="md" label="Replay sentence" />
+              <SpeakButton onClick={() => speak(step.sentence.hanzi, { slow: true })} size="sm" slow />
             </AutoSpeak>
           ) : undefined
         }

@@ -62,8 +62,9 @@ export function ChooseCard({ word, options, mode, emoji, speech, onDone }: Choos
       <h2 className="text-2xl font-extrabold text-ink">{heading}</h2>
 
       {mode === "listen" ? (
-        <div className="flex justify-center py-4">
+        <div className="flex items-center justify-center gap-4 py-4">
           <SpeakButton onClick={say} label="Play the word" />
+          <SpeakButton onClick={() => speak(word.simplified, { slow: true })} size="md" slow />
         </div>
       ) : mode === "meaning" ? (
         <MascotBubble mood={checked ? (correct ? "happy" : "sad") : "think"}>

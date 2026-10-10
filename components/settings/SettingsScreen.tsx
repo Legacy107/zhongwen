@@ -8,9 +8,11 @@ import { db, exportBackup, getLastSyncedAt, importBackup } from "@/lib/db/local"
 import { getDailyGoal, getLessonLength, GOAL_CHOICES, setDailyGoal, setLessonLength } from "@/lib/goal";
 import type { LessonLength } from "@/lib/lesson";
 import { playCorrect, setSfxEnabled } from "@/lib/sound";
+import { rankVoices, setChosenVoice, setSpeechSpeed, shortVoiceName, speak, type SpeechSpeed } from "@/lib/speak";
 import { onSyncComplete, onSyncStatus, sync, type SyncStatus } from "@/lib/sync";
 import { useTheme, type ThemeChoice } from "@/lib/theme";
 import { useAutoSpeak } from "@/lib/useAutoSpeak";
+import { useSpeechPrefs } from "@/lib/useSpeechPrefs";
 import { useStoredToggle } from "@/lib/useStoredToggle";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -206,6 +208,71 @@ function LessonSettings() {
   );
 }
 
+const SAMPLE = "你好，我是你的中文老师。";
+
+const SPEED_NAME: Record<SpeechSpeed, string> = {
+  slow: "Slow: every syllable clear",
+  relaxed: "Relaxed: a little slower than natural",
+  natural: "Natural: everyday speed",
+};
+
+/** Per device: each has its own voices. */
+function VoiceSettings() {
+  const { voices, chosen, speaking, speed } = useSpeechPrefs();
+  const ranked = rankVoices(voices);
+  const detail = speaking
+    ? `${shortVoiceName(speaking)}${speaking.localService ? ", on this device" : ", natural voice (needs internet)"}`
+    : "This browser has no Chinese voice, so words can't be spoken.";
+  return (
+    <>
+      <div className="flex flex-col gap-3 px-4 py-3.5">
+        <div>
+          <p className="font-bold text-ink">Voice</p>
+          <p className="text-sm text-ink-3">{detail}</p>
+        </div>
+        {ranked.length > 0 && (
+          <select
+            aria-label="Voice"
+            value={chosen && ranked.some((v) => v.name === chosen) ? chosen : ""}
+            onChange={(e) => {
+              setChosenVoice(e.target.value || null);
+              speak(SAMPLE);
+            }}
+            className="field text-base"
+          >
+            <option value="">Best available</option>
+            {ranked.map((v) => (
+              <option key={v.name} value={v.name}>
+                {shortVoiceName(v)}
+                {v.localService ? "" : " (natural, online)"}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+      <div className="flex flex-col gap-3 px-4 py-3.5">
+        <div>
+          <p className="font-bold text-ink">Speaking speed</p>
+          <p className="text-sm text-ink-3">{SPEED_NAME[speed]}. The turtle button always plays slower.</p>
+        </div>
+        <Segmented<SpeechSpeed>
+          label="Speaking speed"
+          value={speed}
+          onChange={(v) => {
+            setSpeechSpeed(v);
+            speak(SAMPLE);
+          }}
+          options={[
+            { value: "slow", label: "Slow" },
+            { value: "relaxed", label: "Relaxed" },
+            { value: "natural", label: "Natural" },
+          ]}
+        />
+      </div>
+    </>
+  );
+}
+
 function BackupItems() {
   const fileInput = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState<"export" | "import" | null>(null);
@@ -325,6 +392,7 @@ export function SettingsScreen() {
           <Item icon="speaker" title="Speak words automatically" detail="Say each tile as you tap it, and each answer.">
             <Switch label="Speak words automatically" on={autoSpeak} onChange={setAutoSpeak} />
           </Item>
+          <VoiceSettings />
         </Section>
 
         <Section title="Appearance">
